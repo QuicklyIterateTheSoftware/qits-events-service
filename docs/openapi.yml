@@ -111,6 +111,8 @@ components:
 paths:
   /events/api/events:
     get:
+      summary: List
+      operationId: listEvents
       parameters:
       - name: attr
         in: query
@@ -161,7 +163,6 @@ paths:
           description: Not Authorized
         "403":
           description: Not Allowed
-      summary: List
       tags:
       - Event Controller
       security:
@@ -331,4 +332,4 @@ paths:
         - qits:agent
 info:
   title: qits-events API
-  version: 2026.922.201304
+  version: 2026.1002.180127

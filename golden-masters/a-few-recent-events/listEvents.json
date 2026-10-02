@@ -1,0 +1,37 @@
+{
+  "events": [
+    {
+      "id": "00000000-0000-4000-8000-000000000001",
+      "name": "DeploymentActive",
+      "occurredAt": "2026-01-01T00:00:00Z",
+      "payload": "{\"application\":\"qits-projects\"}",
+      "description": "qits-projects is deployed",
+      "parentId": null,
+      "environment": null,
+      "createdAt": "2026-01-01T00:00:00Z",
+      "updatedAt": "2026-01-01T00:00:00Z"
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000002",
+      "name": "ReleaseRequestChanged",
+      "occurredAt": "2026-01-01T00:00:00Z",
+      "payload": "{\"state\":\"PENDING\"}",
+      "description": "A release request is waiting for its checks",
+      "parentId": "00000000-0000-4000-8000-000000000003",
+      "environment": null,
+      "createdAt": "2026-01-01T00:00:00Z",
+      "updatedAt": "2026-01-01T00:00:00Z"
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000003",
+      "name": "TicketReported",
+      "occurredAt": "2026-01-01T00:00:00Z",
+      "payload": "{\"ticket\":\"qits-1\"}",
+      "description": "Ticket qits-1 was reported",
+      "parentId": null,
+      "environment": null,
+      "createdAt": "2026-01-01T00:00:00Z",
+      "updatedAt": "2026-01-01T00:00:00Z"
+    }
+  ]
+}

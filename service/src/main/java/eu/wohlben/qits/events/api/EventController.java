@@ -22,6 +22,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.time.Instant;
 import java.util.List;
+import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.jboss.resteasy.reactive.RestResponse;
 
 /**
@@ -116,6 +117,7 @@ public class EventController {
   */
   @GET
   @jakarta.annotation.security.RolesAllowed({"qits:admin", "qits:system", "qits:agent"})
+  @Operation(operationId = "listEvents", summary = "List")
   public ListEventsRequest.Response list(
       @QueryParam("parentId") String parentId,
       @QueryParam("name") String name,

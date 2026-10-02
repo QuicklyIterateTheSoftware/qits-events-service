@@ -678,3 +678,22 @@ The pipeline also rewrites `package-lock.json`'s `resolved` **origins** before `
 tarballs by the absolute URL in the lockfile and ignores the configured registry, and npm's own
 `--replace-registry-host` is broken for a registry mounted under a path prefix. The committed
 lockfile keeps the developer-host origin, which is correct locally.
+
+## Pact provider and golden masters (epic qits-112)
+
+qits-events is a pact provider, set up like qits-githost-service. The test package
+`service/src/test/java/eu/wohlben/qits/events/contracts/` holds it:
+
+- `ProviderStates`: "a few recent events" (three events in the year 2100, so they are the newest
+  rows; one is the parent of another) and "no events". Each state's events are deleted again
+  (`cleanUp()`), because the events table is shared by the whole test run.
+- `GoldenMasterRecordingTest` records `listEvents` with `?limit=20` into `golden-masters/`. The
+  index carries the query (`"query": {"limit": "20"}`), and the answer's `nextCursor` is left out
+  of the recording: it names whichever row was 20th in the shared database, and no consumer reads
+  it. It compares by default; `-Dgolden.update=true` rewrites.
+- `ConsumerPactVerificationTest` verifies `pacts/*_qits-events-service.json` on the test classpath.
+  It passes with no pact until the first consumer pact jar is pinned; then drop
+  `@IgnoreNoPactsToVerify` and set `ClasspathPactLoader.REQUIRED = true`.
+
+`.config/qits/release.yml` declares the golden masters as a contract, so the platform publishes
+`eu.wohlben.qits:qits-events-golden-masters` and `@qits/events-golden-masters` when they change.

@@ -1,0 +1,65 @@
+{
+  "formatVersion": 1,
+  "provider": "qits-events",
+  "states": [
+    {
+      "name": "a few recent events",
+      "slug": "a-few-recent-events",
+      "params": {
+        "deploymentEventId": "00000000-0000-4000-8000-000000000001",
+        "requestEventId": "00000000-0000-4000-8000-000000000002",
+        "ticketEventId": "00000000-0000-4000-8000-000000000003"
+      },
+      "dependsOn": [],
+      "operations": [
+        {
+          "operationId": "listEvents",
+          "method": "GET",
+          "path": "/events/api/events",
+          "query": {
+            "limit": "20"
+          },
+          "status": 200,
+          "file": "a-few-recent-events/listEvents.json",
+          "frozen": {
+            "ids": [
+              "$.events[*].id",
+              "$.events[*].parentId"
+            ],
+            "instants": [
+              "$.events[*].occurredAt",
+              "$.events[*].createdAt",
+              "$.events[*].updatedAt"
+            ],
+            "strings": [],
+            "listFilteredTo": "$.events"
+          }
+        }
+      ]
+    },
+    {
+      "name": "no events",
+      "slug": "no-events",
+      "params": {},
+      "dependsOn": [],
+      "operations": [
+        {
+          "operationId": "listEvents",
+          "method": "GET",
+          "path": "/events/api/events",
+          "query": {
+            "limit": "20"
+          },
+          "status": 200,
+          "file": "no-events/listEvents.json",
+          "frozen": {
+            "ids": [],
+            "instants": [],
+            "strings": [],
+            "listFilteredTo": "$.events"
+          }
+        }
+      ]
+    }
+  ]
+}
