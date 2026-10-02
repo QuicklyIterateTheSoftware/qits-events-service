@@ -137,7 +137,12 @@ Two ways in. Both end in one `SecurityIdentity`, and Jakarta `@RolesAllowed` dec
   `X-Qits-*` header from a request that carries a Bearer or Basic credential and injects none, so
   headers cannot carry that person. `quarkus-oidc` validates the token (signature, issuer, and an
   `aud` that holds `qits-platform`, the one platform-wide audience every token qits-platform-idp
-  mints carries), and its `groups` claim becomes the roles. The roles are the permission system;
+  mints carries), and its `groups` claim becomes the roles. The issuer is never configuration: it
+  is derived from `QITS_DOMAIN` (`https://idp.qits.<domain>`, `localhost` when unset) and checked
+  by `security/IssuerValidator`, a jose4j `Validator` bean the extension applies to every token —
+  there is no `quarkus.oidc.token.issuer`, and with discovery off nothing else checks `iss`. Until
+  the idp stamps that issuer (qits-730) the bean also accepts the legacy
+  `http://qits-platform-idp:8080/idp`. The roles are the permission system;
   nothing else is checked. The audience check says the token was minted for this platform and
   nothing more — a sibling service's machine token passes it too, and its roles decide from there.
 
