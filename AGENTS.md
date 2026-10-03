@@ -16,7 +16,8 @@ reaching for a container.
 test that refuses to let the datasource baseline go missing. `<repositories>` in the root pom points
 at `${qits.maven.repository.url}` (`https://registry.qits.wohlben.eu/artifacts/maven/maven` by
 default), which answers 401 without the commissioned client; see **Dependencies**. Two published
-jars is what the platform's cutover survival costs, and it is the smallest form of it: neither has a copy that could live here instead.
+jars is what the platform's cutover survival costs, and it is the smallest form of it: neither has
+a copy that could live here instead.
 
 **Which command is the gate depends on whether you have the client**, and this is worth getting
 right because the platform reference states it loosely:
