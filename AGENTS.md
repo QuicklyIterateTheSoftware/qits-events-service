@@ -14,9 +14,9 @@ reaching for a container.
 **The one thing it now needs besides Maven Central** is the platform's own Maven repository, for
 `qits-db-core` and `qits-arch-rules` — the patient driver every connection opens through, and the
 test that refuses to let the datasource baseline go missing. `<repositories>` in the root pom points
-at `${qits.maven.repository.url}` (the developer-host address by default), and the image build
-overrides it; see **Dependencies**. Two published jars is what the platform's cutover survival costs,
-and it is the smallest form of it: neither has a copy that could live here instead.
+at `${qits.maven.repository.url}` (`https://registry.qits.wohlben.eu/artifacts/maven/maven` by
+default), which answers 401 without the commissioned client; see **Dependencies**. Two published
+jars is what the platform's cutover survival costs, and it is the smallest form of it: neither has a copy that could live here instead.
 
 **Which command is the gate depends on whether you have the client**, and this is worth getting
 right because the platform reference states it loosely:
@@ -370,11 +370,11 @@ when the platform's Quarkus passes the version a release is built against.
 Both are published by qits-integrations-quarkus-javalib and version-pinned by a property each in the
 root pom. Getting them into an image build took the qits-deployments arrangement, unchanged: a
 `<repositories>` entry with the id `qits-maven`, `.qits-maven-settings.xml` mirroring exactly that id
-onto `$QITS_MAVEN_REPOSITORY_URL` (an exact id match is what gets past Maven's `external:http:*`
-blocker), and a `--build-arg` in both pipelines (`.config/qits/ci-event-release.yml` and
-`ci-event-release-request.yml`) deriving the address from
-`$QITS_REGISTRY`. The docker build also moved to `--network host`, which buildkit needs to reach it.
-The three move together — a new platform jar needs none of them again.
+onto `$QITS_MAVEN_REPOSITORY_URL` and Central onto `$QITS_MAVEN_CENTRAL_URL` with the commissioned
+client as credential, and `docker/Dockerfile` deriving both URLs from the one `QITS_DOMAIN` build-arg
+(`registry.qits.$QITS_DOMAIN`, `mirror.qits.$QITS_DOMAIN`). To resolve by hand, export the two URLs
+and `QITS_MAVEN_AUTH_USR`/`PSW` and pass `-s .qits-maven-settings.xml`. The three move together — a
+new platform jar needs none of them again.
 
 ## Tests
 

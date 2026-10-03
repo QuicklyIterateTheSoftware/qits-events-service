@@ -67,7 +67,7 @@
              a real HTTP client and a real websocket client in the test JVM, and a mock would be a
              stand-in for nothing. -->
         <qits.userflows.version>2026.1002.72731</qits.userflows.version>
-        <qits.maven.repository.url>http://registry.dev.localhost:8080/artifacts/maven/maven</qits.maven.repository.url>
+        <qits.maven.repository.url>https://registry.qits.wohlben.eu/artifacts/maven/maven</qits.maven.repository.url>
         <maven.compiler.release>25</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -224,7 +224,9 @@
     <repositories>
         <repository>
             <!-- Where the two qits jars above come from. Named `qits-maven` because the image
-                 build's settings file mirrors exactly that id — see .qits-maven-settings.xml. -->
+                 build's settings file mirrors exactly that id — see .qits-maven-settings.xml. The
+                 host answers 401 anonymously: build with `-s .qits-maven-settings.xml` and the
+                 QITS_MAVEN_* variables it reads, or give ~/.m2/settings.xml a `qits-maven` server. -->
             <id>qits-maven</id>
             <url>${qits.maven.repository.url}</url>
         </repository>

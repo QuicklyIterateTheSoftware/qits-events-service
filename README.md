@@ -323,12 +323,11 @@ That gives this repo a clone rule with two halves:
   that is true of the *tests* it runs and not of the goal, and it holds for every SPA-serving
   service, not just this one. `./mvnw test` is the command the clone-alone rule actually names here.
 
-The client depends on `@qits/ui-components`, which exists only on the platform's own npm registry —
-reachable from a developer's host (its committed `.npmrc` names `localhost:8081`) and from
-`qits-net`, and from **no address inside a docker build**. So the image build does not build the
-client: the pipelines under `.config/qits/` build it in a step container on `qits-net` and
-`docker/Dockerfile` packages the bundle it was handed. Every SPA-serving service in the platform
-does this, for the same reason.
+The client depends on `@qits/ui-components`, which exists only on the platform's own npm registry,
+`https://registry.qits.$QITS_DOMAIN/artifacts/npm/npm/`, and that answers 401 without a credential
+the image build is not handed. So the image build does not build the client: the platform's pipeline
+step builds it and `docker/Dockerfile` packages the bundle it was handed. Every SPA-serving service
+in the platform does this, for the same reason.
 
 ## Configuration
 
