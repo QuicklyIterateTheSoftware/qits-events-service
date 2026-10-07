@@ -53,7 +53,7 @@ import jakarta.inject.Inject;
  * loop.
  */
 @WebSocket(path = "/events/stream")
-@jakarta.annotation.security.RolesAllowed({"qits:admin", "qits:system", "qits:agent"})
+@jakarta.annotation.security.RolesAllowed({"qits:admin", "qits:admin-agent", "qits:system", "qits:agent"})
 public class EventStreamSocket {
 
   @Inject EventStreamSubscriptions subscriptions;

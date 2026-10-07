@@ -51,6 +51,20 @@ class EventStreamResourceDoorTest {
     }
   }
 
+  /**
+   * {@code qits:admin-agent} alone is admitted wherever {@code qits:admin} is (qits-628
+   * follow-up), proven here under the real, dev-user-free posture.
+   */
+  @Test
+  void anAdminAgentOpensTheStreamToo() throws Exception {
+    try (SseReader reader =
+        SseReader.open(
+            endpoint,
+            Map.of("X-Qits-User", "dyn-admin-workspace-agent", "X-Qits-Roles", "qits:admin-agent"))) {
+      assertEquals(200, reader.status());
+    }
+  }
+
   @Test
   void aMachineConsumerOpensTheStreamToo() throws Exception {
     try (SseReader reader =
