@@ -173,7 +173,7 @@ public class EventStreamResource {
    */
   @GET
   @Produces(MediaType.SERVER_SENT_EVENTS)
-  @RolesAllowed({"qits:admin", "qits:system", "qits:agent"})
+  @RolesAllowed({"qits:admin", "qits:admin-agent", "qits:system", "qits:agent"})
   @Operation(
       summary = "Live event stream (Server-Sent Events)",
       description =

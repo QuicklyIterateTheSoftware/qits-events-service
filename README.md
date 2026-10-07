@@ -365,3 +365,6 @@ Two ways in, and `@RolesAllowed` decides for both:
 
 A request with neither is anonymous, and every protected route refuses it with 401. See
 `AGENTS.md`.
+
+`qits:admin-agent` — an admin workspace's agent (qits-628 follow-up) — is admitted wherever
+`qits:admin` is.
