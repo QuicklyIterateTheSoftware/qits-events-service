@@ -1,0 +1,13 @@
+{
+  "event": {
+    "id": "00000000-0000-4000-8000-000000000001",
+    "name": "DeploymentActive",
+    "occurredAt": "2026-01-01T00:00:00Z",
+    "payload": "{\"application\":\"qits-eventstream-pact\"}",
+    "description": null,
+    "parentId": null,
+    "environment": null,
+    "createdAt": "2026-01-01T00:00:00Z",
+    "updatedAt": "2026-01-01T00:00:00Z"
+  }
+}

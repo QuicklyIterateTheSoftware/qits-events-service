@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -51,25 +52,36 @@ class GoldenMasterRecordingTest {
   /**
    * One recorded interaction.
    *
+   * @param path the route alone; the query is {@code query}. A {@code {param}} in it is expanded
+   *     from the state's params and recorded unexpanded
+   * @param query the query parameters, recorded into the index as an object: a String value, or a
+   *     List of Strings for a parameter sent more than once ({@code attr}). A {@code {param}} in a
+   *     value is expanded and recorded unexpanded, as in the path
    * @param listFilteredTo the array (a {@code $.a.b} path) reduced to the entries the state created,
    *     or null — the index's {@code frozen.listFilteredTo}
    * @param sortedBy for an array the provider answers in no guaranteed order: {@code
    *     <$.path-to-array>:<field.path in each entry>}, sorted by that field's (seed-fixed) value
    *     before freezing, so ids are numbered in a stable order. Null when the order is the
    *     provider's own.
+   * @param dropped top-level answer fields left out of the recording
+   * @param requestBody the JSON a write sends, recorded into the index as the operation's {@code
+   *     body}; null for a read and for a write whose operation takes no body (the openapi says
+   *     which — the recording fails on a mismatch). A {@code {param}} in it is expanded and recorded
+   *     unexpanded
    */
   record Interaction(
       String state,
       String operationId,
       String method,
       String path,
-      Map<String, String> query,
+      Map<String, Object> query,
       int status,
       String listFilteredTo,
       String sortedBy,
-      List<String> dropped) {
+      List<String> dropped,
+      String requestBody) {
 
-    /** An interaction with no query and nothing dropped. */
+    /** A read with no query and nothing dropped. */
     Interaction(
         String state,
         String operationId,
@@ -78,14 +90,50 @@ class GoldenMasterRecordingTest {
         int status,
         String listFilteredTo,
         String sortedBy) {
-      this(state, operationId, method, path, Map.of(), status, listFilteredTo, sortedBy, List.of());
+      this(
+          state, operationId, method, path, Map.of(), status, listFilteredTo, sortedBy, List.of(),
+          null);
     }
   }
 
+  /** A read of the list route: kept whole, {@code nextCursor} included, filtered to the state. */
+  private static Interaction list(String state, Map<String, Object> query) {
+    return new Interaction(
+        state, "listEvents", "GET", "/events/api/events", query, 200, "$.events", null, List.of(),
+        null);
+  }
+
+  /** The bus's publish of {@link ProviderStates#PUBLISHED_ENVELOPE} under the state's id. */
+  private static Interaction publish(String state, int status) {
+    return new Interaction(
+        state,
+        "publishEvent",
+        "PUT",
+        "/events/api/events/{eventId}",
+        Map.of(),
+        status,
+        null,
+        null,
+        List.of(),
+        ProviderStates.PUBLISHED_ENVELOPE);
+  }
+
+  /** An ordered query: the index sorts the keys anyway, the order here is for the reader. */
+  private static Map<String, Object> query(Object... pairs) {
+    Map<String, Object> query = new LinkedHashMap<>();
+    for (int i = 0; i < pairs.length; i += 2) {
+      query.put((String) pairs[i], pairs[i + 1]);
+    }
+    return query;
+  }
+
+  private static final String CURSOR = ProviderStates.CURSOR_BEFORE_THE_STATE;
+
   /**
-   * The list as the notifications menu asks for it: the newest 20. {@code nextCursor} is dropped
-   * from the recording — it names whichever row happened to be 20th in the shared test database,
-   * and no consumer reads it — and the list keeps only the state's own events.
+   * The list as the notifications menu asks for it (the newest 20, {@code nextCursor} dropped: it
+   * names whichever row happened to be 20th in the shared test database), and every other shape a
+   * consumer asks: the newest event of a name ({@code limit=1}), a forward page from a cursor
+   * ({@code order=asc}, {@code nextCursor} kept — null on the last page), and the bus's publish.
    */
   static final List<Interaction> INTERACTIONS =
       List.of(
@@ -98,7 +146,8 @@ class GoldenMasterRecordingTest {
               200,
               "$.events",
               null,
-              List.of("nextCursor")),
+              List.of("nextCursor"),
+              null),
           new Interaction(
               ProviderStates.NO_EVENTS,
               "listEvents",
@@ -108,10 +157,73 @@ class GoldenMasterRecordingTest {
               200,
               "$.events",
               null,
-              List.of("nextCursor")));
+              List.of("nextCursor"),
+              null),
+          list(ProviderStates.THE_NEWEST_EVENT, query("order", "desc", "limit", "1")),
+          list(
+              ProviderStates.ONE_SOFTWARE_RELEASE_EVENT,
+              query("limit", "1", "name", "SoftwareRelease")),
+          list(
+              ProviderStates.ONE_DEPLOYMENT_ACTIVE_EVENT,
+              query("limit", "1", "name", "DeploymentActive")),
+          list(ProviderStates.ONE_SCM_RELEASE_EVENT, query("limit", "1", "name", "SCMRelease")),
+          list(
+              ProviderStates.EVENTS_TO_CATCH_UP_ON,
+              query("order", "asc", "limit", "200", "cursor", CURSOR)),
+          list(
+              ProviderStates.SOFTWARE_RELEASES_TO_CATCH_UP_ON,
+              query("order", "asc", "limit", "200", "name", "SoftwareRelease", "cursor", CURSOR)),
+          list(
+              ProviderStates.DEPLOYMENTS_TO_CATCH_UP_ON,
+              query("order", "asc", "limit", "200", "name", "DeploymentActive", "cursor", CURSOR)),
+          list(
+              ProviderStates.SCM_RELEASES_TO_CATCH_UP_ON,
+              query("order", "asc", "limit", "200", "name", "SCMRelease", "cursor", CURSOR)),
+          list(
+              ProviderStates.PROJECT_LIFECYCLE_EVENTS,
+              query(
+                  "order",
+                  "asc",
+                  "limit",
+                  "200",
+                  "name",
+                  "ProjectCreated,ProjectChanged,ProjectDeleted",
+                  "cursor",
+                  CURSOR)),
+          new Interaction(
+              ProviderStates.MORE_THAN_A_PAGE_OF_DEPLOYMENTS,
+              "listEvents",
+              "GET",
+              "/events/api/events",
+              query(
+                  "order",
+                  "asc",
+                  "limit",
+                  String.valueOf(ProviderStates.PAGE),
+                  "name",
+                  "DeploymentActive"),
+              200,
+              null,
+              null,
+              List.of(),
+              null),
+          list(
+              ProviderStates.A_REPOSITORY_WITH_A_RELEASE,
+              query(
+                  "name",
+                  "SCMRelease",
+                  "attr",
+                  List.of("repositoryname={repositoryName}", "projectid={projectId}"),
+                  "order",
+                  "desc",
+                  "limit",
+                  "1")),
+          publish(ProviderStates.NO_EVENT_WITH_THE_GIVEN_ID, 201),
+          publish(ProviderStates.THE_SAME_EVENT_PUBLISHED_BEFORE, 200),
+          publish(ProviderStates.AN_EVENT_WITH_THE_GIVEN_ID, 400));
 
   private static final ObjectMapper JSON = new ObjectMapper();
-  private static final Pattern TEMPLATE_PARAM = Pattern.compile("\\{([^}]+)}");
+  private static final Pattern TEMPLATE_PARAM = Pattern.compile("\\{([A-Za-z][A-Za-z0-9]*)}");
 
   @Inject ProviderStates states;
 
@@ -126,7 +238,15 @@ class GoldenMasterRecordingTest {
     Map<String, ObjectNode> indexStates = new TreeMap<>();
     Map<String, Map<String, ObjectNode>> indexOperations = new TreeMap<>();
 
+    Set<String> takesBody = operationsTakingABody();
     for (Interaction interaction : INTERACTIONS) {
+      if ((interaction.requestBody() != null) != takesBody.contains(interaction.operationId())) {
+        failures.add(
+            interaction.operationId()
+                + (interaction.requestBody() != null
+                    ? " takes no request body, but the recording sends one: record null."
+                    : " takes a request body, but the recording sends none."));
+      }
       Recorded recorded = record(interaction);
       String slug = ProviderStates.slug(interaction.state());
       String file = slug + "/" + interaction.operationId() + ".json";
@@ -149,7 +269,19 @@ class GoldenMasterRecordingTest {
       operation.put("path", interaction.path());
       if (!interaction.query().isEmpty()) {
         ObjectNode query = operation.putObject("query");
-        new TreeMap<>(interaction.query()).forEach(query::put);
+        new TreeMap<>(interaction.query())
+            .forEach(
+                (key, value) -> {
+                  if (value instanceof List<?> values) {
+                    ArrayNode repeated = query.putArray(key);
+                    values.forEach(v -> repeated.add((String) v));
+                  } else {
+                    query.put(key, (String) value);
+                  }
+                });
+      }
+      if (interaction.requestBody() != null) {
+        operation.set("body", JSON.readTree(interaction.requestBody()));
       }
       operation.put("status", interaction.status());
       operation.put("file", file);
@@ -227,11 +359,25 @@ class GoldenMasterRecordingTest {
   private Recorded recordIn(Interaction interaction, ProviderStates.Setup setup) throws IOException {
     Map<String, String> params = setup.params();
 
+    var request = given();
+    for (Map.Entry<String, Object> entry : interaction.query().entrySet()) {
+      if (entry.getValue() instanceof List<?> values) {
+        request =
+            request.queryParam(
+                entry.getKey(), values.stream().map(v -> expand((String) v, params)).toList());
+      } else {
+        request = request.queryParam(entry.getKey(), expand((String) entry.getValue(), params));
+      }
+    }
+    if (interaction.requestBody() != null) {
+      request =
+          request.contentType("application/json").body(expand(interaction.requestBody(), params));
+    } else {
+      // As a browser sends a body-less call: RestAssured would otherwise add a form content type.
+      request = request.noContentType();
+    }
     Response response =
-        given()
-            .queryParams(interaction.query())
-            .when()
-            .request(interaction.method(), expand(interaction.path(), params));
+        request.when().request(interaction.method(), expand(interaction.path(), params));
     String raw = response.asString();
     if (response.statusCode() != interaction.status()) {
       throw new AssertionError(
@@ -337,6 +483,30 @@ class GoldenMasterRecordingTest {
     }
     m.appendTail(out);
     return out.toString();
+  }
+
+  /** The operationIds whose operation declares a request body, read off the served openapi. */
+  private static Set<String> operationsTakingABody() throws IOException {
+    JsonNode paths =
+        JSON.readTree(
+                given()
+                    .when()
+                    .get("/events/q/openapi?format=json")
+                    .then()
+                    .statusCode(200)
+                    .extract()
+                    .asString())
+            .path("paths");
+    Set<String> ids = new TreeSet<>();
+    paths.forEach(
+        path ->
+            path.forEach(
+                operation -> {
+                  if (operation.has("operationId") && operation.has("requestBody")) {
+                    ids.add(operation.get("operationId").asText());
+                  }
+                }));
+    return ids;
   }
 
   private static ArrayNode strings(List<String> values) {

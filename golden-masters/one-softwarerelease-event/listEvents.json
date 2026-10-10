@@ -1,0 +1,16 @@
+{
+  "events": [
+    {
+      "id": "00000000-0000-4000-8000-000000000001",
+      "name": "SoftwareRelease",
+      "occurredAt": "2026-01-01T00:00:00Z",
+      "payload": "{\"packageName\":\"qits/qits-ci\",\"packageType\":\"docker\",\"repository\":\"qits-ci-service\",\"version\":\"2026.101.100000\"}",
+      "description": null,
+      "parentId": null,
+      "environment": "dev",
+      "createdAt": "2026-01-01T00:00:00Z",
+      "updatedAt": "2026-01-01T00:00:00Z"
+    }
+  ],
+  "nextCursor": null
+}

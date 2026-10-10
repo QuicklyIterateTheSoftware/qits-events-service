@@ -38,6 +38,227 @@
       ]
     },
     {
+      "name": "a repository with a release",
+      "slug": "a-repository-with-a-release",
+      "params": {
+        "olderEventId": "00000000-0000-4000-8000-000000000001",
+        "projectId": "00000000-0000-4000-8000-000000000002",
+        "releaseEventId": "00000000-0000-4000-8000-000000000003",
+        "repositoryName": "qits-ci-service"
+      },
+      "dependsOn": [],
+      "operations": [
+        {
+          "operationId": "listEvents",
+          "method": "GET",
+          "path": "/events/api/events",
+          "query": {
+            "attr": [
+              "repositoryname={repositoryName}",
+              "projectid={projectId}"
+            ],
+            "limit": "1",
+            "name": "SCMRelease",
+            "order": "desc"
+          },
+          "status": 200,
+          "file": "a-repository-with-a-release/listEvents.json",
+          "frozen": {
+            "ids": [
+              "$.events[*].id"
+            ],
+            "instants": [
+              "$.events[*].occurredAt",
+              "$.events[*].createdAt",
+              "$.events[*].updatedAt"
+            ],
+            "strings": [
+              "$.events[*].payload",
+              "$.nextCursor"
+            ],
+            "listFilteredTo": "$.events"
+          }
+        }
+      ]
+    },
+    {
+      "name": "an event with the given id",
+      "slug": "an-event-with-the-given-id",
+      "params": {
+        "eventId": "00000000-0000-4000-8000-000000000001"
+      },
+      "dependsOn": [],
+      "operations": [
+        {
+          "operationId": "publishEvent",
+          "method": "PUT",
+          "path": "/events/api/events/{eventId}",
+          "body": {
+            "name": "DeploymentActive",
+            "occurredAt": "2026-01-01T00:00:00Z",
+            "payload": "{\"application\":\"qits-eventstream-pact\"}",
+            "description": null,
+            "parentId": null,
+            "environment": null
+          },
+          "status": 400,
+          "file": "an-event-with-the-given-id/publishEvent.json",
+          "frozen": {
+            "ids": [],
+            "instants": [],
+            "strings": [
+              "$.message"
+            ],
+            "listFilteredTo": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "DeploymentActive events to catch up on",
+      "slug": "deploymentactive-events-to-catch-up-on",
+      "params": {
+        "firstEventId": "00000000-0000-4000-8000-000000000001",
+        "secondEventId": "00000000-0000-4000-8000-000000000002"
+      },
+      "dependsOn": [],
+      "operations": [
+        {
+          "operationId": "listEvents",
+          "method": "GET",
+          "path": "/events/api/events",
+          "query": {
+            "cursor": "2100-01-01T00:00:00Z,00000000-0000-0000-0000-000000000000",
+            "limit": "200",
+            "name": "DeploymentActive",
+            "order": "asc"
+          },
+          "status": 200,
+          "file": "deploymentactive-events-to-catch-up-on/listEvents.json",
+          "frozen": {
+            "ids": [
+              "$.events[*].id"
+            ],
+            "instants": [
+              "$.events[*].occurredAt",
+              "$.events[*].createdAt",
+              "$.events[*].updatedAt"
+            ],
+            "strings": [],
+            "listFilteredTo": "$.events"
+          }
+        }
+      ]
+    },
+    {
+      "name": "events to catch up on",
+      "slug": "events-to-catch-up-on",
+      "params": {
+        "firstEventId": "00000000-0000-4000-8000-000000000001",
+        "secondEventId": "00000000-0000-4000-8000-000000000002",
+        "thirdEventId": "00000000-0000-4000-8000-000000000003"
+      },
+      "dependsOn": [],
+      "operations": [
+        {
+          "operationId": "listEvents",
+          "method": "GET",
+          "path": "/events/api/events",
+          "query": {
+            "cursor": "2100-01-01T00:00:00Z,00000000-0000-0000-0000-000000000000",
+            "limit": "200",
+            "order": "asc"
+          },
+          "status": 200,
+          "file": "events-to-catch-up-on/listEvents.json",
+          "frozen": {
+            "ids": [
+              "$.events[*].id",
+              "$.events[*].parentId"
+            ],
+            "instants": [
+              "$.events[*].occurredAt",
+              "$.events[*].createdAt",
+              "$.events[*].updatedAt"
+            ],
+            "strings": [],
+            "listFilteredTo": "$.events"
+          }
+        }
+      ]
+    },
+    {
+      "name": "more than a page of DeploymentActive events",
+      "slug": "more-than-a-page-of-deploymentactive-events",
+      "params": {},
+      "dependsOn": [],
+      "operations": [
+        {
+          "operationId": "listEvents",
+          "method": "GET",
+          "path": "/events/api/events",
+          "query": {
+            "limit": "200",
+            "name": "DeploymentActive",
+            "order": "asc"
+          },
+          "status": 200,
+          "file": "more-than-a-page-of-deploymentactive-events/listEvents.json",
+          "frozen": {
+            "ids": [
+              "$.events[*].id"
+            ],
+            "instants": [
+              "$.events[*].occurredAt",
+              "$.events[*].createdAt",
+              "$.events[*].updatedAt"
+            ],
+            "strings": [
+              "$.nextCursor"
+            ],
+            "listFilteredTo": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "no event with the given id",
+      "slug": "no-event-with-the-given-id",
+      "params": {
+        "eventId": "00000000-0000-4000-8000-000000000001"
+      },
+      "dependsOn": [],
+      "operations": [
+        {
+          "operationId": "publishEvent",
+          "method": "PUT",
+          "path": "/events/api/events/{eventId}",
+          "body": {
+            "name": "DeploymentActive",
+            "occurredAt": "2026-01-01T00:00:00Z",
+            "payload": "{\"application\":\"qits-eventstream-pact\"}",
+            "description": null,
+            "parentId": null,
+            "environment": null
+          },
+          "status": 201,
+          "file": "no-event-with-the-given-id/publishEvent.json",
+          "frozen": {
+            "ids": [
+              "$.event.id"
+            ],
+            "instants": [
+              "$.event.occurredAt",
+              "$.event.createdAt",
+              "$.event.updatedAt"
+            ],
+            "strings": [],
+            "listFilteredTo": null
+          }
+        }
+      ]
+    },
+    {
       "name": "no events",
       "slug": "no-events",
       "params": {},
@@ -57,6 +278,291 @@
             "instants": [],
             "strings": [],
             "listFilteredTo": "$.events"
+          }
+        }
+      ]
+    },
+    {
+      "name": "one DeploymentActive event",
+      "slug": "one-deploymentactive-event",
+      "params": {
+        "eventId": "00000000-0000-4000-8000-000000000001"
+      },
+      "dependsOn": [],
+      "operations": [
+        {
+          "operationId": "listEvents",
+          "method": "GET",
+          "path": "/events/api/events",
+          "query": {
+            "limit": "1",
+            "name": "DeploymentActive"
+          },
+          "status": 200,
+          "file": "one-deploymentactive-event/listEvents.json",
+          "frozen": {
+            "ids": [
+              "$.events[*].id"
+            ],
+            "instants": [
+              "$.events[*].occurredAt",
+              "$.events[*].createdAt",
+              "$.events[*].updatedAt"
+            ],
+            "strings": [],
+            "listFilteredTo": "$.events"
+          }
+        }
+      ]
+    },
+    {
+      "name": "one SCMRelease event",
+      "slug": "one-scmrelease-event",
+      "params": {
+        "eventId": "00000000-0000-4000-8000-000000000001"
+      },
+      "dependsOn": [],
+      "operations": [
+        {
+          "operationId": "listEvents",
+          "method": "GET",
+          "path": "/events/api/events",
+          "query": {
+            "limit": "1",
+            "name": "SCMRelease"
+          },
+          "status": 200,
+          "file": "one-scmrelease-event/listEvents.json",
+          "frozen": {
+            "ids": [
+              "$.events[*].id"
+            ],
+            "instants": [
+              "$.events[*].occurredAt",
+              "$.events[*].createdAt",
+              "$.events[*].updatedAt"
+            ],
+            "strings": [],
+            "listFilteredTo": "$.events"
+          }
+        }
+      ]
+    },
+    {
+      "name": "one SoftwareRelease event",
+      "slug": "one-softwarerelease-event",
+      "params": {
+        "eventId": "00000000-0000-4000-8000-000000000001"
+      },
+      "dependsOn": [],
+      "operations": [
+        {
+          "operationId": "listEvents",
+          "method": "GET",
+          "path": "/events/api/events",
+          "query": {
+            "limit": "1",
+            "name": "SoftwareRelease"
+          },
+          "status": 200,
+          "file": "one-softwarerelease-event/listEvents.json",
+          "frozen": {
+            "ids": [
+              "$.events[*].id"
+            ],
+            "instants": [
+              "$.events[*].occurredAt",
+              "$.events[*].createdAt",
+              "$.events[*].updatedAt"
+            ],
+            "strings": [],
+            "listFilteredTo": "$.events"
+          }
+        }
+      ]
+    },
+    {
+      "name": "project lifecycle events",
+      "slug": "project-lifecycle-events",
+      "params": {
+        "changedEventId": "00000000-0000-4000-8000-000000000001",
+        "createdEventId": "00000000-0000-4000-8000-000000000002",
+        "deletedEventId": "00000000-0000-4000-8000-000000000003",
+        "deletedProjectId": "00000000-0000-4000-8000-000000000004",
+        "projectId": "00000000-0000-4000-8000-000000000005"
+      },
+      "dependsOn": [],
+      "operations": [
+        {
+          "operationId": "listEvents",
+          "method": "GET",
+          "path": "/events/api/events",
+          "query": {
+            "cursor": "2100-01-01T00:00:00Z,00000000-0000-0000-0000-000000000000",
+            "limit": "200",
+            "name": "ProjectCreated,ProjectChanged,ProjectDeleted",
+            "order": "asc"
+          },
+          "status": 200,
+          "file": "project-lifecycle-events/listEvents.json",
+          "frozen": {
+            "ids": [
+              "$.events[*].id"
+            ],
+            "instants": [
+              "$.events[*].occurredAt",
+              "$.events[*].createdAt",
+              "$.events[*].updatedAt"
+            ],
+            "strings": [
+              "$.events[*].payload"
+            ],
+            "listFilteredTo": "$.events"
+          }
+        }
+      ]
+    },
+    {
+      "name": "SCMRelease events to catch up on",
+      "slug": "scmrelease-events-to-catch-up-on",
+      "params": {
+        "firstEventId": "00000000-0000-4000-8000-000000000001",
+        "secondEventId": "00000000-0000-4000-8000-000000000002"
+      },
+      "dependsOn": [],
+      "operations": [
+        {
+          "operationId": "listEvents",
+          "method": "GET",
+          "path": "/events/api/events",
+          "query": {
+            "cursor": "2100-01-01T00:00:00Z,00000000-0000-0000-0000-000000000000",
+            "limit": "200",
+            "name": "SCMRelease",
+            "order": "asc"
+          },
+          "status": 200,
+          "file": "scmrelease-events-to-catch-up-on/listEvents.json",
+          "frozen": {
+            "ids": [
+              "$.events[*].id"
+            ],
+            "instants": [
+              "$.events[*].occurredAt",
+              "$.events[*].createdAt",
+              "$.events[*].updatedAt"
+            ],
+            "strings": [],
+            "listFilteredTo": "$.events"
+          }
+        }
+      ]
+    },
+    {
+      "name": "SoftwareRelease events to catch up on",
+      "slug": "softwarerelease-events-to-catch-up-on",
+      "params": {
+        "firstEventId": "00000000-0000-4000-8000-000000000001",
+        "secondEventId": "00000000-0000-4000-8000-000000000002"
+      },
+      "dependsOn": [],
+      "operations": [
+        {
+          "operationId": "listEvents",
+          "method": "GET",
+          "path": "/events/api/events",
+          "query": {
+            "cursor": "2100-01-01T00:00:00Z,00000000-0000-0000-0000-000000000000",
+            "limit": "200",
+            "name": "SoftwareRelease",
+            "order": "asc"
+          },
+          "status": 200,
+          "file": "softwarerelease-events-to-catch-up-on/listEvents.json",
+          "frozen": {
+            "ids": [
+              "$.events[*].id"
+            ],
+            "instants": [
+              "$.events[*].occurredAt",
+              "$.events[*].createdAt",
+              "$.events[*].updatedAt"
+            ],
+            "strings": [],
+            "listFilteredTo": "$.events"
+          }
+        }
+      ]
+    },
+    {
+      "name": "the newest event",
+      "slug": "the-newest-event",
+      "params": {
+        "firstEventId": "00000000-0000-4000-8000-000000000001",
+        "secondEventId": "00000000-0000-4000-8000-000000000002"
+      },
+      "dependsOn": [],
+      "operations": [
+        {
+          "operationId": "listEvents",
+          "method": "GET",
+          "path": "/events/api/events",
+          "query": {
+            "limit": "1",
+            "order": "desc"
+          },
+          "status": 200,
+          "file": "the-newest-event/listEvents.json",
+          "frozen": {
+            "ids": [
+              "$.events[*].id"
+            ],
+            "instants": [
+              "$.events[*].occurredAt",
+              "$.events[*].createdAt",
+              "$.events[*].updatedAt"
+            ],
+            "strings": [
+              "$.nextCursor"
+            ],
+            "listFilteredTo": "$.events"
+          }
+        }
+      ]
+    },
+    {
+      "name": "the same event published before",
+      "slug": "the-same-event-published-before",
+      "params": {
+        "eventId": "00000000-0000-4000-8000-000000000001"
+      },
+      "dependsOn": [],
+      "operations": [
+        {
+          "operationId": "publishEvent",
+          "method": "PUT",
+          "path": "/events/api/events/{eventId}",
+          "body": {
+            "name": "DeploymentActive",
+            "occurredAt": "2026-01-01T00:00:00Z",
+            "payload": "{\"application\":\"qits-eventstream-pact\"}",
+            "description": null,
+            "parentId": null,
+            "environment": null
+          },
+          "status": 200,
+          "file": "the-same-event-published-before/publishEvent.json",
+          "frozen": {
+            "ids": [
+              "$.event.id"
+            ],
+            "instants": [
+              "$.event.occurredAt",
+              "$.event.createdAt",
+              "$.event.updatedAt"
+            ],
+            "strings": [],
+            "listFilteredTo": null
           }
         }
       ]

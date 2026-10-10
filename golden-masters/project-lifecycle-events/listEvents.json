@@ -1,0 +1,38 @@
+{
+  "events": [
+    {
+      "id": "00000000-0000-4000-8000-000000000002",
+      "name": "ProjectCreated",
+      "occurredAt": "2026-01-01T00:00:00Z",
+      "payload": "{\"createdAt\":\"2026-01-01T00:00:00Z\",\"projectId\":\"00000000-0000-4000-8000-000000000005\",\"projectName\":\"Demo\",\"slug\":\"demo\",\"supportsEnvironments\":false}",
+      "description": null,
+      "parentId": null,
+      "environment": "dev",
+      "createdAt": "2026-01-01T00:00:00Z",
+      "updatedAt": "2026-01-01T00:00:00Z"
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000001",
+      "name": "ProjectChanged",
+      "occurredAt": "2026-01-01T00:00:00Z",
+      "payload": "{\"changedAt\":\"2026-01-01T00:00:00Z\",\"projectId\":\"00000000-0000-4000-8000-000000000005\",\"projectName\":\"Demo\",\"slug\":\"demo\",\"supportsEnvironments\":true}",
+      "description": null,
+      "parentId": null,
+      "environment": "dev",
+      "createdAt": "2026-01-01T00:00:00Z",
+      "updatedAt": "2026-01-01T00:00:00Z"
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000003",
+      "name": "ProjectDeleted",
+      "occurredAt": "2026-01-01T00:00:00Z",
+      "payload": "{\"deletedAt\":\"2026-01-01T00:00:00Z\",\"projectId\":\"00000000-0000-4000-8000-000000000004\",\"slug\":\"old\"}",
+      "description": null,
+      "parentId": null,
+      "environment": "dev",
+      "createdAt": "2026-01-01T00:00:00Z",
+      "updatedAt": "2026-01-01T00:00:00Z"
+    }
+  ],
+  "nextCursor": null
+}

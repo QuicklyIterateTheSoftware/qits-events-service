@@ -118,4 +118,74 @@ class ConsumerPactVerificationTest {
   Map<String, String> noEvents() {
     return states.params(ProviderStates.NO_EVENTS);
   }
+
+  @State(ProviderStates.THE_NEWEST_EVENT)
+  Map<String, String> theNewestEvent() {
+    return states.params(ProviderStates.THE_NEWEST_EVENT);
+  }
+
+  @State(ProviderStates.ONE_SOFTWARE_RELEASE_EVENT)
+  Map<String, String> oneSoftwareReleaseEvent() {
+    return states.params(ProviderStates.ONE_SOFTWARE_RELEASE_EVENT);
+  }
+
+  @State(ProviderStates.ONE_DEPLOYMENT_ACTIVE_EVENT)
+  Map<String, String> oneDeploymentActiveEvent() {
+    return states.params(ProviderStates.ONE_DEPLOYMENT_ACTIVE_EVENT);
+  }
+
+  @State(ProviderStates.ONE_SCM_RELEASE_EVENT)
+  Map<String, String> oneScmReleaseEvent() {
+    return states.params(ProviderStates.ONE_SCM_RELEASE_EVENT);
+  }
+
+  @State(ProviderStates.EVENTS_TO_CATCH_UP_ON)
+  Map<String, String> eventsToCatchUpOn() {
+    return states.params(ProviderStates.EVENTS_TO_CATCH_UP_ON);
+  }
+
+  @State(ProviderStates.SOFTWARE_RELEASES_TO_CATCH_UP_ON)
+  Map<String, String> softwareReleasesToCatchUpOn() {
+    return states.params(ProviderStates.SOFTWARE_RELEASES_TO_CATCH_UP_ON);
+  }
+
+  @State(ProviderStates.DEPLOYMENTS_TO_CATCH_UP_ON)
+  Map<String, String> deploymentsToCatchUpOn() {
+    return states.params(ProviderStates.DEPLOYMENTS_TO_CATCH_UP_ON);
+  }
+
+  @State(ProviderStates.SCM_RELEASES_TO_CATCH_UP_ON)
+  Map<String, String> scmReleasesToCatchUpOn() {
+    return states.params(ProviderStates.SCM_RELEASES_TO_CATCH_UP_ON);
+  }
+
+  @State(ProviderStates.PROJECT_LIFECYCLE_EVENTS)
+  Map<String, String> projectLifecycleEvents() {
+    return states.params(ProviderStates.PROJECT_LIFECYCLE_EVENTS);
+  }
+
+  @State(ProviderStates.MORE_THAN_A_PAGE_OF_DEPLOYMENTS)
+  Map<String, String> moreThanAPageOfDeployments() {
+    return states.params(ProviderStates.MORE_THAN_A_PAGE_OF_DEPLOYMENTS);
+  }
+
+  @State(ProviderStates.A_REPOSITORY_WITH_A_RELEASE)
+  Map<String, String> aRepositoryWithARelease() {
+    return states.params(ProviderStates.A_REPOSITORY_WITH_A_RELEASE);
+  }
+
+  @State(ProviderStates.NO_EVENT_WITH_THE_GIVEN_ID)
+  Map<String, String> noEventWithTheGivenId() {
+    return states.params(ProviderStates.NO_EVENT_WITH_THE_GIVEN_ID);
+  }
+
+  @State(ProviderStates.AN_EVENT_WITH_THE_GIVEN_ID)
+  Map<String, String> anEventWithTheGivenId() {
+    return states.params(ProviderStates.AN_EVENT_WITH_THE_GIVEN_ID);
+  }
+
+  @State(ProviderStates.THE_SAME_EVENT_PUBLISHED_BEFORE)
+  Map<String, String> theSameEventPublishedBefore() {
+    return states.params(ProviderStates.THE_SAME_EVENT_PUBLISHED_BEFORE);
+  }
 }

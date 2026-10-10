@@ -1,0 +1,38 @@
+{
+  "events": [
+    {
+      "id": "00000000-0000-4000-8000-000000000001",
+      "name": "SCMRelease",
+      "occurredAt": "2026-01-01T00:00:00Z",
+      "payload": "{\"branch\":\"main\",\"commitSha\":\"0123456789abcdef0123456789abcdef01234567\",\"repository\":\"qits-ci-service\",\"repositoryName\":\"qits-ci-service\",\"version\":\"2026.101.100000\"}",
+      "description": "qits-ci-service 2026.101.100000 is released",
+      "parentId": null,
+      "environment": "dev",
+      "createdAt": "2026-01-01T00:00:00Z",
+      "updatedAt": "2026-01-01T00:00:00Z"
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000002",
+      "name": "SoftwareRelease",
+      "occurredAt": "2026-01-01T00:00:00Z",
+      "payload": "{\"packageName\":\"qits/qits-ci\",\"packageType\":\"docker\",\"repository\":\"qits-ci-service\",\"version\":\"2026.101.100000\"}",
+      "description": "qits/qits-ci 2026.101.100000 is published",
+      "parentId": "00000000-0000-4000-8000-000000000001",
+      "environment": "dev",
+      "createdAt": "2026-01-01T00:00:00Z",
+      "updatedAt": "2026-01-01T00:00:00Z"
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000003",
+      "name": "DeploymentActive",
+      "occurredAt": "2026-01-01T00:00:00Z",
+      "payload": "{\"applicationName\":\"qits-ci\",\"browserHost\":\"ci.qits.example\",\"endpoints\":[{\"path\":\"/ci\",\"upstreamHost\":\"dev-qits-ci\",\"upstreamPort\":8080}],\"environmentName\":\"dev\",\"navigation\":[{\"label\":\"CI\",\"position\":10,\"slot\":\"main\",\"subpath\":\"/\"}],\"version\":\"2026.101.100000\"}",
+      "description": "qits-ci is deployed",
+      "parentId": "00000000-0000-4000-8000-000000000002",
+      "environment": "dev",
+      "createdAt": "2026-01-01T00:00:00Z",
+      "updatedAt": "2026-01-01T00:00:00Z"
+    }
+  ],
+  "nextCursor": null
+}
