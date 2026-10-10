@@ -172,6 +172,7 @@ paths:
         - qits:system
         - qits:agent
     post:
+      operationId: createEvent
       requestBody:
         content:
           application/json:
@@ -200,6 +201,7 @@ paths:
         - qits:admin-agent
   /events/api/events/names:
     get:
+      operationId: listEventNames
       responses:
         "200":
           description: OK
@@ -221,6 +223,7 @@ paths:
         - qits:agent
   /events/api/events/{id}:
     put:
+      operationId: publishEvent
       parameters:
       - name: id
         in: path
@@ -253,6 +256,7 @@ paths:
       - SecurityScheme:
         - qits:system
     get:
+      operationId: getEvent
       parameters:
       - name: id
         in: path
@@ -279,6 +283,7 @@ paths:
         - qits:admin-agent
         - qits:agent
     delete:
+      operationId: deleteEvent
       parameters:
       - name: id
         in: path
@@ -338,4 +343,4 @@ paths:
         - qits:agent
 info:
   title: qits-events API
-  version: 2026.1002.180127
+  version: 2026.1008.105721

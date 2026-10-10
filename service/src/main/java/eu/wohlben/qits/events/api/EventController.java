@@ -157,6 +157,7 @@ public class EventController {
   @GET
   @Path("/names")
   @jakarta.annotation.security.RolesAllowed({"qits:admin", "qits:admin-agent", "qits:agent"})
+  @Operation(operationId = "listEventNames")
   public ListEventNamesRequest.Response names() {
     return new ListEventNamesRequest.Response(eventService.names());
   }
@@ -172,6 +173,7 @@ public class EventController {
   @GET
   @Path("/{id}")
   @jakarta.annotation.security.RolesAllowed({"qits:admin", "qits:admin-agent", "qits:agent"})
+  @Operation(operationId = "getEvent")
   public GetEventRequest.Response get(@PathParam("id") String id) {
     return new GetEventRequest.Response(eventMapper.toDto(eventService.get(id)));
   }
@@ -200,6 +202,7 @@ public class EventController {
 
   @POST
   @jakarta.annotation.security.RolesAllowed({"qits:admin", "qits:admin-agent"})
+  @Operation(operationId = "createEvent")
   public CreateEventRequest.Response create(@Valid CreateEventRequest request) {
     var event =
         eventService.create(
@@ -265,6 +268,7 @@ public class EventController {
   @PUT
   @Path("/{id}")
   @jakarta.annotation.security.RolesAllowed("qits:system")
+  @Operation(operationId = "publishEvent")
   public RestResponse<PublishEventRequest.Response> publish(
       @PathParam("id") String id, @Valid PublishEventRequest request) {
     var published =
@@ -291,6 +295,7 @@ public class EventController {
   @DELETE
   @Path("/{id}")
   @jakarta.annotation.security.RolesAllowed({"qits:admin", "qits:admin-agent"})
+  @Operation(operationId = "deleteEvent")
   public DeleteEventRequest.Response delete(@PathParam("id") String id) {
     eventService.delete(id);
     return new DeleteEventRequest.Response(true);
