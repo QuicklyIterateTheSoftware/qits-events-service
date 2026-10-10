@@ -13,13 +13,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 /**
- * The shipped key path, end to end, with {@link JwksStub} in place of qits-platform-idp: discovery
- * off, {@code jwks-path=jwks}, the shipped issuer and audience, and {@code
- * jwks.resolve-early=false}.
+ * The shipped key path, end to end, with {@link JwksStub} in place of the idp: discovery on, the
+ * issuer from discovery, the shipped audience, and {@code jwks.resolve-early=false}.
  *
- * <p>What it pins: nothing but a bearer ever reaches the idp. Boot, header traffic and 401
- * challenges make no call, so the bus serves in-network callers whether the idp is up or not. The
- * first bearer fetches the key by its {@code kid}; later bearers use the cache.
+ * <p>What it pins: nothing but a bearer fetches keys. Boot, header traffic and 401 challenges make
+ * no JWKS fetch. The first bearer fetches the key by its {@code kid}; later bearers use the cache.
+ * A token from any issuer but the published one is refused.
  *
  * <p>The order is load-bearing: the first test can only prove "no fetch yet" before any bearer.
  */
@@ -32,7 +31,7 @@ class BearerJwksTest {
 
   @Test
   @Order(1)
-  void bootHeaderTrafficAndRefusalsNeverCallTheIdp() {
+  void bootHeaderTrafficAndRefusalsNeverFetchTheKeys() {
     given()
         .header("X-Qits-User", "qits-eventstream")
         .header("X-Qits-Roles", "qits:system")
@@ -41,7 +40,7 @@ class BearerJwksTest {
         .then()
         .statusCode(200);
     given().when().get(NAMES).then().statusCode(401);
-    assertEquals(0, JwksStub.fetches(), "only a bearer may reach the idp");
+    assertEquals(0, JwksStub.fetches(), "only a bearer may fetch the keys");
   }
 
   @Test

@@ -138,12 +138,10 @@ Two ways in. Both end in one `SecurityIdentity`, and Jakarta `@RolesAllowed` dec
   `X-Qits-*` header from a request that carries a Bearer or Basic credential and injects none, so
   headers cannot carry that person. `quarkus-oidc` validates the token (signature, issuer, and an
   `aud` that holds `qits-platform`, the one platform-wide audience every token qits-platform-idp
-  mints carries), and its `groups` claim becomes the roles. The issuer is never configuration: it
-  is derived from `QITS_DOMAIN` (`https://idp.qits.<domain>`, `localhost` when unset) and checked
-  by `security/IssuerValidator`, a jose4j `Validator` bean the extension applies to every token —
-  there is no `quarkus.oidc.token.issuer`, and with discovery off nothing else checks `iss`. Until
-  the idp stamps that issuer (qits-730) the bean also accepts the legacy
-  `http://qits-platform-idp:8080/idp`. The roles are the permission system;
+  mints carries), and its `groups` claim becomes the roles. The issuer is never configuration:
+  the tenant reads the idp's discovery document (`/.well-known/openid-configuration`) and refuses a
+  token whose `iss` is not the `issuer` published there (`https://idp.qits.<domain>`). There is no
+  `quarkus.oidc.token.issuer`. The roles are the permission system;
   nothing else is checked. The audience check says the token was minted for this platform and
   nothing more — a sibling service's machine token passes it too, and its roles decide from there.
 
@@ -156,11 +154,11 @@ The OIDC tenant is **on by default** and needs no deploy config: it requires not
 secret. It is not behind `qits.auth.machine.required`, which the deployer does not set for this
 service. `%dev` and `%test` turn it off, because neither has an idp.
 
-**Only a bearer ever reaches the idp** (`quarkus.oidc.jwks.resolve-early=false`). Boot makes no
-call; the key is fetched by the token's `kid` when a bearer needs it, and cached. With the default,
-a missing idp left the tenant "not ready", and every 401 challenge retried it, resolving the idp's
-host name on the event loop (a 2.7 s blocked thread, measured in the packaged ITs). `BearerJwksTest`
-pins the shipped key path against `JwksStub`.
+**Only a bearer fetches keys** (`quarkus.oidc.jwks.resolve-early=false`). The tenant reads the
+discovery document, never the JWKS, at boot; the key is fetched by the token's `kid` when a bearer
+needs it, and cached. The idp's host name is resolved off the event loop
+(`quarkus.oidc.use-blocking-dns-lookup=true`): a resolution on it was a 2.7 s blocked thread,
+measured in the packaged ITs. `BearerJwksTest` pins the shipped key path against `JwksStub`.
 
 **`identity.isAnonymous()` is not a security state** — it means "no name to record". A check of the
 form `if (identity.isAnonymous()) deny` would look like a security control and be worth nothing,
