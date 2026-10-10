@@ -43,7 +43,7 @@
         <!-- The consumer half of the contracts (ticket qits-1149): qits-pact-consumer reads the idp's
              golden masters and writes pacts/qits-events-service_qits-idp-service.json. Exact
              pins: a newer recording is a deliberate bump. -->
-        <qits.pact-consumer.version>2026.1010.140259</qits.pact-consumer.version>
+        <qits.pact-consumer.version>2026.1010.141817</qits.pact-consumer.version>
         <qits.idp-golden-masters.version>2026.1010.134259</qits.idp-golden-masters.version>
         <!-- THE PLATFORM'S OWN MAVEN REPOSITORY, and this repo's first two artifacts from it:
              qits-db-core (PatientPgDriver, which the events datasource opens every connection
