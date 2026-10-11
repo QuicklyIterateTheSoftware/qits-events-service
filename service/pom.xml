@@ -95,6 +95,13 @@
             <artifactId>qits-auth-core</artifactId>
         </dependency>
         <dependency>
+            <!-- CallerServerFilter: jandex-indexed, so merely being on this deployable's classpath
+                 records inbound X-Qits-Caller as the qits.caller span attribute. This service
+                 builds no HttpClient of its own, so nothing here calls QitsHttpClients.wrap. -->
+            <groupId>${project.groupId}</groupId>
+            <artifactId>qits-http-core</artifactId>
+        </dependency>
+        <dependency>
             <!-- Validates a person's bearer token. A person's command-line tool reaches this
                  service through the edge with a token from qits-platform-idp, and the edge strips
                  the X-Qits-* headers from any request that carries one, so without this the request
