@@ -58,7 +58,7 @@
         <!-- CallerServerFilter/CallerClientFilter: jandex-indexed filters that record inbound
              X-Qits-Caller as the qits.caller span attribute and stamp it on outgoing REST-client
              calls. Also published by qits-integrations-quarkus. -->
-        <qits.http-core.version>0-qits-1198-local</qits.http-core.version>
+        <qits.http-core.version>2026.1011.185745</qits.http-core.version>
         <!-- The user-story framework (TEST SCOPE ONLY). The story catalogue lives in
              service/src/test/java/…/events/stories/ (plus EventBusBootstrapIT beside the API it
              tells), so a `mvn verify -DskipITs=false -Dit.test=<the classes>` regenerates
