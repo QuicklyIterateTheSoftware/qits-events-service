@@ -44,7 +44,7 @@
              golden masters and writes pacts/qits-events-service_qits-idp-service.json. Exact
              pins: a newer recording is a deliberate bump. -->
         <qits.pact-consumer.version>2026.1010.141817</qits.pact-consumer.version>
-        <qits.idp-golden-masters.version>2026.1010.134259</qits.idp-golden-masters.version>
+        <qits.idp-golden-masters.version>2026.1012.180836</qits.idp-golden-masters.version>
         <!-- THE PLATFORM'S OWN MAVEN REPOSITORY, and this repo's first two artifacts from it:
              qits-db-core (PatientPgDriver, which the events datasource opens every connection
              through, and DbRetry.inNewTx, which the two write paths run in) and qits-arch-rules
@@ -54,11 +54,11 @@
              see docker/Dockerfile and .qits-maven-settings.xml. -->
         <qits.db-core.version>2026.1002.70617</qits.db-core.version>
         <qits.arch-rules.version>2026.1011.185745</qits.arch-rules.version>
-        <qits.auth-core.version>2026.1002.70617</qits.auth-core.version>
+        <qits.auth-core.version>2026.1012.173247</qits.auth-core.version>
         <!-- CallerServerFilter/CallerClientFilter: jandex-indexed filters that record inbound
              X-Qits-Caller as the qits.caller span attribute and stamp it on outgoing REST-client
              calls. Also published by qits-integrations-quarkus. -->
-        <qits.http-core.version>2026.1011.185745</qits.http-core.version>
+        <qits.http-core.version>2026.1013.64811</qits.http-core.version>
         <!-- The user-story framework (TEST SCOPE ONLY). The story catalogue lives in
              service/src/test/java/…/events/stories/ (plus EventBusBootstrapIT beside the API it
              tells), so a `mvn verify -DskipITs=false -Dit.test=<the classes>` regenerates
