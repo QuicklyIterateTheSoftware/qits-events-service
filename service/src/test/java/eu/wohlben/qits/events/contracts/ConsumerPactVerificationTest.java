@@ -8,6 +8,7 @@ import au.com.dius.pact.core.model.ProviderState;
 import au.com.dius.pact.provider.junit5.HttpTestTarget;
 import au.com.dius.pact.provider.junit5.PactVerificationContext;
 import au.com.dius.pact.provider.junit5.PactVerificationInvocationContextProvider;
+import au.com.dius.pact.provider.junitsupport.IgnoreNoPactsToVerify;
 import au.com.dius.pact.provider.junitsupport.Provider;
 import au.com.dius.pact.provider.junitsupport.State;
 import au.com.dius.pact.provider.junitsupport.loader.PactSource;
@@ -31,11 +32,34 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * pins that jar as a test dependency, and qits-maintenance bumps the pin when the consumer releases
  * a changed pact. {@link ClasspathPactLoader} finds them all.
  *
- * <p><b>Three consumers pin a pact now</b> (ticket qits-1149): {@code qits-ci-service}, {@code
- * qits-eventstream-javalib} and {@code qits-projects-service}, each a test-scope dependency in
- * {@code service/pom.xml}. {@code @IgnoreNoPactsToVerify} is gone and {@link
- * ClasspathPactLoader#REQUIRED} is true, so an empty classpath is now a build failure rather than a
- * quiet skip.
+ * <p><b>No consumer pins a pact right now</b> (ticket qits-1163). qits-1149 pinned three — {@code
+ * qits-ci-service}, {@code qits-eventstream-javalib} and {@code qits-projects-service} — and those
+ * pacts are retired: the qits-eventstream library's calls are now contracted by each service that
+ * uses it, in {@code pacts/<service>_qits-eventstream-javalib_qits-events-service.json}, written by
+ * the library's kit {@code qits-eventstream-contracts} with {@code comments.references.qits-via}
+ * naming the library. Nine services commit one, and each gets pinned here as its {@code
+ * <service>-pacts-qits-events-service} jar is released:
+ *
+ * <ul>
+ *   <li>{@code qits-ci-service}
+ *   <li>{@code qits-configuration-service}
+ *   <li>{@code qits-deployments-service}
+ *   <li>{@code qits-edge-service}
+ *   <li>{@code qits-githost-service}
+ *   <li>{@code qits-maintenance-service}
+ *   <li>{@code qits-orchestrator-service}
+ *   <li>{@code qits-projects-service}
+ *   <li>{@code qits-workspaces-service}
+ * </ul>
+ *
+ * <p>Until the first is pinned, {@code @IgnoreNoPactsToVerify} lets an empty classpath pass and
+ * {@link ClasspathPactLoader} logs that nothing was verified; then drop the annotation and set
+ * {@link ClasspathPactLoader#REQUIRED} to true. All nine verify locally against this provider when
+ * copied onto the test classpath as {@code pacts/*_qits-events-service.json}.
+ *
+ * <p><b>Every interaction starts from an empty log</b> ({@link ProviderStates#emptyTheLog}), so
+ * {@code no events} really is no events and a catch-up from the start reads the state's events,
+ * not rows another test class left in the shared database.
  *
  * <p>Each interaction runs against this {@code @QuarkusTest} application over real HTTP, as the
  * {@code %test} synthetic user — exactly as {@link GoldenMasterRecordingTest}'s calls run. Every
@@ -45,6 +69,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @QuarkusTest
 @Provider(ConsumerPactVerificationTest.PROVIDER)
 @PactSource(ClasspathPactLoader.class)
+@IgnoreNoPactsToVerify
 class ConsumerPactVerificationTest {
 
   /** The provider's name in a pact: the repository name, not the application name. */
@@ -62,6 +87,13 @@ class ConsumerPactVerificationTest {
 
   @BeforeEach
   void target(PactVerificationContext context, Pact pact, Interaction interaction) {
+    if (context == null) {
+      return; // no pact to verify: @IgnoreNoPactsToVerify's single empty run
+    }
+    // Every interaction starts from an empty log: the state then IS the log, whatever the classes
+    // that ran before this one left in the shared test database (see ProviderStates#emptyTheLog).
+    // The @State method runs after this, so the wipe never deletes the state's own events.
+    states.emptyTheLog();
     String consumer = pact.getConsumer().getName();
     for (ProviderState state : interaction.getProviderStates()) {
       if (!states.names().contains(state.getName())) {

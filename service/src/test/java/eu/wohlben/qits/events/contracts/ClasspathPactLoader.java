@@ -30,19 +30,22 @@ import java.util.stream.Stream;
  * <p>It asks the class loader for every {@code pacts/} directory, then lists each one: a {@code jar:}
  * URL by walking the jar's entries, a {@code file:} URL by listing the directory.
  *
- * <p><b>Finding nothing used to be allowed, while no consumer pinned a pact.</b> Three now do
- * (ticket qits-1149: {@code qits-ci-service}, {@code qits-eventstream-javalib} and {@code
- * qits-projects-service}, each pinned in {@code service/pom.xml}), so {@link #REQUIRED} is true and
- * {@code ConsumerPactVerificationTest} carries no {@code @IgnoreNoPactsToVerify}: finding nothing is
- * now an error, because a provider whose pinned pacts vanished has lost its dependency, and a green
- * run would claim the opposite.
+ * <p><b>Finding nothing is allowed again, until the first new pact jar is pinned.</b> Ticket
+ * qits-1149 pinned three consumer jars and made this strict; ticket qits-1163 retired those three
+ * pacts (the qits-eventstream library no longer publishes one; each service now commits {@code
+ * pacts/<service>_qits-eventstream-javalib_qits-events-service.json} instead) and removed the pins,
+ * and none of the nine replacement jars is released yet. So {@link #REQUIRED} is false and {@code
+ * ConsumerPactVerificationTest} carries {@code @IgnoreNoPactsToVerify}: an empty classpath verifies
+ * nothing and says so in the log. When the first {@code <consumer>-pacts-qits-events-service} jar is
+ * pinned, set {@link #REQUIRED} to true and drop the annotation again: from then on finding nothing
+ * is an error, because a provider whose pinned pacts vanished has lost its dependency.
  */
 public class ClasspathPactLoader implements PactLoader {
 
   static final String DIRECTORY = "pacts/";
 
-  /** Whether an empty classpath fails the build. True now that three consumers pin a pact. */
-  static final boolean REQUIRED = true;
+  /** Whether an empty classpath fails the build. False until the first new pact jar is pinned. */
+  static final boolean REQUIRED = false;
 
   private static final org.jboss.logging.Logger LOG =
       org.jboss.logging.Logger.getLogger(ClasspathPactLoader.class);

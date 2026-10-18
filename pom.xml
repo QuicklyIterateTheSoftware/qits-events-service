@@ -45,15 +45,27 @@
              pins: a newer recording is a deliberate bump. -->
         <qits.pact-consumer.version>2026.1010.141817</qits.pact-consumer.version>
         <qits.idp-golden-masters.version>2026.1012.180836</qits.idp-golden-masters.version>
-        <!-- THE PROVIDER HALF (ticket qits-1149): every published `eu.wohlben.qits:<consumer>-pacts-
-             qits-events-service` jar whose consumer still commits `pacts/<consumer>_qits-events-
-             service.json` on its own main. ConsumerPactVerificationTest verifies all three off the
-             test classpath; qits-maintenance bumps a pin when its consumer publishes a changed pact.
-             qits-configuration-service and qits-deployments-service each published one on
-             2026-10-10 and have since deleted it, so neither is pinned here. -->
-        <qits.ci-service-pacts-qits-events-service.version>2026.1010.134241</qits.ci-service-pacts-qits-events-service.version>
-        <qits.eventstream-javalib-pacts-qits-events-service.version>2026.1010.134021</qits.eventstream-javalib-pacts-qits-events-service.version>
-        <qits.projects-service-pacts-qits-events-service.version>2026.1010.192712</qits.projects-service-pacts-qits-events-service.version>
+        <!-- THE PROVIDER HALF: every published `eu.wohlben.qits:<consumer>-pacts-qits-events-service`
+             jar, each holding the pact its consumer commits for the calls the qits-eventstream
+             library makes on its behalf: `pacts/<consumer>_qits-eventstream-javalib_qits-events-
+             service.json`, written by the library's kit qits-eventstream-contracts (ticket qits-1163).
+             ConsumerPactVerificationTest verifies them off the test classpath; qits-maintenance bumps
+             a pin when its consumer publishes a changed pact.
+             NOTHING IS PINNED YET. qits-1149 pinned the three older jars (qits-ci-service,
+             qits-eventstream-javalib, qits-projects-service, all 2026-10-10); those pacts are retired
+             — the library no longer publishes one, and the two services replaced theirs — so the pins
+             are gone. The nine below are pinned, one by one, as each consumer releases its pact jar
+             (a pin to a jar that does not exist yet would break the build):
+             <qits.ci-service-pacts-qits-events-service.version>…</qits.ci-service-pacts-qits-events-service.version>
+             <qits.configuration-service-pacts-qits-events-service.version>…</qits.configuration-service-pacts-qits-events-service.version>
+             <qits.deployments-service-pacts-qits-events-service.version>…</qits.deployments-service-pacts-qits-events-service.version>
+             <qits.edge-service-pacts-qits-events-service.version>…</qits.edge-service-pacts-qits-events-service.version>
+             <qits.githost-service-pacts-qits-events-service.version>…</qits.githost-service-pacts-qits-events-service.version>
+             <qits.maintenance-service-pacts-qits-events-service.version>…</qits.maintenance-service-pacts-qits-events-service.version>
+             <qits.orchestrator-service-pacts-qits-events-service.version>…</qits.orchestrator-service-pacts-qits-events-service.version>
+             <qits.projects-service-pacts-qits-events-service.version>…</qits.projects-service-pacts-qits-events-service.version>
+             <qits.workspaces-service-pacts-qits-events-service.version>…</qits.workspaces-service-pacts-qits-events-service.version>
+             -->
         <!-- THE PLATFORM'S OWN MAVEN REPOSITORY, and this repo's first two artifacts from it:
              qits-db-core (PatientPgDriver, which the events datasource opens every connection
              through, and DbRetry.inNewTx, which the two write paths run in) and qits-arch-rules
@@ -179,27 +191,14 @@
                 <artifactId>qits-idp-golden-masters</artifactId>
                 <version>${qits.idp-golden-masters.version}</version>
             </dependency>
+            <!-- The consumer pacts ConsumerPactVerificationTest verifies (test scope at every
+                 declaration site), one entry per pinned property above, once it exists:
             <dependency>
-                <!-- The consumer pacts ConsumerPactVerificationTest verifies: each jar carries one
-                     pacts/<consumer>_qits-events-service.json, and the test reads it off the test
-                     classpath. The pinned jar IS the source of the pact; nothing is copied into
-                     this tree. Test scope at every declaration site. -->
                 <groupId>${project.groupId}</groupId>
                 <artifactId>qits-ci-service-pacts-qits-events-service</artifactId>
                 <version>${qits.ci-service-pacts-qits-events-service.version}</version>
             </dependency>
-            <dependency>
-                <!-- Same as above: qits-eventstream-javalib's own pact against this provider. -->
-                <groupId>${project.groupId}</groupId>
-                <artifactId>qits-eventstream-javalib-pacts-qits-events-service</artifactId>
-                <version>${qits.eventstream-javalib-pacts-qits-events-service.version}</version>
-            </dependency>
-            <dependency>
-                <!-- Same as above: qits-projects-service's own pact against this provider. -->
-                <groupId>${project.groupId}</groupId>
-                <artifactId>qits-projects-service-pacts-qits-events-service</artifactId>
-                <version>${qits.projects-service-pacts-qits-events-service.version}</version>
-            </dependency>
+                 and the same for the other eight. -->
             <dependency>
                 <!-- Which postgres the embedded binaries ARE — 18.4.0, the tag the platform's own
                      qits-oci-postgresql image is built from. The suites migrate and query against

@@ -149,25 +149,27 @@
             <artifactId>qits-idp-golden-masters</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- The consumer pacts ConsumerPactVerificationTest verifies: each jar carries one
+             pacts/<consumer>_qits-eventstream-javalib_qits-events-service.json, and the test reads
+             them off the test classpath. The pinned jar IS the source of the pact; nothing is copied
+             into this tree. None is pinned yet (ticket qits-1163; see the root pom): add one
+             test-scope dependency per jar as its consumer releases it —
+                 qits-ci-service-pacts-qits-events-service
+                 qits-configuration-service-pacts-qits-events-service
+                 qits-deployments-service-pacts-qits-events-service
+                 qits-edge-service-pacts-qits-events-service
+                 qits-githost-service-pacts-qits-events-service
+                 qits-maintenance-service-pacts-qits-events-service
+                 qits-orchestrator-service-pacts-qits-events-service
+                 qits-projects-service-pacts-qits-events-service
+                 qits-workspaces-service-pacts-qits-events-service
+             e.g.
         <dependency>
-            <!-- The consumer pacts ConsumerPactVerificationTest verifies: each jar carries one
-                 pacts/<consumer>_qits-events-service.json, and the test reads them off the test
-                 classpath. The pinned jar IS the source of the pact; nothing is copied into this
-                 tree. -->
             <groupId>${project.groupId}</groupId>
             <artifactId>qits-ci-service-pacts-qits-events-service</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>qits-eventstream-javalib-pacts-qits-events-service</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>qits-projects-service-pacts-qits-events-service</artifactId>
-            <scope>test</scope>
-        </dependency>
+        -->
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
