@@ -3,6 +3,8 @@ package eu.wohlben.qits.events.contracts;
 import eu.wohlben.qits.events.control.EventService;
 import eu.wohlben.qits.events.entity.Event;
 import eu.wohlben.qits.events.error.NotFoundException;
+import eu.wohlben.qits.events.persistence.EventRepository;
+import io.quarkus.narayana.jta.QuarkusTransaction;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import java.time.Instant;
@@ -78,6 +80,7 @@ public class ProviderStates {
   private static final Instant FUTURE = Instant.parse("2100-01-01T00:00:00Z");
 
   @Inject EventService events;
+  @Inject EventRepository eventRepository;
 
   private final Map<String, Supplier<Setup>> states = new LinkedHashMap<>();
   private final List<String> created = Collections.synchronizedList(new ArrayList<>());
@@ -148,10 +151,32 @@ public class ProviderStates {
   // --- the states ------------------------------------------------------------------------------
 
   /**
+   * Wipes every row this test run has accumulated so far — not just this state's own, which {@link
+   * #cleanUp()} already removes after the fact. Only {@link #A_FEW_RECENT_EVENTS} and {@link
+   * #NO_EVENTS} call this: both answer {@code listEvents} with <b>no name filter at all</b> (the
+   * catch-up-from-the-start and initialize calls, ticket qits-1149), so their golden master was
+   * recorded by filtering the real answer down to only the rows the state itself created
+   * ({@code GoldenMasterRecordingTest.recordable}'s {@code listFilteredTo}). That filtering happens
+   * only when the golden master is written; a consumer's published pact replays the real,
+   * unfiltered request, and this service's {@code event} table is shared by the whole test run
+   * (every other test class in this module, plus every earlier interaction's state) — so without
+   * this, a leftover row from, say, {@code EventPublishApiTest} answers right alongside ours and
+   * breaks either the exact {@code events: []} match or a per-field type matcher against a null
+   * column (measured: qits-events-service-rr-49's rejected gate run, 2026-10-18 — six interactions
+   * of qits-ci-service and qits-eventstream-javalib failed exactly this way in a full module test
+   * phase, though not in isolation, because only the full phase runs {@code EventPublishApiTest}
+   * first). Safe to call here because nothing else in this JVM reads that table concurrently.
+   */
+  private void wipeLog() {
+    QuarkusTransaction.requiringNew().run(eventRepository::deleteAll);
+  }
+
+  /**
    * Three events of three names, newest first: a ticket reported, a release request it caused
    * (the parent/child pair), and a deployment.
    */
   private Setup aFewRecentEvents() {
+    wipeLog();
     Event ticket =
         create(
             "TicketReported",
@@ -180,8 +205,9 @@ public class ProviderStates {
     return new Setup(params, List.of());
   }
 
-  /** Nothing of this state's own: the list it answers holds no event a state created. */
+  /** Nothing of this state's own: the list it answers holds no event at all. */
   private Setup noEvents() {
+    wipeLog();
     return new Setup(Map.of(), List.of());
   }
 
