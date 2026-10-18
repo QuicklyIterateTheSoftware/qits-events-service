@@ -3,8 +3,10 @@ package eu.wohlben.qits.events.contracts;
 import eu.wohlben.qits.events.control.EventService;
 import eu.wohlben.qits.events.entity.Event;
 import eu.wohlben.qits.events.error.NotFoundException;
+import eu.wohlben.qits.events.persistence.EventRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -79,6 +81,8 @@ public class ProviderStates {
 
   @Inject EventService events;
 
+  @Inject EventRepository repository;
+
   private final Map<String, Supplier<Setup>> states = new LinkedHashMap<>();
   private final List<String> created = Collections.synchronizedList(new ArrayList<>());
 
@@ -138,6 +142,28 @@ public class ProviderStates {
         // nothing to remove
       }
     }
+  }
+
+  /**
+   * Deletes <b>every</b> event in the log, whoever wrote it — the precondition a consumer pact
+   * assumes and {@link #cleanUp()} alone cannot give.
+   *
+   * <p>The test database is shared by every {@code @QuarkusTest} class of one profile, and Flyway
+   * cleans it only when Quarkus restarts, so {@code EventApiTest}, {@code EventPublishApiTest} and
+   * the rest leave their rows behind for whichever class runs next. A golden master tolerates that
+   * (it asks for the newest page, and the states' events lie in 2100), but a consumer's catch-up
+   * does not: {@code no events} is answered with an exact {@code "events": []}, and a catch-up from
+   * the start ({@code order=asc}, no cursor) reads the <em>oldest</em> rows — somebody else's,
+   * with a null payload or description — rather than the state's. Ticket qits-1163 found the six
+   * rows qits-1149's gate failed on to be exactly that; {@code ConsumerPactVerificationTest} runs
+   * this before every interaction, so each state is the whole log.
+   */
+  @Transactional
+  public void emptyTheLog() {
+    synchronized (created) {
+      created.clear();
+    }
+    repository.deleteAll();
   }
 
   /** The state's slug: lower-cased, every run of non-alphanumerics replaced by {@code -}. */
