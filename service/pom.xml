@@ -153,9 +153,10 @@
             <!-- The consumer pacts ConsumerPactVerificationTest verifies: each jar carries one
                  pacts/<consumer>_qits-eventstream-javalib_qits-events-service.json, and the test
                  reads them off the test classpath. The pinned jar IS the source of the pact;
-                 nothing is copied into this tree. Four of the nine consumers (ticket qits-1163,
+                 nothing is copied into this tree. Eight of the nine consumers (ticket qits-1163,
                  "library-made calls pacted per consuming service") have released theirs: ci, below,
-                 then githost, deployments and configuration. -->
+                 then githost, deployments, configuration, edge, maintenance, orchestrator and
+                 projects. -->
             <groupId>${project.groupId}</groupId>
             <artifactId>qits-ci-service-pacts-qits-events-service</artifactId>
             <scope>test</scope>
@@ -178,20 +179,38 @@
             <artifactId>qits-configuration-service-pacts-qits-events-service</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- The five other replacement jars (ticket qits-1163), qits-projects-service included —
-             its own qits-1149 pin (pacts/<name>_qits-events-service.json, not through the library)
-             is retired, and it is back to a placeholder alongside the four that never had one.
-             None of the five is pinned yet — add one test-scope dependency per jar as its consumer
-             releases it —
-                 qits-edge-service-pacts-qits-events-service
-                 qits-maintenance-service-pacts-qits-events-service
-                 qits-orchestrator-service-pacts-qits-events-service
-                 qits-projects-service-pacts-qits-events-service
-                 qits-workspaces-service-pacts-qits-events-service
-             e.g.
         <dependency>
+            <!-- Same as above: qits-edge-service's pact against this provider. -->
             <groupId>${project.groupId}</groupId>
             <artifactId>qits-edge-service-pacts-qits-events-service</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <!-- Same as above: qits-maintenance-service's pact against this provider. -->
+            <groupId>${project.groupId}</groupId>
+            <artifactId>qits-maintenance-service-pacts-qits-events-service</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <!-- Same as above: qits-orchestrator-service's pact against this provider. -->
+            <groupId>${project.groupId}</groupId>
+            <artifactId>qits-orchestrator-service-pacts-qits-events-service</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <!-- Same as above: qits-projects-service's pact against this provider. Its own
+                 qits-1149 pin (pacts/<name>_qits-events-service.json, not through the library) is
+                 retired outright and replaced by this one. -->
+            <groupId>${project.groupId}</groupId>
+            <artifactId>qits-projects-service-pacts-qits-events-service</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- The one remaining replacement jar (ticket qits-1163): qits-workspaces-service has not
+             released theirs yet, so it stays a placeholder — add the test-scope dependency once it
+             does:
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>qits-workspaces-service-pacts-qits-events-service</artifactId>
             <scope>test</scope>
         </dependency>
         -->

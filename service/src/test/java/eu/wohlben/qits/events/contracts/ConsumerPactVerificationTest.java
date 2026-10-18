@@ -31,27 +31,27 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * pins that jar as a test dependency, and qits-maintenance bumps the pin when the consumer releases
  * a changed pact. {@link ClasspathPactLoader} finds them all.
  *
- * <p><b>Four consumers pin a pact today, and five more are coming</b> (ticket qits-1163, "library-
- * made calls pacted per consuming service"). Each of the four — {@code qits-ci-service}, {@code
- * qits-githost-service}, {@code qits-deployments-service} and {@code qits-configuration-service} —
- * commits {@code pacts/<service>_qits-eventstream-javalib_qits-events-service.json}: the library's
- * calls on its behalf, written by its kit {@code qits-eventstream-contracts} with {@code
+ * <p><b>Eight consumers pin a pact today, and one more is coming</b> (ticket qits-1163, "library-
+ * made calls pacted per consuming service"). Each of the eight — {@code qits-ci-service}, {@code
+ * qits-githost-service}, {@code qits-deployments-service}, {@code qits-configuration-service},
+ * {@code qits-edge-service}, {@code qits-maintenance-service}, {@code qits-orchestrator-service} and
+ * {@code qits-projects-service} — commits {@code
+ * pacts/<service>_qits-eventstream-javalib_qits-events-service.json}: the library's calls on its
+ * behalf, written by its kit {@code qits-eventstream-contracts} with {@code
  * comments.references.qits-via} naming the library. {@code qits-ci-service}'s earlier qits-1149 pin
  * (its own {@code pacts/<consumer>_qits-events-service.json}, not through the library) is retired by
- * this one. {@code qits-projects-service}'s qits-1149 pin is retired outright rather than replaced
- * yet, so it is a placeholder again alongside the other four that have never had one:
+ * this one, and {@code qits-projects-service}'s qits-1149 pin is likewise retired and replaced by its
+ * pin through the library. {@code qits-workspaces-service} is the one consumer that has not released
+ * yet, so it stays a placeholder:
  *
  * <ul>
- *   <li>{@code qits-edge-service}
- *   <li>{@code qits-maintenance-service}
- *   <li>{@code qits-orchestrator-service}
- *   <li>{@code qits-projects-service}
  *   <li>{@code qits-workspaces-service}
  * </ul>
  *
- * <p>Each gets pinned here as its {@code <service>-pacts-qits-events-service} jar is released.
- * Four pins are already enough to keep {@link ClasspathPactLoader#REQUIRED} true and this class
- * free of {@code @IgnoreNoPactsToVerify}: finding nothing on the classpath stays an error.
+ * <p>It gets pinned here as its {@code qits-workspaces-service-pacts-qits-events-service} jar is
+ * released. Eight pins are already enough to keep {@link ClasspathPactLoader#REQUIRED} true and
+ * this class free of {@code @IgnoreNoPactsToVerify}: finding nothing on the classpath stays an
+ * error.
  *
  * <p><b>Every interaction starts from an empty log</b> ({@link ProviderStates#emptyTheLog}), so
  * {@code no events} really is no events and a catch-up from the start reads the state's events,

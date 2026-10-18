@@ -51,24 +51,26 @@
              `pacts/<consumer>_qits-eventstream-javalib_qits-events-service.json`.
              ConsumerPactVerificationTest verifies them off the test classpath; qits-maintenance bumps
              a pin when its consumer publishes a changed pact. qits-1163 (“library-made calls pacted
-             per consuming service”) pins the first four of the nine as each is actually released —
+             per consuming service”) pins eight of the nine as each is actually released —
              qits-ci-service, qits-githost-service, qits-deployments-service and
-             qits-configuration-service, below. qits-1149's earlier pins for qits-ci-service and
-             qits-projects-service (their own committed `pacts/<name>_qits-events-service.json`, not
-             through the library) are retired by this ticket — qits-ci-service's pin above replaces
-             its old one outright, and qits-projects-service drops back to a placeholder alongside the
-             other four that have not released yet, since a pin to a jar that does not exist would
-             break the build:
-             <qits.edge-service-pacts-qits-events-service.version>…</qits.edge-service-pacts-qits-events-service.version>
-             <qits.maintenance-service-pacts-qits-events-service.version>…</qits.maintenance-service-pacts-qits-events-service.version>
-             <qits.orchestrator-service-pacts-qits-events-service.version>…</qits.orchestrator-service-pacts-qits-events-service.version>
-             <qits.projects-service-pacts-qits-events-service.version>…</qits.projects-service-pacts-qits-events-service.version>
+             qits-configuration-service first, then qits-edge-service, qits-maintenance-service,
+             qits-orchestrator-service and qits-projects-service, all below. qits-1149's earlier pins
+             for qits-ci-service and qits-projects-service (their own committed
+             `pacts/<name>_qits-events-service.json`, not through the library) are retired by this
+             ticket — qits-ci-service's pin above replaces its old one outright, and
+             qits-projects-service's pin below replaces its placeholder. qits-workspaces-service is
+             the one consumer that has not released yet, so it stays a placeholder, since a pin to a
+             jar that does not exist would break the build:
              <qits.workspaces-service-pacts-qits-events-service.version>…</qits.workspaces-service-pacts-qits-events-service.version>
              -->
         <qits.ci-service-pacts-qits-events-service.version>2026.1018.160604</qits.ci-service-pacts-qits-events-service.version>
         <qits.githost-service-pacts-qits-events-service.version>2026.1018.160706</qits.githost-service-pacts-qits-events-service.version>
         <qits.deployments-service-pacts-qits-events-service.version>2026.1018.161413</qits.deployments-service-pacts-qits-events-service.version>
         <qits.configuration-service-pacts-qits-events-service.version>2026.1018.162828</qits.configuration-service-pacts-qits-events-service.version>
+        <qits.edge-service-pacts-qits-events-service.version>2026.1018.164744</qits.edge-service-pacts-qits-events-service.version>
+        <qits.maintenance-service-pacts-qits-events-service.version>2026.1018.165353</qits.maintenance-service-pacts-qits-events-service.version>
+        <qits.orchestrator-service-pacts-qits-events-service.version>2026.1018.172917</qits.orchestrator-service-pacts-qits-events-service.version>
+        <qits.projects-service-pacts-qits-events-service.version>2026.1018.195756</qits.projects-service-pacts-qits-events-service.version>
         <!-- THE PLATFORM'S OWN MAVEN REPOSITORY, and this repo's first two artifacts from it:
              qits-db-core (PatientPgDriver, which the events datasource opens every connection
              through, and DbRetry.inNewTx, which the two write paths run in) and qits-arch-rules
@@ -221,15 +223,38 @@
                 <artifactId>qits-configuration-service-pacts-qits-events-service</artifactId>
                 <version>${qits.configuration-service-pacts-qits-events-service.version}</version>
             </dependency>
-            <!-- The five other replacement jars (ticket qits-1163), one entry per placeholder
-                 property above, once each exists:
             <dependency>
+                <!-- Same as above: qits-edge-service's pact against this provider. -->
                 <groupId>${project.groupId}</groupId>
                 <artifactId>qits-edge-service-pacts-qits-events-service</artifactId>
                 <version>${qits.edge-service-pacts-qits-events-service.version}</version>
             </dependency>
-                 and the same for qits-maintenance-service, qits-orchestrator-service,
-                 qits-projects-service and qits-workspaces-service. -->
+            <dependency>
+                <!-- Same as above: qits-maintenance-service's pact against this provider. -->
+                <groupId>${project.groupId}</groupId>
+                <artifactId>qits-maintenance-service-pacts-qits-events-service</artifactId>
+                <version>${qits.maintenance-service-pacts-qits-events-service.version}</version>
+            </dependency>
+            <dependency>
+                <!-- Same as above: qits-orchestrator-service's pact against this provider. -->
+                <groupId>${project.groupId}</groupId>
+                <artifactId>qits-orchestrator-service-pacts-qits-events-service</artifactId>
+                <version>${qits.orchestrator-service-pacts-qits-events-service.version}</version>
+            </dependency>
+            <dependency>
+                <!-- Same as above: qits-projects-service's pact against this provider. -->
+                <groupId>${project.groupId}</groupId>
+                <artifactId>qits-projects-service-pacts-qits-events-service</artifactId>
+                <version>${qits.projects-service-pacts-qits-events-service.version}</version>
+            </dependency>
+            <!-- The one remaining replacement jar (ticket qits-1163), one entry for the placeholder
+                 property above, once it exists:
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>qits-workspaces-service-pacts-qits-events-service</artifactId>
+                <version>${qits.workspaces-service-pacts-qits-events-service.version}</version>
+            </dependency>
+            -->
             <dependency>
                 <!-- Which postgres the embedded binaries ARE — 18.4.0, the tag the platform's own
                      qits-oci-postgresql image is built from. The suites migrate and query against

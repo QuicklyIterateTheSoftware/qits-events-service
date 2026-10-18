@@ -30,15 +30,16 @@ import java.util.stream.Stream;
  * <p>It asks the class loader for every {@code pacts/} directory, then lists each one: a {@code jar:}
  * URL by walking the jar's entries, a {@code file:} URL by listing the directory.
  *
- * <p><b>Four of the nine consumers pin a pact now, and five more are coming.</b> Ticket qits-1163
+ * <p><b>Eight of the nine consumers pin a pact now, and one more is coming.</b> Ticket qits-1163
  * (library-made calls pacted per consuming service) pins qits-ci-service, qits-githost-service,
- * qits-deployments-service and qits-configuration-service, each carrying a {@code
- * pacts/<consumer>_qits-eventstream-javalib_qits-events-service.json} written by the library's kit
- * qits-eventstream-contracts. qits-ci-service's earlier pin (ticket qits-1149, its own {@code
- * pacts/<consumer>_qits-events-service.json}) is retired by this one rather than kept alongside it.
- * qits-projects-service's qits-1149 pin is retired outright and not replaced yet, so it is back to a
- * placeholder beside qits-edge-service, qits-maintenance-service, qits-orchestrator-service and
- * qits-workspaces-service — each gets pinned as it is actually released. So {@link #REQUIRED} is
+ * qits-deployments-service, qits-configuration-service, qits-edge-service,
+ * qits-maintenance-service, qits-orchestrator-service and qits-projects-service, each carrying a
+ * {@code pacts/<consumer>_qits-eventstream-javalib_qits-events-service.json} written by the
+ * library's kit qits-eventstream-contracts. qits-ci-service's earlier pin (ticket qits-1149, its own
+ * {@code pacts/<consumer>_qits-events-service.json}) is retired by this one rather than kept
+ * alongside it, and qits-projects-service's qits-1149 pin is likewise retired and replaced by its
+ * pin through the library. qits-workspaces-service is the one consumer that has not released yet,
+ * so it stays a placeholder — it gets pinned as it is actually released. So {@link #REQUIRED} is
  * true and {@code ConsumerPactVerificationTest} carries no {@code @IgnoreNoPactsToVerify}: finding
  * nothing is an error, because a provider whose pinned pacts vanished has lost its dependency, and a
  * green run would claim the opposite.
@@ -47,7 +48,7 @@ public class ClasspathPactLoader implements PactLoader {
 
   static final String DIRECTORY = "pacts/";
 
-  /** Whether an empty classpath fails the build. True now that four consumers pin a pact. */
+  /** Whether an empty classpath fails the build. True now that eight consumers pin a pact. */
   static final boolean REQUIRED = true;
 
   private static final org.jboss.logging.Logger LOG =
