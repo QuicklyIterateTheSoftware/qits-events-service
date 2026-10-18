@@ -30,18 +30,24 @@ import java.util.stream.Stream;
  * <p>It asks the class loader for every {@code pacts/} directory, then lists each one: a {@code jar:}
  * URL by walking the jar's entries, a {@code file:} URL by listing the directory.
  *
- * <p><b>Finding nothing used to be allowed, while no consumer pinned a pact.</b> Three now do
- * (ticket qits-1149: {@code qits-ci-service}, {@code qits-eventstream-javalib} and {@code
- * qits-projects-service}, each pinned in {@code service/pom.xml}), so {@link #REQUIRED} is true and
- * {@code ConsumerPactVerificationTest} carries no {@code @IgnoreNoPactsToVerify}: finding nothing is
- * now an error, because a provider whose pinned pacts vanished has lost its dependency, and a green
- * run would claim the opposite.
+ * <p><b>Two consumers pin a pact now, and seven more are coming.</b> Ticket qits-1149 pinned three
+ * (qits-ci-service, qits-eventstream-javalib, qits-projects-service). Ticket qits-1163 (library-made
+ * calls pacted per consuming service) checked each of those three against its consumer's current
+ * main rather than retiring all three on the strength of the plan: qits-eventstream-javalib's own
+ * {@code pacts/} is genuinely empty now — the library no longer commits one, so that pin is gone —
+ * but qits-ci-service and qits-projects-service still commit {@code pacts/<consumer>_qits-events-
+ * service.json} exactly as qits-1149 found them, so those two pins stay. qits-1163's other seven
+ * replacement jars, one {@code pacts/<consumer>_qits-eventstream-javalib_qits-events-service.json}
+ * per service that calls through the library, each get pinned as they are actually released. So
+ * {@link #REQUIRED} is true and {@code ConsumerPactVerificationTest} carries no {@code
+ * @IgnoreNoPactsToVerify}: finding nothing is an error, because a provider whose pinned pacts
+ * vanished has lost its dependency, and a green run would claim the opposite.
  */
 public class ClasspathPactLoader implements PactLoader {
 
   static final String DIRECTORY = "pacts/";
 
-  /** Whether an empty classpath fails the build. True now that three consumers pin a pact. */
+  /** Whether an empty classpath fails the build. True while qits-ci-service/qits-projects-service pin a pact. */
   static final boolean REQUIRED = true;
 
   private static final org.jboss.logging.Logger LOG =

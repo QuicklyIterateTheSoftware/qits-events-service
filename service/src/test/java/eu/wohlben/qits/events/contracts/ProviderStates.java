@@ -4,9 +4,9 @@ import eu.wohlben.qits.events.control.EventService;
 import eu.wohlben.qits.events.entity.Event;
 import eu.wohlben.qits.events.error.NotFoundException;
 import eu.wohlben.qits.events.persistence.EventRepository;
-import io.quarkus.narayana.jta.QuarkusTransaction;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -80,7 +80,8 @@ public class ProviderStates {
   private static final Instant FUTURE = Instant.parse("2100-01-01T00:00:00Z");
 
   @Inject EventService events;
-  @Inject EventRepository eventRepository;
+
+  @Inject EventRepository repository;
 
   private final Map<String, Supplier<Setup>> states = new LinkedHashMap<>();
   private final List<String> created = Collections.synchronizedList(new ArrayList<>());
@@ -143,6 +144,28 @@ public class ProviderStates {
     }
   }
 
+  /**
+   * Deletes <b>every</b> event in the log, whoever wrote it — the precondition a consumer pact
+   * assumes and {@link #cleanUp()} alone cannot give.
+   *
+   * <p>The test database is shared by every {@code @QuarkusTest} class of one profile, and Flyway
+   * cleans it only when Quarkus restarts, so {@code EventApiTest}, {@code EventPublishApiTest} and
+   * the rest leave their rows behind for whichever class runs next. A golden master tolerates that
+   * (it asks for the newest page, and the states' events lie in 2100), but a consumer's catch-up
+   * does not: {@code no events} is answered with an exact {@code "events": []}, and a catch-up from
+   * the start ({@code order=asc}, no cursor) reads the <em>oldest</em> rows — somebody else's,
+   * with a null payload or description — rather than the state's. Ticket qits-1163 found the six
+   * rows qits-1149's gate failed on to be exactly that; {@code ConsumerPactVerificationTest} runs
+   * this before every interaction, so each state is the whole log.
+   */
+  @Transactional
+  public void emptyTheLog() {
+    synchronized (created) {
+      created.clear();
+    }
+    repository.deleteAll();
+  }
+
   /** The state's slug: lower-cased, every run of non-alphanumerics replaced by {@code -}. */
   public static String slug(String state) {
     return state.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9]+", "-");
@@ -151,32 +174,10 @@ public class ProviderStates {
   // --- the states ------------------------------------------------------------------------------
 
   /**
-   * Wipes every row this test run has accumulated so far — not just this state's own, which {@link
-   * #cleanUp()} already removes after the fact. Only {@link #A_FEW_RECENT_EVENTS} and {@link
-   * #NO_EVENTS} call this: both answer {@code listEvents} with <b>no name filter at all</b> (the
-   * catch-up-from-the-start and initialize calls, ticket qits-1149), so their golden master was
-   * recorded by filtering the real answer down to only the rows the state itself created
-   * ({@code GoldenMasterRecordingTest.recordable}'s {@code listFilteredTo}). That filtering happens
-   * only when the golden master is written; a consumer's published pact replays the real,
-   * unfiltered request, and this service's {@code event} table is shared by the whole test run
-   * (every other test class in this module, plus every earlier interaction's state) — so without
-   * this, a leftover row from, say, {@code EventPublishApiTest} answers right alongside ours and
-   * breaks either the exact {@code events: []} match or a per-field type matcher against a null
-   * column (measured: qits-events-service-rr-49's rejected gate run, 2026-10-18 — six interactions
-   * of qits-ci-service and qits-eventstream-javalib failed exactly this way in a full module test
-   * phase, though not in isolation, because only the full phase runs {@code EventPublishApiTest}
-   * first). Safe to call here because nothing else in this JVM reads that table concurrently.
-   */
-  private void wipeLog() {
-    QuarkusTransaction.requiringNew().run(eventRepository::deleteAll);
-  }
-
-  /**
    * Three events of three names, newest first: a ticket reported, a release request it caused
    * (the parent/child pair), and a deployment.
    */
   private Setup aFewRecentEvents() {
-    wipeLog();
     Event ticket =
         create(
             "TicketReported",
@@ -207,7 +208,6 @@ public class ProviderStates {
 
   /** Nothing of this state's own: the list it answers holds no event at all. */
   private Setup noEvents() {
-    wipeLog();
     return new Setup(Map.of(), List.of());
   }
 
