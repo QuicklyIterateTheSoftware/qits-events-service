@@ -44,7 +44,7 @@
              golden masters and writes pacts/qits-events-service_qits-idp-service.json. Exact
              pins: a newer recording is a deliberate bump. -->
         <qits.pact-consumer.version>2026.1018.142240</qits.pact-consumer.version>
-        <qits.idp-golden-masters.version>2026.1012.180836</qits.idp-golden-masters.version>
+        <qits.idp-golden-masters.version>2026.1018.142635</qits.idp-golden-masters.version>
         <!-- THE PROVIDER HALF (ticket qits-1149): every published `eu.wohlben.qits:<consumer>-pacts-
              qits-events-service` jar whose consumer still commits `pacts/<consumer>_qits-events-
              service.json` on its own main. ConsumerPactVerificationTest verifies all three off the
