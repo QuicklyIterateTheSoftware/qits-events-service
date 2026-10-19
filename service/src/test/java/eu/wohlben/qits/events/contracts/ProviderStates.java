@@ -42,6 +42,8 @@ public class ProviderStates {
   public static final String ONE_DEPLOYMENT_ACTIVE_EVENT = "one DeploymentActive event";
   public static final String ONE_SCM_RELEASE_EVENT = "one SCMRelease event";
   public static final String EVENTS_TO_CATCH_UP_ON = "events to catch up on";
+  public static final String EVENTS_TO_CATCH_UP_ON_FIFTY_AT_A_TIME =
+      "events to catch up on, fifty at a time";
   public static final String SOFTWARE_RELEASES_TO_CATCH_UP_ON =
       "SoftwareRelease events to catch up on";
   public static final String DEPLOYMENTS_TO_CATCH_UP_ON = "DeploymentActive events to catch up on";
@@ -94,6 +96,7 @@ public class ProviderStates {
     states.put(ONE_DEPLOYMENT_ACTIVE_EVENT, () -> oneOf("DeploymentActive", DEPLOYMENT_ACTIVE));
     states.put(ONE_SCM_RELEASE_EVENT, () -> oneOf("SCMRelease", SCM_RELEASE));
     states.put(EVENTS_TO_CATCH_UP_ON, this::eventsToCatchUpOn);
+    states.put(EVENTS_TO_CATCH_UP_ON_FIFTY_AT_A_TIME, this::eventsToCatchUpOnFiftyAtATime);
     states.put(SOFTWARE_RELEASES_TO_CATCH_UP_ON, () -> twoOf("SoftwareRelease", SOFTWARE_RELEASE));
     states.put(DEPLOYMENTS_TO_CATCH_UP_ON, () -> twoOf("DeploymentActive", DEPLOYMENT_ACTIVE));
     states.put(SCM_RELEASES_TO_CATCH_UP_ON, () -> twoOf("SCMRelease", SCM_RELEASE));
@@ -264,6 +267,18 @@ public class ProviderStates {
     params.put("secondEventId", software.id);
     params.put("thirdEventId", deployment.id);
     return new Setup(params, List.of());
+  }
+
+  /**
+   * {@link #eventsToCatchUpOn}'s three events, read as the bootstrap's event feed pages them: fifty
+   * at a time, forward from the watermark it holds. The watermark is the state's {@code cursor}
+   * param, {@link #CURSOR_BEFORE_THE_STATE}, so the page is exactly the state's events.
+   */
+  private Setup eventsToCatchUpOnFiftyAtATime() {
+    Setup events = eventsToCatchUpOn();
+    Map<String, String> params = new TreeMap<>(events.params());
+    params.put("cursor", CURSOR_BEFORE_THE_STATE);
+    return new Setup(params, events.uniqueTokens());
   }
 
   /** One project created and then changed, and another one deleted, oldest first. */

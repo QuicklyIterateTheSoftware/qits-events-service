@@ -188,6 +188,44 @@
       ]
     },
     {
+      "name": "events to catch up on, fifty at a time",
+      "slug": "events-to-catch-up-on-fifty-at-a-time",
+      "params": {
+        "cursor": "2100-01-01T00:00:00Z,00000000-0000-4000-8000-000000000001",
+        "firstEventId": "00000000-0000-4000-8000-000000000002",
+        "secondEventId": "00000000-0000-4000-8000-000000000003",
+        "thirdEventId": "00000000-0000-4000-8000-000000000004"
+      },
+      "dependsOn": [],
+      "operations": [
+        {
+          "operationId": "listEvents",
+          "method": "GET",
+          "path": "/events/api/events",
+          "query": {
+            "cursor": "{cursor}",
+            "limit": "50",
+            "order": "asc"
+          },
+          "status": 200,
+          "file": "events-to-catch-up-on-fifty-at-a-time/listEvents.json",
+          "frozen": {
+            "ids": [
+              "$.events[*].id",
+              "$.events[*].parentId"
+            ],
+            "instants": [
+              "$.events[*].occurredAt",
+              "$.events[*].createdAt",
+              "$.events[*].updatedAt"
+            ],
+            "strings": [],
+            "listFilteredTo": "$.events"
+          }
+        }
+      ]
+    },
+    {
       "name": "more than a page of DeploymentActive events",
       "slug": "more-than-a-page-of-deploymentactive-events",
       "params": {},

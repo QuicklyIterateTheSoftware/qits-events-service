@@ -171,6 +171,9 @@ class GoldenMasterRecordingTest {
               ProviderStates.EVENTS_TO_CATCH_UP_ON,
               query("order", "asc", "limit", "200", "cursor", CURSOR)),
           list(
+              ProviderStates.EVENTS_TO_CATCH_UP_ON_FIFTY_AT_A_TIME,
+              query("order", "asc", "limit", "50", "cursor", "{cursor}")),
+          list(
               ProviderStates.SOFTWARE_RELEASES_TO_CATCH_UP_ON,
               query("order", "asc", "limit", "200", "name", "SoftwareRelease", "cursor", CURSOR)),
           list(

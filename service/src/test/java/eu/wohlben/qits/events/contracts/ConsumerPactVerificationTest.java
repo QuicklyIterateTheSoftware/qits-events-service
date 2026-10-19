@@ -11,6 +11,7 @@ import au.com.dius.pact.provider.junit5.PactVerificationInvocationContextProvide
 import au.com.dius.pact.provider.junitsupport.Provider;
 import au.com.dius.pact.provider.junitsupport.State;
 import au.com.dius.pact.provider.junitsupport.loader.PactSource;
+import eu.wohlben.qits.pact.consumer.RepeatedQuery;
 import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
@@ -21,6 +22,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestTemplate;
+import org.apache.hc.core5.http.ClassicHttpRequest;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
@@ -47,7 +49,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * <p><b>The two CLIs pin their own pacts beside them</b> (ticket qits-1149): {@code
  * qits-bootstrap-cli} and {@code qits-platform-access-cli} call this provider directly, not through
  * the library, so each commits {@code pacts/<cli>_qits-events-service.json} — the bootstrap head
- * poll ({@code the newest event}) and the checkout-daemon's newest-SCMRelease lookup ({@code a
+ * poll ({@code the newest event}) and its feed's forward pages ({@code events to catch up on, fifty
+ * at a time}), and the checkout-daemon's newest-SCMRelease lookup ({@code a
  * repository with a release}, skipped as {@link #KNOWN_WRONG} at 2026.1019.65035).
  *
  * <p>Eleven pins are already enough to keep {@link ClasspathPactLoader#REQUIRED} true and this class
@@ -157,7 +160,14 @@ class ConsumerPactVerificationTest {
 
   @TestTemplate
   @ExtendWith(PactVerificationInvocationContextProvider.class)
-  void consumerPactHolds(PactVerificationContext context) {
+  void consumerPactHolds(PactVerificationContext context, ClassicHttpRequest request)
+      throws Exception {
+    // pact-jvm 4.6.21 applies a provider-state generator to a query parameter only as a whole; a
+    // repeated parameter (attr=…&attr=…) carries one per value (attr[0], attr[1]), which the
+    // verifier ignores. qits-pact-consumer's RepeatedQuery substitutes each from the state's params.
+    request.setUri(
+        RepeatedQuery.generated(
+            request.getUri(), context.getInteraction(), context.getExecutionContext()));
     context.verifyInteraction();
   }
 
@@ -201,6 +211,11 @@ class ConsumerPactVerificationTest {
   @State(ProviderStates.EVENTS_TO_CATCH_UP_ON)
   Map<String, String> eventsToCatchUpOn() {
     return states.params(ProviderStates.EVENTS_TO_CATCH_UP_ON);
+  }
+
+  @State(ProviderStates.EVENTS_TO_CATCH_UP_ON_FIFTY_AT_A_TIME)
+  Map<String, String> eventsToCatchUpOnFiftyAtATime() {
+    return states.params(ProviderStates.EVENTS_TO_CATCH_UP_ON_FIFTY_AT_A_TIME);
   }
 
   @State(ProviderStates.SOFTWARE_RELEASES_TO_CATCH_UP_ON)
