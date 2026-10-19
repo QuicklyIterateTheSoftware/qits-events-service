@@ -38,7 +38,9 @@ import java.util.stream.Stream;
  * library's kit qits-eventstream-contracts. qits-ci-service's earlier pin (ticket qits-1149, its own
  * {@code pacts/<consumer>_qits-events-service.json}) is retired by this one rather than kept
  * alongside it, and qits-projects-service's qits-1149 pin is likewise retired and replaced by its
- * pin through the library. So {@link #REQUIRED} is true and {@code ConsumerPactVerificationTest}
+ * pin through the library. Beside them, ticket qits-1149 pins the two CLIs that call this provider
+ * directly — qits-bootstrap-cli and qits-platform-access-cli — each carrying its own {@code
+ * pacts/<cli>_qits-events-service.json}. So {@link #REQUIRED} is true and {@code ConsumerPactVerificationTest}
  * carries no {@code @IgnoreNoPactsToVerify}: finding nothing is an error, because a provider whose
  * pinned pacts vanished has lost its dependency, and a green run would claim the opposite.
  */
@@ -46,7 +48,7 @@ public class ClasspathPactLoader implements PactLoader {
 
   static final String DIRECTORY = "pacts/";
 
-  /** Whether an empty classpath fails the build. True now that nine consumers pin a pact. */
+  /** Whether an empty classpath fails the build. True now that eleven consumers pin a pact. */
   static final boolean REQUIRED = true;
 
   private static final org.jboss.logging.Logger LOG =

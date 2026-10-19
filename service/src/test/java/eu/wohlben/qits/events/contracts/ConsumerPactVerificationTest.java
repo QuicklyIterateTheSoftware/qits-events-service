@@ -18,6 +18,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,7 +44,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * this one, and {@code qits-projects-service}'s qits-1149 pin is likewise retired and replaced by its
  * pin through the library.
  *
- * <p>Nine pins are already enough to keep {@link ClasspathPactLoader#REQUIRED} true and this class
+ * <p><b>The two CLIs pin their own pacts beside them</b> (ticket qits-1149): {@code
+ * qits-bootstrap-cli} and {@code qits-platform-access-cli} call this provider directly, not through
+ * the library, so each commits {@code pacts/<cli>_qits-events-service.json} — the bootstrap head
+ * poll ({@code the newest event}) and the checkout-daemon's newest-SCMRelease lookup ({@code a
+ * repository with a release}, skipped as {@link #KNOWN_WRONG} at 2026.1019.65035).
+ *
+ * <p>Eleven pins are already enough to keep {@link ClasspathPactLoader#REQUIRED} true and this class
  * free of {@code @IgnoreNoPactsToVerify}: finding nothing on the classpath stays an error.
  *
  * <p><b>Every interaction starts from an empty log</b> ({@link ProviderStates#emptyTheLog}), so
@@ -54,6 +61,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * {@code %test} synthetic user — exactly as {@link GoldenMasterRecordingTest}'s calls run. Every
  * {@code @State} method delegates to {@link ProviderStates}; {@link #target} fails an unknown state,
  * and an interaction without {@code comments.references.qits-call} or {@code qits-trigger}.
+ *
+ * <p><b>A pinned pact that is wrong is named in {@link #KNOWN_WRONG}, by its jar's version</b>, and
+ * its interaction is reported as skipped with the reason — never answered by bending the provider
+ * to it (the pattern of qits-maintenance-service). The entry is for that version alone: the bump
+ * that carries the consumer's fix verifies the interaction for real, and a bump that does not fix
+ * it goes red here, which is the point.
  */
 @QuarkusTest
 @Provider(ConsumerPactVerificationTest.PROVIDER)
@@ -67,6 +80,33 @@ class ConsumerPactVerificationTest {
     // pact-jvm reports usage metrics over the network unless told not to; a test never should.
     System.setProperty("pact_do_not_track", "true");
   }
+
+  /** A pinned pact interaction this provider cannot honour, and why: the consumer must fix it. */
+  record KnownWrong(String consumer, String version, String description, String reason) {
+
+    boolean names(Pact pact, Interaction interaction) {
+      return consumer.equals(pact.getConsumer().getName())
+          && description.equals(interaction.getDescription())
+          && String.valueOf(pact.getSource()).contains("/" + version + "/");
+    }
+  }
+
+  private static final String MULTI_VALUED_ATTR_FROZEN =
+      "the request's attr query carries two values, repositoryname={repositoryName} and"
+          + " projectid={projectId}, and qits-pact-consumer 2026.1018.164604 writes a ProviderState"
+          + " generator only for a single-valued query parameter, so the pact sends the golden"
+          + " master's frozen projectid 00000000-0000-4000-8000-000000000002 instead of the project"
+          + " the state seeds; the honest answer for that project is no events. The fix is the"
+          + " consumer's: generate each attr value from the state, or the row's query"
+          + " (ticket qits-1149)";
+
+  static final List<KnownWrong> KNOWN_WRONG =
+      List.of(
+          new KnownWrong(
+              "qits-platform-access-cli",
+              "2026.1019.65035",
+              "qits checkout-daemon: listEvents",
+              MULTI_VALUED_ATTR_FROZEN));
 
   @Inject ProviderStates states;
 
@@ -103,6 +143,13 @@ class ConsumerPactVerificationTest {
                 + interaction.getDescription()
                 + "' carries no comments.references."
                 + key);
+      }
+    }
+    for (KnownWrong wrong : KNOWN_WRONG) {
+      if (wrong.names(pact, interaction)) {
+        Assumptions.abort(
+            consumer + " " + wrong.version() + " '" + interaction.getDescription() + "': "
+                + wrong.reason());
       }
     }
     context.setTarget(new HttpTestTarget(base.getHost(), base.getPort()));

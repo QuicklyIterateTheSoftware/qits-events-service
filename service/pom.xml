@@ -213,6 +213,21 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <!-- qits-bootstrap-cli's own pact against this provider (ticket qits-1149): it calls
+                 this service directly, not through the library, so the jar carries
+                 pacts/qits-bootstrap-cli_qits-events-service.json. -->
+            <groupId>${project.groupId}</groupId>
+            <artifactId>qits-bootstrap-cli-pacts-qits-events-service</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <!-- Same as above: qits-platform-access-cli's own pact (its checkout-daemon), carrying
+                 pacts/qits-platform-access-cli_qits-events-service.json. -->
+            <groupId>${project.groupId}</groupId>
+            <artifactId>qits-platform-access-cli-pacts-qits-events-service</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
             <scope>test</scope>

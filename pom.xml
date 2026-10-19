@@ -68,6 +68,12 @@
         <qits.orchestrator-service-pacts-qits-events-service.version>2026.1018.172917</qits.orchestrator-service-pacts-qits-events-service.version>
         <qits.projects-service-pacts-qits-events-service.version>2026.1018.195756</qits.projects-service-pacts-qits-events-service.version>
         <qits.workspaces-service-pacts-qits-events-service.version>2026.1019.70413</qits.workspaces-service-pacts-qits-events-service.version>
+        <!-- The two CLIs (ticket qits-1149) call this provider themselves, not through the library,
+             so each jar carries the CLI's own `pacts/<cli>_qits-events-service.json` (both still
+             committed on their mains, checked 2026-10-19): qits-bootstrap-cli's head poll and the
+             qits-platform-access-cli checkout-daemon's newest-SCMRelease lookup. -->
+        <qits.bootstrap-cli-pacts-qits-events-service.version>2026.1018.185226</qits.bootstrap-cli-pacts-qits-events-service.version>
+        <qits.platform-access-cli-pacts-qits-events-service.version>2026.1019.65035</qits.platform-access-cli-pacts-qits-events-service.version>
         <!-- THE PLATFORM'S OWN MAVEN REPOSITORY, and this repo's first two artifacts from it:
              qits-db-core (PatientPgDriver, which the events datasource opens every connection
              through, and DbRetry.inNewTx, which the two write paths run in) and qits-arch-rules
@@ -250,6 +256,19 @@
                 <groupId>${project.groupId}</groupId>
                 <artifactId>qits-workspaces-service-pacts-qits-events-service</artifactId>
                 <version>${qits.workspaces-service-pacts-qits-events-service.version}</version>
+            </dependency>
+            <dependency>
+                <!-- qits-bootstrap-cli's own pact against this provider (ticket qits-1149):
+                     pacts/qits-bootstrap-cli_qits-events-service.json, a direct call. -->
+                <groupId>${project.groupId}</groupId>
+                <artifactId>qits-bootstrap-cli-pacts-qits-events-service</artifactId>
+                <version>${qits.bootstrap-cli-pacts-qits-events-service.version}</version>
+            </dependency>
+            <dependency>
+                <!-- Same as above: qits-platform-access-cli's own pact against this provider. -->
+                <groupId>${project.groupId}</groupId>
+                <artifactId>qits-platform-access-cli-pacts-qits-events-service</artifactId>
+                <version>${qits.platform-access-cli-pacts-qits-events-service.version}</version>
             </dependency>
             <dependency>
                 <!-- Which postgres the embedded binaries ARE — 18.4.0, the tag the platform's own
