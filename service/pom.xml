@@ -153,10 +153,10 @@
             <!-- The consumer pacts ConsumerPactVerificationTest verifies: each jar carries one
                  pacts/<consumer>_qits-eventstream-javalib_qits-events-service.json, and the test
                  reads them off the test classpath. The pinned jar IS the source of the pact;
-                 nothing is copied into this tree. Eight of the nine consumers (ticket qits-1163,
+                 nothing is copied into this tree. All nine consumers (ticket qits-1163,
                  "library-made calls pacted per consuming service") have released theirs: ci, below,
-                 then githost, deployments, configuration, edge, maintenance, orchestrator and
-                 projects. -->
+                 then githost, deployments, configuration, edge, maintenance, orchestrator,
+                 projects and workspaces. -->
             <groupId>${project.groupId}</groupId>
             <artifactId>qits-ci-service-pacts-qits-events-service</artifactId>
             <scope>test</scope>
@@ -205,15 +205,13 @@
             <artifactId>qits-projects-service-pacts-qits-events-service</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- The one remaining replacement jar (ticket qits-1163): qits-workspaces-service has not
-             released theirs yet, so it stays a placeholder — add the test-scope dependency once it
-             does:
         <dependency>
+            <!-- Same as above: qits-workspaces-service's pact against this provider — the ninth
+                 and last consumer pinned by ticket qits-1163. -->
             <groupId>${project.groupId}</groupId>
             <artifactId>qits-workspaces-service-pacts-qits-events-service</artifactId>
             <scope>test</scope>
         </dependency>
-        -->
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
