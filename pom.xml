@@ -44,7 +44,7 @@
              golden masters and writes pacts/qits-events-service_qits-idp-service.json. Exact
              pins: a newer recording is a deliberate bump. -->
         <qits.pact-consumer.version>2026.1019.82625</qits.pact-consumer.version>
-        <qits.idp-golden-masters.version>2026.1018.175524</qits.idp-golden-masters.version>
+        <qits.idp-golden-masters.version>2026.1019.100619</qits.idp-golden-masters.version>
         <!-- THE PROVIDER HALF: every published `eu.wohlben.qits:<consumer>-pacts-qits-events-service`
              jar, one per consumer that calls through qits-eventstream-javalib's kit
              qits-eventstream-contracts and commits
@@ -59,13 +59,13 @@
              own committed `pacts/<name>_qits-events-service.json`, not through the library) are
              retired by this ticket — qits-ci-service's pin above replaces its old one outright, and
              qits-projects-service's pin below replaces its placeholder. -->
-        <qits.ci-service-pacts-qits-events-service.version>2026.1018.160604</qits.ci-service-pacts-qits-events-service.version>
+        <qits.ci-service-pacts-qits-events-service.version>2026.1019.100328</qits.ci-service-pacts-qits-events-service.version>
         <qits.githost-service-pacts-qits-events-service.version>2026.1019.65056</qits.githost-service-pacts-qits-events-service.version>
         <qits.deployments-service-pacts-qits-events-service.version>2026.1019.92516</qits.deployments-service-pacts-qits-events-service.version>
-        <qits.configuration-service-pacts-qits-events-service.version>2026.1018.162828</qits.configuration-service-pacts-qits-events-service.version>
+        <qits.configuration-service-pacts-qits-events-service.version>2026.1019.102025</qits.configuration-service-pacts-qits-events-service.version>
         <qits.edge-service-pacts-qits-events-service.version>2026.1018.164744</qits.edge-service-pacts-qits-events-service.version>
         <qits.maintenance-service-pacts-qits-events-service.version>2026.1019.73752</qits.maintenance-service-pacts-qits-events-service.version>
-        <qits.orchestrator-service-pacts-qits-events-service.version>2026.1018.172917</qits.orchestrator-service-pacts-qits-events-service.version>
+        <qits.orchestrator-service-pacts-qits-events-service.version>2026.1019.110932</qits.orchestrator-service-pacts-qits-events-service.version>
         <qits.projects-service-pacts-qits-events-service.version>2026.1018.195756</qits.projects-service-pacts-qits-events-service.version>
         <qits.workspaces-service-pacts-qits-events-service.version>2026.1019.70413</qits.workspaces-service-pacts-qits-events-service.version>
         <!-- The two CLIs (ticket qits-1149) call this provider themselves, not through the library,
