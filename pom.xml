@@ -25,7 +25,7 @@
          monorepo and no parent to inherit from. -->
     <groupId>eu.wohlben.qits</groupId>
     <artifactId>qits-events</artifactId>
-    <version>2026.1018.211322</version>
+    <version>2026.1019.75626</version>
     <packaging>pom</packaging>
     <name>qits-events</name>
 
@@ -64,7 +64,7 @@
         <qits.deployments-service-pacts-qits-events-service.version>2026.1018.161413</qits.deployments-service-pacts-qits-events-service.version>
         <qits.configuration-service-pacts-qits-events-service.version>2026.1018.162828</qits.configuration-service-pacts-qits-events-service.version>
         <qits.edge-service-pacts-qits-events-service.version>2026.1018.164744</qits.edge-service-pacts-qits-events-service.version>
-        <qits.maintenance-service-pacts-qits-events-service.version>2026.1018.165353</qits.maintenance-service-pacts-qits-events-service.version>
+        <qits.maintenance-service-pacts-qits-events-service.version>2026.1019.73752</qits.maintenance-service-pacts-qits-events-service.version>
         <qits.orchestrator-service-pacts-qits-events-service.version>2026.1018.172917</qits.orchestrator-service-pacts-qits-events-service.version>
         <qits.projects-service-pacts-qits-events-service.version>2026.1018.195756</qits.projects-service-pacts-qits-events-service.version>
         <qits.workspaces-service-pacts-qits-events-service.version>2026.1019.70413</qits.workspaces-service-pacts-qits-events-service.version>
