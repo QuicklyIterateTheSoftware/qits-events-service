@@ -51,7 +51,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * the library, so each commits {@code pacts/<cli>_qits-events-service.json} — the bootstrap head
  * poll ({@code the newest event}) and its feed's forward pages ({@code events to catch up on, fifty
  * at a time}), and the checkout-daemon's newest-SCMRelease lookup ({@code a
- * repository with a release}, skipped as {@link #KNOWN_WRONG} at 2026.1019.65035).
+ * repository with a release}, one generated value per attr from the state's params).
  *
  * <p>Eleven pins are already enough to keep {@link ClasspathPactLoader#REQUIRED} true and this class
  * free of {@code @IgnoreNoPactsToVerify}: finding nothing on the classpath stays an error.
@@ -94,22 +94,12 @@ class ConsumerPactVerificationTest {
     }
   }
 
-  private static final String MULTI_VALUED_ATTR_FROZEN =
-      "the request's attr query carries two values, repositoryname={repositoryName} and"
-          + " projectid={projectId}, and qits-pact-consumer 2026.1018.164604 writes a ProviderState"
-          + " generator only for a single-valued query parameter, so the pact sends the golden"
-          + " master's frozen projectid 00000000-0000-4000-8000-000000000002 instead of the project"
-          + " the state seeds; the honest answer for that project is no events. The fix is the"
-          + " consumer's: generate each attr value from the state, or the row's query"
-          + " (ticket qits-1149)";
-
-  static final List<KnownWrong> KNOWN_WRONG =
-      List.of(
-          new KnownWrong(
-              "qits-platform-access-cli",
-              "2026.1019.65035",
-              "qits checkout-daemon: listEvents",
-              MULTI_VALUED_ATTR_FROZEN));
+  /**
+   * None at present: qits-platform-access-cli 2026.1019.65035's checkout-daemon lookup, which sent
+   * a frozen projectid in its two-valued attr query, was fixed in 2026.1019.92700 (each attr value
+   * generated from the state), the version pinned.
+   */
+  static final List<KnownWrong> KNOWN_WRONG = List.of();
 
   @Inject ProviderStates states;
 
