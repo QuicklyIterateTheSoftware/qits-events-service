@@ -151,6 +151,50 @@
       ]
     },
     {
+      "name": "events in a window to page back through",
+      "slug": "events-in-a-window-to-page-back-through",
+      "params": {
+        "cursor": "2100-01-01T00:00:10.000001Z,0",
+        "firstEventId": "00000000-0000-4000-8000-000000000001",
+        "limit": "2",
+        "secondEventId": "00000000-0000-4000-8000-000000000002",
+        "since": "2100-01-01T00:00:00Z",
+        "thirdEventId": "00000000-0000-4000-8000-000000000003",
+        "until": "2100-01-01T00:00:10Z"
+      },
+      "dependsOn": [],
+      "operations": [
+        {
+          "operationId": "listEvents",
+          "method": "GET",
+          "path": "/events/api/events",
+          "query": {
+            "cursor": "{cursor}",
+            "limit": "{limit}",
+            "order": "desc",
+            "since": "{since}"
+          },
+          "status": 200,
+          "file": "events-in-a-window-to-page-back-through/listEvents.json",
+          "frozen": {
+            "ids": [
+              "$.events[*].id",
+              "$.events[*].parentId"
+            ],
+            "instants": [
+              "$.events[*].occurredAt",
+              "$.events[*].createdAt",
+              "$.events[*].updatedAt"
+            ],
+            "strings": [
+              "$.nextCursor"
+            ],
+            "listFilteredTo": "$.events"
+          }
+        }
+      ]
+    },
+    {
       "name": "events to catch up on",
       "slug": "events-to-catch-up-on",
       "params": {

@@ -218,6 +218,11 @@ class ConsumerPactVerificationTest {
     return states.params(ProviderStates.EVENTS_TO_CATCH_UP_ON_FIFTY_AT_A_TIME);
   }
 
+  @State(ProviderStates.EVENTS_IN_A_WINDOW)
+  Map<String, String> eventsInAWindow() {
+    return states.params(ProviderStates.EVENTS_IN_A_WINDOW);
+  }
+
   @State(ProviderStates.SOFTWARE_RELEASES_TO_CATCH_UP_ON)
   Map<String, String> softwareReleasesToCatchUpOn() {
     return states.params(ProviderStates.SOFTWARE_RELEASES_TO_CATCH_UP_ON);

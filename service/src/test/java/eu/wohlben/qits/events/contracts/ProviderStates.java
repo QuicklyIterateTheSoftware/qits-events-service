@@ -44,6 +44,7 @@ public class ProviderStates {
   public static final String EVENTS_TO_CATCH_UP_ON = "events to catch up on";
   public static final String EVENTS_TO_CATCH_UP_ON_FIFTY_AT_A_TIME =
       "events to catch up on, fifty at a time";
+  public static final String EVENTS_IN_A_WINDOW = "events in a window to page back through";
   public static final String SOFTWARE_RELEASES_TO_CATCH_UP_ON =
       "SoftwareRelease events to catch up on";
   public static final String DEPLOYMENTS_TO_CATCH_UP_ON = "DeploymentActive events to catch up on";
@@ -97,6 +98,7 @@ public class ProviderStates {
     states.put(ONE_SCM_RELEASE_EVENT, () -> oneOf("SCMRelease", SCM_RELEASE));
     states.put(EVENTS_TO_CATCH_UP_ON, this::eventsToCatchUpOn);
     states.put(EVENTS_TO_CATCH_UP_ON_FIFTY_AT_A_TIME, this::eventsToCatchUpOnFiftyAtATime);
+    states.put(EVENTS_IN_A_WINDOW, this::eventsInAWindow);
     states.put(SOFTWARE_RELEASES_TO_CATCH_UP_ON, () -> twoOf("SoftwareRelease", SOFTWARE_RELEASE));
     states.put(DEPLOYMENTS_TO_CATCH_UP_ON, () -> twoOf("DeploymentActive", DEPLOYMENT_ACTIVE));
     states.put(SCM_RELEASES_TO_CATCH_UP_ON, () -> twoOf("SCMRelease", SCM_RELEASE));
@@ -278,6 +280,24 @@ public class ProviderStates {
     Setup events = eventsToCatchUpOn();
     Map<String, String> params = new TreeMap<>(events.params());
     params.put("cursor", CURSOR_BEFORE_THE_STATE);
+    return new Setup(params, events.uniqueTokens());
+  }
+
+  /**
+   * {@link #eventsToCatchUpOn}'s three events, read back newest first as {@code qits events query}
+   * pages a window: {@code since} its lower bound, {@code until} its upper, a {@code limit} of two
+   * so the window holds more than one page (the answer names a {@code nextCursor}), and the first
+   * page's {@code cursor} the command derives from {@code until} — one microsecond after it, id
+   * {@code 0}, exclusive.
+   */
+  private Setup eventsInAWindow() {
+    Setup events = eventsToCatchUpOn();
+    Instant until = FUTURE.plusSeconds(10);
+    Map<String, String> params = new TreeMap<>(events.params());
+    params.put("since", FUTURE.toString());
+    params.put("until", until.toString());
+    params.put("limit", "2");
+    params.put("cursor", until.plus(1, java.time.temporal.ChronoUnit.MICROS) + ",0");
     return new Setup(params, events.uniqueTokens());
   }
 
