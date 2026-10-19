@@ -164,6 +164,14 @@
         <skipITs>true</skipITs>
         <!-- Surefire's @{argLine} has no value unless something (jacoco/quarkus) sets it. -->
         <argLine/>
+        <!-- The test JVM's memory bound (ticket qits-1149), the one qits-workspaces-service uses.
+             Without it the fork takes the JVM defaults — a quarter of the HOST's RAM for heap and
+             unbounded metaspace — which the gate's step container (a 4g cap, shared with Maven,
+             the embedded postgres and the jacoco agent JAVA_TOOL_OPTIONS adds) does not have:
+             the suite's @QuarkusTest profile restarts each load the application again, the heap
+             grows into the host-sized default instead of being collected, and the step is
+             OOM-killed (exit 137). Bounded, the fork peaks well inside the cap. -->
+        <test-jvm-memory.argLine>-Xmx1024m -XX:MaxMetaspaceSize=768m -XX:ReservedCodeCacheSize=192m</test-jvm-memory.argLine>
     </properties>
 
     <dependencyManagement>
@@ -407,6 +415,11 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${surefire-plugin.version}</version>
                     <configuration>
+                        <!-- The bound above, then the argLine property (empty in this pom, or a
+                             command-line -DargLine, which overrides it), so neither drops the
+                             other. The gate's jacoco and pact options arrive through
+                             JAVA_TOOL_OPTIONS, not through argLine. -->
+                        <argLine>${test-jvm-memory.argLine} ${argLine}</argLine>
                         <systemPropertyVariables>
                             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                         </systemPropertyVariables>
