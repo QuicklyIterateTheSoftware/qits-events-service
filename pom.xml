@@ -59,7 +59,7 @@
              own committed `pacts/<name>_qits-events-service.json`, not through the library) are
              retired by this ticket — qits-ci-service's pin above replaces its old one outright, and
              qits-projects-service's pin below replaces its placeholder. -->
-        <qits.ci-service-pacts-qits-events-service.version>2026.1019.100328</qits.ci-service-pacts-qits-events-service.version>
+        <qits.ci-service-pacts-qits-events-service.version>2026.1019.200709</qits.ci-service-pacts-qits-events-service.version>
         <qits.githost-service-pacts-qits-events-service.version>2026.1019.65056</qits.githost-service-pacts-qits-events-service.version>
         <qits.deployments-service-pacts-qits-events-service.version>2026.1019.92516</qits.deployments-service-pacts-qits-events-service.version>
         <qits.configuration-service-pacts-qits-events-service.version>2026.1019.102025</qits.configuration-service-pacts-qits-events-service.version>
