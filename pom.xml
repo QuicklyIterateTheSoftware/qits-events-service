@@ -73,7 +73,7 @@
              committed on their mains, checked 2026-10-19): qits-bootstrap-cli's head poll and the
              qits-platform-access-cli checkout-daemon's newest-SCMRelease lookup. -->
         <qits.bootstrap-cli-pacts-qits-events-service.version>2026.1019.194129</qits.bootstrap-cli-pacts-qits-events-service.version>
-        <qits.platform-access-cli-pacts-qits-events-service.version>2026.1019.92700</qits.platform-access-cli-pacts-qits-events-service.version>
+        <qits.platform-access-cli-pacts-qits-events-service.version>2026.1019.195617</qits.platform-access-cli-pacts-qits-events-service.version>
         <!-- THE PLATFORM'S OWN MAVEN REPOSITORY, and this repo's first two artifacts from it:
              qits-db-core (PatientPgDriver, which the events datasource opens every connection
              through, and DbRetry.inNewTx, which the two write paths run in) and qits-arch-rules
