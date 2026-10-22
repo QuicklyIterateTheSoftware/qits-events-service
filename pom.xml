@@ -44,7 +44,7 @@
              golden masters and writes pacts/qits-events-service_qits-idp-service.json. Exact
              pins: a newer recording is a deliberate bump. -->
         <qits.pact-consumer.version>2026.1019.82625</qits.pact-consumer.version>
-        <qits.idp-golden-masters.version>2026.1019.100619</qits.idp-golden-masters.version>
+        <qits.idp-golden-masters.version>2026.1021.194347</qits.idp-golden-masters.version>
         <!-- THE PROVIDER HALF: every published `eu.wohlben.qits:<consumer>-pacts-qits-events-service`
              jar, one per consumer that calls through qits-eventstream-javalib's kit
              qits-eventstream-contracts and commits
@@ -62,18 +62,18 @@
         <qits.ci-service-pacts-qits-events-service.version>2026.1019.200709</qits.ci-service-pacts-qits-events-service.version>
         <qits.githost-service-pacts-qits-events-service.version>2026.1019.65056</qits.githost-service-pacts-qits-events-service.version>
         <qits.deployments-service-pacts-qits-events-service.version>2026.1019.92516</qits.deployments-service-pacts-qits-events-service.version>
-        <qits.configuration-service-pacts-qits-events-service.version>2026.1019.102025</qits.configuration-service-pacts-qits-events-service.version>
+        <qits.configuration-service-pacts-qits-events-service.version>2026.1020.150532</qits.configuration-service-pacts-qits-events-service.version>
         <qits.edge-service-pacts-qits-events-service.version>2026.1018.164744</qits.edge-service-pacts-qits-events-service.version>
-        <qits.maintenance-service-pacts-qits-events-service.version>2026.1020.65554</qits.maintenance-service-pacts-qits-events-service.version>
+        <qits.maintenance-service-pacts-qits-events-service.version>2026.1020.162040</qits.maintenance-service-pacts-qits-events-service.version>
         <qits.orchestrator-service-pacts-qits-events-service.version>2026.1019.110932</qits.orchestrator-service-pacts-qits-events-service.version>
-        <qits.projects-service-pacts-qits-events-service.version>2026.1018.195756</qits.projects-service-pacts-qits-events-service.version>
-        <qits.workspaces-service-pacts-qits-events-service.version>2026.1019.70413</qits.workspaces-service-pacts-qits-events-service.version>
+        <qits.projects-service-pacts-qits-events-service.version>2026.1020.122838</qits.projects-service-pacts-qits-events-service.version>
+        <qits.workspaces-service-pacts-qits-events-service.version>2026.1020.105843</qits.workspaces-service-pacts-qits-events-service.version>
         <!-- The two CLIs (ticket qits-1149) call this provider themselves, not through the library,
              so each jar carries the CLI's own `pacts/<cli>_qits-events-service.json` (both still
              committed on their mains, checked 2026-10-19): qits-bootstrap-cli's head poll and the
              qits-platform-access-cli checkout-daemon's newest-SCMRelease lookup. -->
         <qits.bootstrap-cli-pacts-qits-events-service.version>2026.1019.194129</qits.bootstrap-cli-pacts-qits-events-service.version>
-        <qits.platform-access-cli-pacts-qits-events-service.version>2026.1019.195617</qits.platform-access-cli-pacts-qits-events-service.version>
+        <qits.platform-access-cli-pacts-qits-events-service.version>2026.1020.114229</qits.platform-access-cli-pacts-qits-events-service.version>
         <!-- THE PLATFORM'S OWN MAVEN REPOSITORY, and this repo's first two artifacts from it:
              qits-db-core (PatientPgDriver, which the events datasource opens every connection
              through, and DbRetry.inNewTx, which the two write paths run in) and qits-arch-rules
