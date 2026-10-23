@@ -71,7 +71,8 @@
         <!-- The two CLIs (ticket qits-1149) call this provider themselves, not through the library,
              so each jar carries the CLI's own `pacts/<cli>_qits-events-service.json` (both still
              committed on their mains, checked 2026-10-19): qits-bootstrap-cli's head poll and the
-             qits-platform-access-cli checkout-daemon's newest-SCMRelease lookup. -->
+             qits-platform-access-cli checkout-daemon's newest-finalized-release-request lookup
+             (ticket qits-1477; qits-1470 moved it off SCMRelease). -->
         <qits.bootstrap-cli-pacts-qits-events-service.version>2026.1019.194129</qits.bootstrap-cli-pacts-qits-events-service.version>
         <qits.platform-access-cli-pacts-qits-events-service.version>2026.1020.114229</qits.platform-access-cli-pacts-qits-events-service.version>
         <!-- THE PLATFORM'S OWN MAVEN REPOSITORY, and this repo's first two artifacts from it:

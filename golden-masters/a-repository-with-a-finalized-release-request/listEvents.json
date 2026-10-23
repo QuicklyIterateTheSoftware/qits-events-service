@@ -1,0 +1,16 @@
+{
+  "events": [
+    {
+      "id": "00000000-0000-4000-8000-000000000003",
+      "name": "ReleaseRequestStateChanged",
+      "occurredAt": "2026-01-01T00:00:00Z",
+      "payload": "{\"backingBranch\":\"release/qits-ci-service-rr-2\",\"branches\":[\"main\"],\"changedAt\":\"2026-01-01T00:00:00Z\",\"mergedSha\":\"89abcdef0123456789abcdef0123456789abcdef\",\"previousState\":\"RELEASED\",\"projectId\":\"00000000-0000-4000-8000-000000000002\",\"releaseRequestId\":\"00000000-0000-4000-8000-000000000004\",\"releaseRequestQualifiedId\":\"qits-ci-service-rr-2\",\"repoId\":\"00000000-0000-4000-8000-000000000005\",\"repoName\":\"qits-ci-service\",\"state\":\"FINALIZED\",\"version\":\"2026.102.100000\"}",
+      "description": null,
+      "parentId": null,
+      "environment": "dev",
+      "createdAt": "2026-01-01T00:00:00Z",
+      "updatedAt": "2026-01-01T00:00:00Z"
+    }
+  ],
+  "nextCursor": "2100-01-01T00:00:02Z,00000000-0000-4000-8000-000000000003"
+}

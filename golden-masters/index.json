@@ -38,6 +38,51 @@
       ]
     },
     {
+      "name": "a repository with a finalized release request",
+      "slug": "a-repository-with-a-finalized-release-request",
+      "params": {
+        "olderEventId": "00000000-0000-4000-8000-000000000001",
+        "projectId": "00000000-0000-4000-8000-000000000002",
+        "releaseEventId": "00000000-0000-4000-8000-000000000003",
+        "repositoryName": "qits-ci-service"
+      },
+      "dependsOn": [],
+      "operations": [
+        {
+          "operationId": "listEvents",
+          "method": "GET",
+          "path": "/events/api/events",
+          "query": {
+            "attr": [
+              "reponame={repositoryName}",
+              "state=finalized",
+              "projectid={projectId}"
+            ],
+            "limit": "1",
+            "name": "ReleaseRequestStateChanged",
+            "order": "desc"
+          },
+          "status": 200,
+          "file": "a-repository-with-a-finalized-release-request/listEvents.json",
+          "frozen": {
+            "ids": [
+              "$.events[*].id"
+            ],
+            "instants": [
+              "$.events[*].occurredAt",
+              "$.events[*].createdAt",
+              "$.events[*].updatedAt"
+            ],
+            "strings": [
+              "$.events[*].payload",
+              "$.nextCursor"
+            ],
+            "listFilteredTo": "$.events"
+          }
+        }
+      ]
+    },
+    {
       "name": "a repository with a release",
       "slug": "a-repository-with-a-release",
       "params": {

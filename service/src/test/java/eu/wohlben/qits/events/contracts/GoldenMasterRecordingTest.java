@@ -225,6 +225,17 @@ class GoldenMasterRecordingTest {
                   "desc",
                   "limit",
                   "1")),
+          list(
+              ProviderStates.A_REPOSITORY_WITH_A_FINALIZED_RELEASE_REQUEST,
+              query(
+                  "name",
+                  "ReleaseRequestStateChanged",
+                  "attr",
+                  List.of("reponame={repositoryName}", "state=finalized", "projectid={projectId}"),
+                  "order",
+                  "desc",
+                  "limit",
+                  "1")),
           publish(ProviderStates.NO_EVENT_WITH_THE_GIVEN_ID, 201),
           publish(ProviderStates.THE_SAME_EVENT_PUBLISHED_BEFORE, 200),
           publish(ProviderStates.AN_EVENT_WITH_THE_GIVEN_ID, 400));

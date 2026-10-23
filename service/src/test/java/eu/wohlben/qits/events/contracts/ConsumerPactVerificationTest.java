@@ -50,8 +50,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * qits-bootstrap-cli} and {@code qits-platform-access-cli} call this provider directly, not through
  * the library, so each commits {@code pacts/<cli>_qits-events-service.json} — the bootstrap head
  * poll ({@code the newest event}) and its feed's forward pages ({@code events to catch up on, fifty
- * at a time}), and the checkout-daemon's newest-SCMRelease lookup ({@code a
- * repository with a release}, one generated value per attr from the state's params).
+ * at a time}), and the checkout-daemon's newest-finalized-release-request lookup ({@code a
+ * repository with a finalized release request}, ticket qits-1477; qits-1470 moved it off
+ * SCMRelease), one generated value per attr from the state's params.
  *
  * <p>Eleven pins are already enough to keep {@link ClasspathPactLoader#REQUIRED} true and this class
  * free of {@code @IgnoreNoPactsToVerify}: finding nothing on the classpath stays an error.

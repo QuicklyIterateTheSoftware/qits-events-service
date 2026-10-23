@@ -56,6 +56,8 @@ public class ProviderStates {
   /** The library's catch-up page size: the state seeds one event more. */
   public static final int PAGE = 200;
   public static final String A_REPOSITORY_WITH_A_RELEASE = "a repository with a release";
+  public static final String A_REPOSITORY_WITH_A_FINALIZED_RELEASE_REQUEST =
+      "a repository with a finalized release request";
   public static final String NO_EVENT_WITH_THE_GIVEN_ID = "no event with the given id";
   public static final String AN_EVENT_WITH_THE_GIVEN_ID = "an event with the given id";
   public static final String THE_SAME_EVENT_PUBLISHED_BEFORE = "the same event published before";
@@ -105,6 +107,8 @@ public class ProviderStates {
     states.put(PROJECT_LIFECYCLE_EVENTS, this::projectLifecycleEvents);
     states.put(MORE_THAN_A_PAGE_OF_DEPLOYMENTS, this::moreThanAPageOfDeployments);
     states.put(A_REPOSITORY_WITH_A_RELEASE, this::aRepositoryWithARelease);
+    states.put(
+        A_REPOSITORY_WITH_A_FINALIZED_RELEASE_REQUEST, this::aRepositoryWithAFinalizedReleaseRequest);
     states.put(NO_EVENT_WITH_THE_GIVEN_ID, this::noEventWithTheGivenId);
     states.put(AN_EVENT_WITH_THE_GIVEN_ID, this::anEventWithTheGivenId);
     states.put(THE_SAME_EVENT_PUBLISHED_BEFORE, this::theSameEventPublishedBefore);
@@ -405,6 +409,89 @@ public class ProviderStates {
     return new Setup(params, List.of());
   }
 
+  /**
+   * The checkout-daemon's question since qits-1470 (ticket qits-1477): the newest release request
+   * of a repository that reached FINALIZED, which is when the wrapper's tag exists. Two finalized
+   * requests of {@code qits-ci-service} in one project, the second the answer; newer than both, a
+   * request of the same repository that is only RELEASED (so {@code attr=state} must filter) and,
+   * newest of all, a finalized request of another repository (so {@code attr=reponame} must).
+   */
+  private Setup aRepositoryWithAFinalizedReleaseRequest() {
+    String projectId = UUID.randomUUID().toString();
+    Event older =
+        create(
+            "ReleaseRequestStateChanged",
+            FUTURE.plusSeconds(1),
+            releaseRequestStateChanged(
+                projectId,
+                "00000000-0000-4000-8000-0000000000a1",
+                "qits-ci-service-rr-1",
+                "00000000-0000-4000-8000-0000000000b1",
+                "qits-ci-service",
+                "RELEASED",
+                "FINALIZED",
+                "2026.101.100000",
+                SHA_1),
+            null,
+            null,
+            "dev");
+    Event finalized =
+        create(
+            "ReleaseRequestStateChanged",
+            FUTURE.plusSeconds(2),
+            releaseRequestStateChanged(
+                projectId,
+                "00000000-0000-4000-8000-0000000000a2",
+                "qits-ci-service-rr-2",
+                "00000000-0000-4000-8000-0000000000b1",
+                "qits-ci-service",
+                "RELEASED",
+                "FINALIZED",
+                "2026.102.100000",
+                SHA_2),
+            null,
+            null,
+            "dev");
+    create(
+        "ReleaseRequestStateChanged",
+        FUTURE.plusSeconds(3),
+        releaseRequestStateChanged(
+            projectId,
+            "00000000-0000-4000-8000-0000000000a3",
+            "qits-ci-service-rr-3",
+            "00000000-0000-4000-8000-0000000000b1",
+            "qits-ci-service",
+            "READY",
+            "RELEASED",
+            "2026.103.100000",
+            SHA_1),
+        null,
+        null,
+        "dev");
+    create(
+        "ReleaseRequestStateChanged",
+        FUTURE.plusSeconds(4),
+        releaseRequestStateChanged(
+            projectId,
+            "00000000-0000-4000-8000-0000000000a4",
+            "qits-ci-frontend-rr-1",
+            "00000000-0000-4000-8000-0000000000b2",
+            "qits-ci-frontend",
+            "RELEASED",
+            "FINALIZED",
+            "2026.104.100000",
+            SHA_2),
+        null,
+        null,
+        "dev");
+    Map<String, String> params = new TreeMap<>();
+    params.put("olderEventId", older.id);
+    params.put("projectId", projectId);
+    params.put("releaseEventId", finalized.id);
+    params.put("repositoryName", "qits-ci-service");
+    return new Setup(params, List.of());
+  }
+
   /** A fresh id the log does not hold; the publish creates it, so it is cleaned up after. */
   private Setup noEventWithTheGivenId() {
     String eventId = UUID.randomUUID().toString();
@@ -483,6 +570,40 @@ public class ProviderStates {
         + repository
         + "\",\"repositoryName\":\""
         + repository
+        + "\",\"version\":\""
+        + version
+        + "\"}";
+  }
+
+  /** A ReleaseRequestStateChanged payload, shaped like qits-projects' live one. */
+  private static String releaseRequestStateChanged(
+      String projectId,
+      String releaseRequestId,
+      String qualifiedId,
+      String repoId,
+      String repoName,
+      String previousState,
+      String state,
+      String version,
+      String mergedSha) {
+    return "{\"backingBranch\":\"release/"
+        + qualifiedId
+        + "\",\"branches\":[\"main\"],\"changedAt\":\"2026-01-01T00:00:00Z\",\"mergedSha\":\""
+        + mergedSha
+        + "\",\"previousState\":\""
+        + previousState
+        + "\",\"projectId\":\""
+        + projectId
+        + "\",\"releaseRequestId\":\""
+        + releaseRequestId
+        + "\",\"releaseRequestQualifiedId\":\""
+        + qualifiedId
+        + "\",\"repoId\":\""
+        + repoId
+        + "\",\"repoName\":\""
+        + repoName
+        + "\",\"state\":\""
+        + state
         + "\",\"version\":\""
         + version
         + "\"}";
