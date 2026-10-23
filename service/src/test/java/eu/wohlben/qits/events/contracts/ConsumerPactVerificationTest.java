@@ -244,6 +244,11 @@ class ConsumerPactVerificationTest {
     return states.params(ProviderStates.A_REPOSITORY_WITH_A_RELEASE);
   }
 
+  @State(ProviderStates.A_REPOSITORY_WITH_A_FINALIZED_RELEASE_REQUEST)
+  Map<String, String> aRepositoryWithAFinalizedReleaseRequest() {
+    return states.params(ProviderStates.A_REPOSITORY_WITH_A_FINALIZED_RELEASE_REQUEST);
+  }
+
   @State(ProviderStates.NO_EVENT_WITH_THE_GIVEN_ID)
   Map<String, String> noEventWithTheGivenId() {
     return states.params(ProviderStates.NO_EVENT_WITH_THE_GIVEN_ID);
