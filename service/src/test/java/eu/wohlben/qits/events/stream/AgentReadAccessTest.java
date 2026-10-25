@@ -29,6 +29,13 @@ class AgentReadAccessTest {
   private static final Map<String, String> ADMIN_AGENT =
       Map.of("X-Qits-User", "dyn-admin-workspace-agent", "X-Qits-Roles", "qits:admin-agent");
 
+  /**
+   * The delivery desk's token (qits-1596): admitted wherever {@code qits:admin-agent} is, same as
+   * the coordinator it stands beside.
+   */
+  private static final Map<String, String> DESK =
+      Map.of("X-Qits-User", "dyn-delivery-desk", "X-Qits-Roles", "qits:desk");
+
   private static final Map<String, String> READER =
       Map.of("X-Qits-User", "dyn-workspace-agent", "X-Qits-Roles", "qits:reader");
 
@@ -124,6 +131,49 @@ class AgentReadAccessTest {
             .extract()
             .path("event.id");
     given().headers(ADMIN_AGENT).delete("/events/api/events/" + id).then().statusCode(200);
+  }
+
+  /**
+   * The delivery desk ({@code qits:desk}, qits-1596) is admitted everywhere {@code
+   * qits:admin-agent} is — the same read surfaces exercised above for the admin agent.
+   */
+  @Test
+  void theDeskReadsTheLog() {
+    given().headers(DESK).get("/events/api/events").then().statusCode(200);
+    given().headers(DESK).get("/events/api/events/names").then().statusCode(200);
+    given().headers(DESK).get("/events/api/events/" + UUID.randomUUID()).then().statusCode(404);
+  }
+
+  @Test
+  void theDeskOpensTheSseStream() throws Exception {
+    try (SseReader reader = SseReader.open(sse, DESK)) {
+      assertEquals(200, reader.status());
+    }
+  }
+
+  @Test
+  void theDeskDialsTheSocket() throws Exception {
+    try (FakeSubscriber subscriber = FakeSubscriber.dial(socket, DESK)) {
+      // Connected: the upgrade let the desk in.
+    }
+  }
+
+  /** The representative admin write door, mirrored for the desk. */
+  @Test
+  void theDeskRecordsAndRemovesAnEvent() {
+    String body =
+        "{\"name\":\"DeskProbe\",\"occurredAt\":\"2026-09-12T00:00:00Z\",\"payload\":\"{}\"}";
+    String id =
+        given()
+            .headers(DESK)
+            .contentType("application/json")
+            .body(body)
+            .post("/events/api/events")
+            .then()
+            .statusCode(200)
+            .extract()
+            .path("event.id");
+    given().headers(DESK).delete("/events/api/events/" + id).then().statusCode(200);
   }
 
   @Test

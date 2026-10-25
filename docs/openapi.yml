@@ -169,6 +169,7 @@ paths:
       - SecurityScheme:
         - qits:admin
         - qits:admin-agent
+        - qits:desk
         - qits:system
         - qits:agent
     post:
@@ -199,6 +200,7 @@ paths:
       - SecurityScheme:
         - qits:admin
         - qits:admin-agent
+        - qits:desk
   /events/api/events/names:
     get:
       operationId: listEventNames
@@ -220,6 +222,7 @@ paths:
       - SecurityScheme:
         - qits:admin
         - qits:admin-agent
+        - qits:desk
         - qits:agent
   /events/api/events/{id}:
     put:
@@ -281,6 +284,7 @@ paths:
       - SecurityScheme:
         - qits:admin
         - qits:admin-agent
+        - qits:desk
         - qits:agent
     delete:
       operationId: deleteEvent
@@ -308,6 +312,7 @@ paths:
       - SecurityScheme:
         - qits:admin
         - qits:admin-agent
+        - qits:desk
   /events/api/stream:
     get:
       summary: Live event stream (Server-Sent Events)
@@ -339,6 +344,7 @@ paths:
       - SecurityScheme:
         - qits:admin
         - qits:admin-agent
+        - qits:desk
         - qits:system
         - qits:agent
 info:

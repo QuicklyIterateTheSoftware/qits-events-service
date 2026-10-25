@@ -65,6 +65,19 @@ class EventStreamResourceDoorTest {
     }
   }
 
+  /**
+   * The delivery desk's token ({@code qits:desk}, qits-1596) is admitted wherever {@code
+   * qits:admin-agent} is, proven here under the same dev-user-free posture.
+   */
+  @Test
+  void theDeskOpensTheStreamToo() throws Exception {
+    try (SseReader reader =
+        SseReader.open(
+            endpoint, Map.of("X-Qits-User", "dyn-delivery-desk", "X-Qits-Roles", "qits:desk"))) {
+      assertEquals(200, reader.status());
+    }
+  }
+
   @Test
   void aMachineConsumerOpensTheStreamToo() throws Exception {
     try (SseReader reader =
