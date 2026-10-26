@@ -169,6 +169,7 @@ paths:
       - SecurityScheme:
         - qits:admin
         - qits:admin-agent
+        - qits:desk-admin
         - qits:desk
         - qits:system
         - qits:agent
@@ -200,6 +201,7 @@ paths:
       - SecurityScheme:
         - qits:admin
         - qits:admin-agent
+        - qits:desk-admin
         - qits:desk
   /events/api/events/names:
     get:
@@ -222,6 +224,7 @@ paths:
       - SecurityScheme:
         - qits:admin
         - qits:admin-agent
+        - qits:desk-admin
         - qits:desk
         - qits:agent
   /events/api/events/{id}:
@@ -284,6 +287,7 @@ paths:
       - SecurityScheme:
         - qits:admin
         - qits:admin-agent
+        - qits:desk-admin
         - qits:desk
         - qits:agent
     delete:
@@ -312,6 +316,7 @@ paths:
       - SecurityScheme:
         - qits:admin
         - qits:admin-agent
+        - qits:desk-admin
         - qits:desk
   /events/api/stream:
     get:
@@ -344,6 +349,7 @@ paths:
       - SecurityScheme:
         - qits:admin
         - qits:admin-agent
+        - qits:desk-admin
         - qits:desk
         - qits:system
         - qits:agent

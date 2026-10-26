@@ -116,7 +116,7 @@ public class EventController {
    * own depth and remember the ids it has seen</b>, because nothing here prevents a cycle.
   */
   @GET
-  @jakarta.annotation.security.RolesAllowed({"qits:admin", "qits:admin-agent", "qits:desk", "qits:system", "qits:agent"})
+  @jakarta.annotation.security.RolesAllowed({"qits:admin", "qits:admin-agent", "qits:desk-admin", "qits:desk", "qits:system", "qits:agent"})
   @Operation(operationId = "listEvents", summary = "List")
   public ListEventsRequest.Response list(
       @QueryParam("parentId") String parentId,
@@ -156,7 +156,7 @@ public class EventController {
    */
   @GET
   @Path("/names")
-  @jakarta.annotation.security.RolesAllowed({"qits:admin", "qits:admin-agent", "qits:desk", "qits:agent"})
+  @jakarta.annotation.security.RolesAllowed({"qits:admin", "qits:admin-agent", "qits:desk-admin", "qits:desk", "qits:agent"})
   @Operation(operationId = "listEventNames")
   public ListEventNamesRequest.Response names() {
     return new ListEventNamesRequest.Response(eventService.names());
@@ -172,7 +172,7 @@ public class EventController {
 
   @GET
   @Path("/{id}")
-  @jakarta.annotation.security.RolesAllowed({"qits:admin", "qits:admin-agent", "qits:desk", "qits:agent"})
+  @jakarta.annotation.security.RolesAllowed({"qits:admin", "qits:admin-agent", "qits:desk-admin", "qits:desk", "qits:agent"})
   @Operation(operationId = "getEvent")
   public GetEventRequest.Response get(@PathParam("id") String id) {
     return new GetEventRequest.Response(eventMapper.toDto(eventService.get(id)));
@@ -201,7 +201,7 @@ public class EventController {
   }
 
   @POST
-  @jakarta.annotation.security.RolesAllowed({"qits:admin", "qits:admin-agent", "qits:desk"})
+  @jakarta.annotation.security.RolesAllowed({"qits:admin", "qits:admin-agent", "qits:desk-admin", "qits:desk"})
   @Operation(operationId = "createEvent")
   public CreateEventRequest.Response create(@Valid CreateEventRequest request) {
     var event =
@@ -294,7 +294,7 @@ public class EventController {
 
   @DELETE
   @Path("/{id}")
-  @jakarta.annotation.security.RolesAllowed({"qits:admin", "qits:admin-agent", "qits:desk"})
+  @jakarta.annotation.security.RolesAllowed({"qits:admin", "qits:admin-agent", "qits:desk-admin", "qits:desk"})
   @Operation(operationId = "deleteEvent")
   public DeleteEventRequest.Response delete(@PathParam("id") String id) {
     eventService.delete(id);

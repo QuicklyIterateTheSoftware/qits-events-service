@@ -369,4 +369,5 @@ A request with neither is anonymous, and every protected route refuses it with 4
 `qits:admin-agent` — an admin workspace's agent (qits-628 follow-up) — is admitted wherever
 `qits:admin` is. `qits:desk` — the delivery desk's token (qits-1596) — is admitted wherever
 `qits:admin-agent` is: events are platform-wide with no project concept, so the desk is admitted
-outright rather than bound to a project claim.
+outright rather than bound to a project claim. `qits:desk-admin` — the desk's admin grant
+(qits-1621) — is admitted wherever `qits:admin-agent` is, for the same reason.
