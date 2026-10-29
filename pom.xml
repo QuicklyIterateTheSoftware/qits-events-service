@@ -65,7 +65,7 @@
         <qits.configuration-service-pacts-qits-events-service.version>2026.1028.152249</qits.configuration-service-pacts-qits-events-service.version>
         <qits.edge-service-pacts-qits-events-service.version>2026.1027.173813</qits.edge-service-pacts-qits-events-service.version>
         <qits.maintenance-service-pacts-qits-events-service.version>2026.1027.225628</qits.maintenance-service-pacts-qits-events-service.version>
-        <qits.orchestrator-service-pacts-qits-events-service.version>2026.1023.15811</qits.orchestrator-service-pacts-qits-events-service.version>
+        <qits.orchestrator-service-pacts-qits-events-service.version>2026.1029.123028</qits.orchestrator-service-pacts-qits-events-service.version>
         <qits.projects-service-pacts-qits-events-service.version>2026.1028.12758</qits.projects-service-pacts-qits-events-service.version>
         <qits.workspaces-service-pacts-qits-events-service.version>2026.1029.22233</qits.workspaces-service-pacts-qits-events-service.version>
         <!-- The two CLIs (ticket qits-1149) call this provider themselves, not through the library,
