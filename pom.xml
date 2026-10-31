@@ -60,8 +60,8 @@
              retired by this ticket — qits-ci-service's pin above replaces its old one outright, and
              qits-projects-service's pin below replaces its placeholder. -->
         <qits.ci-service-pacts-qits-events-service.version>2026.1027.165202</qits.ci-service-pacts-qits-events-service.version>
-        <qits.githost-service-pacts-qits-events-service.version>2026.1027.214012</qits.githost-service-pacts-qits-events-service.version>
-        <qits.deployments-service-pacts-qits-events-service.version>2026.1027.235839</qits.deployments-service-pacts-qits-events-service.version>
+        <qits.githost-service-pacts-qits-events-service.version>2026.1031.142739</qits.githost-service-pacts-qits-events-service.version>
+        <qits.deployments-service-pacts-qits-events-service.version>2026.1031.142542</qits.deployments-service-pacts-qits-events-service.version>
         <qits.edge-service-pacts-qits-events-service.version>2026.1027.173813</qits.edge-service-pacts-qits-events-service.version>
         <qits.maintenance-service-pacts-qits-events-service.version>2026.1027.225628</qits.maintenance-service-pacts-qits-events-service.version>
         <qits.orchestrator-service-pacts-qits-events-service.version>2026.1031.134810</qits.orchestrator-service-pacts-qits-events-service.version>
@@ -73,7 +73,7 @@
              qits-platform-access-cli checkout-daemon's newest-finalized-release-request lookup
              (ticket qits-1477; qits-1470 moved it off SCMRelease). -->
         <qits.bootstrap-cli-pacts-qits-events-service.version>2026.1019.194129</qits.bootstrap-cli-pacts-qits-events-service.version>
-        <qits.platform-access-cli-pacts-qits-events-service.version>2026.1023.100525</qits.platform-access-cli-pacts-qits-events-service.version>
+        <qits.platform-access-cli-pacts-qits-events-service.version>2026.1031.134158</qits.platform-access-cli-pacts-qits-events-service.version>
         <!-- THE PLATFORM'S OWN MAVEN REPOSITORY, and this repo's first two artifacts from it:
              qits-db-core (PatientPgDriver, which the events datasource opens every connection
              through, and DbRetry.inNewTx, which the two write paths run in) and qits-arch-rules
