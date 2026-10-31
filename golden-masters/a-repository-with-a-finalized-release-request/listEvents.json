@@ -9,7 +9,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-projects-service"
     }
   ],
   "nextCursor": "2100-01-01T00:00:02Z,00000000-0000-4000-8000-000000000003"

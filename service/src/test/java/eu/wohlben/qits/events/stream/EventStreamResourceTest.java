@@ -187,18 +187,28 @@ class EventStreamResourceTest {
       assertTrue(frame.data().startsWith("{"), "data must be the envelope: " + frame.data());
       assertTrue(frame.data().contains("\"parentId\":null"), frame.data());
       assertTrue(frame.data().contains("\"environment\":null"), frame.data());
+      assertTrue(frame.data().contains("\"publisher\":null"), frame.data());
 
       JsonNode envelope = JSON.readTree(frame.data());
       List<String> fields = new ArrayList<>();
       envelope.fieldNames().forEachRemaining(fields::add);
       assertEquals(
-          List.of("id", "name", "occurredAt", "payload", "description", "parentId", "environment"),
+          List.of(
+              "id",
+              "name",
+              "occurredAt",
+              "payload",
+              "description",
+              "parentId",
+              "environment",
+              "publisher"),
           fields);
       assertEquals(id, envelope.get("id").asText());
       assertEquals("2026-07-31T12:46:03Z", envelope.get("occurredAt").asText());
       assertEquals("{\"branch\":\"main\"}", envelope.get("payload").asText());
       assertTrue(envelope.get("parentId").isNull());
       assertTrue(envelope.get("environment").isNull());
+      assertTrue(envelope.get("publisher").isNull());
     }
   }
 

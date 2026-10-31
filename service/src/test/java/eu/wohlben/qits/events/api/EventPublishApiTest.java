@@ -27,6 +27,9 @@ class EventPublishApiTest {
   private static final String PAYLOAD =
       "{\\\"branch\\\":\\\"main\\\",\\\"commitSha\\\":\\\"abc123\\\",\\\"repoId\\\":\\\"qits-ci\\\"}";
 
+  /** The publisher the stamped envelopes name. */
+  private static final String CI = "eu.wohlben.qits:qits-ci-service";
+
   /** The envelope as a publisher that knows about causation sends it — {@code parentId} always present. */
   private static String envelope(String name, String occurredAt, String payload, String parentId) {
     return "{\"name\":\""
@@ -53,6 +56,19 @@ class EventPublishApiTest {
         + (parentId == null ? "null" : "\"" + parentId + "\"")
         + ",\"environment\":"
         + (environment == null ? "null" : "\"" + environment + "\"")
+        + "}";
+  }
+
+  /** The envelope with a {@code publisher} — what a publisher that stamps its own name sends. */
+  private static String stamped(String name, String occurredAt, String payload, String publisher) {
+    return "{\"name\":\""
+        + name
+        + "\",\"occurredAt\":\""
+        + occurredAt
+        + "\",\"payload\":"
+        + (payload == null ? "null" : "\"" + payload + "\"")
+        + ",\"description\":null,\"parentId\":null,\"environment\":\"dev\",\"publisher\":"
+        + (publisher == null ? "null" : "\"" + publisher + "\"")
         + "}";
   }
 
@@ -299,6 +315,85 @@ class EventPublishApiTest {
     put(second, envelope("BuildSuccessful", "2026-07-31T12:46:03Z", PAYLOAD, null, "platform"))
         .then()
         .statusCode(400);
+  }
+
+  @Test
+  void aPublishMayNameItsPublisher() {
+    String id = UUID.randomUUID().toString();
+    String body = stamped("BuildSuccessful", "2026-07-31T12:46:03Z", PAYLOAD, CI);
+
+    put(id, body).then().statusCode(201).body("event.publisher", equalTo(CI));
+    // ... and the same bytes again are the same event, publisher and all.
+    put(id, body).then().statusCode(200).body("event.publisher", equalTo(CI));
+
+    given()
+        .when()
+        .get("/events/api/events/" + id)
+        .then()
+        .statusCode(200)
+        .body("event.publisher", equalTo(CI));
+  }
+
+  @Test
+  void aPublishWithoutAPublisherIsAcceptedAndThePublisherKeyIsStillEmitted() {
+    // Absent means null and is NEVER refused: every publisher built before the field sends none.
+    String id = UUID.randomUUID().toString();
+    put(id, envelope("BuildSuccessful", "2026-07-31T12:46:03Z", PAYLOAD, null, "dev"))
+        .then()
+        .statusCode(201)
+        .body("event", hasKey("publisher"))
+        .body("event.publisher", nullValue());
+    // ... and a replay of the same publisher-less bytes is a replay: null compares equal to null.
+    put(id, envelope("BuildSuccessful", "2026-07-31T12:46:03Z", PAYLOAD, null, "dev"))
+        .then()
+        .statusCode(200);
+
+    given().when().get("/events/api/events/" + id).then().body("event", hasKey("publisher"));
+  }
+
+  @Test
+  void reAttributingOneIdIsFourHundredInBothDirections() {
+    // publisher is INSIDE the comparison, like environment: one id dispatched by two services is
+    // two different claims about history.
+    String first = UUID.randomUUID().toString();
+    put(first, stamped("BuildSuccessful", "2026-07-31T12:46:03Z", PAYLOAD, null))
+        .then()
+        .statusCode(201);
+    // null → set
+    put(first, stamped("BuildSuccessful", "2026-07-31T12:46:03Z", PAYLOAD, CI))
+        .then()
+        .statusCode(400)
+        .contentType(ContentType.JSON)
+        .body("message", notNullValue());
+
+    String second = UUID.randomUUID().toString();
+    put(second, stamped("BuildSuccessful", "2026-07-31T12:46:03Z", PAYLOAD, CI))
+        .then()
+        .statusCode(201);
+    // set → null, and set → a different one
+    put(second, stamped("BuildSuccessful", "2026-07-31T12:46:03Z", PAYLOAD, null))
+        .then()
+        .statusCode(400);
+    put(
+            second,
+            stamped(
+                "BuildSuccessful",
+                "2026-07-31T12:46:03Z",
+                PAYLOAD,
+                "eu.wohlben.qits:qits-projects-service"))
+        .then()
+        .statusCode(400);
+  }
+
+  @Test
+  void aPublisherLongerThanItsColumnIsFourHundred() {
+    put(
+            UUID.randomUUID().toString(),
+            stamped("BuildSuccessful", "2026-07-31T12:46:03Z", PAYLOAD, "x".repeat(256)))
+        .then()
+        .statusCode(400)
+        .contentType(ContentType.JSON)
+        .body("message", notNullValue());
   }
 
   @Test

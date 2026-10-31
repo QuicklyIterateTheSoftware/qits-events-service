@@ -9,7 +9,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000002",
@@ -20,7 +21,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000003",
@@ -31,7 +33,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000004",
@@ -42,7 +45,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000005",
@@ -53,7 +57,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000006",
@@ -64,7 +69,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000007",
@@ -75,7 +81,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000008",
@@ -86,7 +93,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000009",
@@ -97,7 +105,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000000a",
@@ -108,7 +117,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000000b",
@@ -119,7 +129,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000000c",
@@ -130,7 +141,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000000d",
@@ -141,7 +153,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000000e",
@@ -152,7 +165,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000000f",
@@ -163,7 +177,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000010",
@@ -174,7 +189,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000011",
@@ -185,7 +201,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000012",
@@ -196,7 +213,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000013",
@@ -207,7 +225,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000014",
@@ -218,7 +237,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000015",
@@ -229,7 +249,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000016",
@@ -240,7 +261,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000017",
@@ -251,7 +273,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000018",
@@ -262,7 +285,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000019",
@@ -273,7 +297,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000001a",
@@ -284,7 +309,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000001b",
@@ -295,7 +321,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000001c",
@@ -306,7 +333,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000001d",
@@ -317,7 +345,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000001e",
@@ -328,7 +357,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000001f",
@@ -339,7 +369,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000020",
@@ -350,7 +381,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000021",
@@ -361,7 +393,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000022",
@@ -372,7 +405,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000023",
@@ -383,7 +417,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000024",
@@ -394,7 +429,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000025",
@@ -405,7 +441,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000026",
@@ -416,7 +453,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000027",
@@ -427,7 +465,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000028",
@@ -438,7 +477,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000029",
@@ -449,7 +489,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000002a",
@@ -460,7 +501,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000002b",
@@ -471,7 +513,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000002c",
@@ -482,7 +525,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000002d",
@@ -493,7 +537,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000002e",
@@ -504,7 +549,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000002f",
@@ -515,7 +561,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000030",
@@ -526,7 +573,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000031",
@@ -537,7 +585,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000032",
@@ -548,7 +597,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000033",
@@ -559,7 +609,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000034",
@@ -570,7 +621,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000035",
@@ -581,7 +633,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000036",
@@ -592,7 +645,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000037",
@@ -603,7 +657,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000038",
@@ -614,7 +669,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000039",
@@ -625,7 +681,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000003a",
@@ -636,7 +693,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000003b",
@@ -647,7 +705,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000003c",
@@ -658,7 +717,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000003d",
@@ -669,7 +729,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000003e",
@@ -680,7 +741,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000003f",
@@ -691,7 +753,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000040",
@@ -702,7 +765,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000041",
@@ -713,7 +777,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000042",
@@ -724,7 +789,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000043",
@@ -735,7 +801,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000044",
@@ -746,7 +813,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000045",
@@ -757,7 +825,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000046",
@@ -768,7 +837,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000047",
@@ -779,7 +849,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000048",
@@ -790,7 +861,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000049",
@@ -801,7 +873,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000004a",
@@ -812,7 +885,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000004b",
@@ -823,7 +897,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000004c",
@@ -834,7 +909,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000004d",
@@ -845,7 +921,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000004e",
@@ -856,7 +933,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000004f",
@@ -867,7 +945,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000050",
@@ -878,7 +957,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000051",
@@ -889,7 +969,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000052",
@@ -900,7 +981,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000053",
@@ -911,7 +993,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000054",
@@ -922,7 +1005,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000055",
@@ -933,7 +1017,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000056",
@@ -944,7 +1029,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000057",
@@ -955,7 +1041,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000058",
@@ -966,7 +1053,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000059",
@@ -977,7 +1065,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000005a",
@@ -988,7 +1077,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000005b",
@@ -999,7 +1089,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000005c",
@@ -1010,7 +1101,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000005d",
@@ -1021,7 +1113,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000005e",
@@ -1032,7 +1125,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000005f",
@@ -1043,7 +1137,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000060",
@@ -1054,7 +1149,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000061",
@@ -1065,7 +1161,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000062",
@@ -1076,7 +1173,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000063",
@@ -1087,7 +1185,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000064",
@@ -1098,7 +1197,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000065",
@@ -1109,7 +1209,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000066",
@@ -1120,7 +1221,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000067",
@@ -1131,7 +1233,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000068",
@@ -1142,7 +1245,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000069",
@@ -1153,7 +1257,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000006a",
@@ -1164,7 +1269,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000006b",
@@ -1175,7 +1281,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000006c",
@@ -1186,7 +1293,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000006d",
@@ -1197,7 +1305,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000006e",
@@ -1208,7 +1317,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000006f",
@@ -1219,7 +1329,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000070",
@@ -1230,7 +1341,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000071",
@@ -1241,7 +1353,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000072",
@@ -1252,7 +1365,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000073",
@@ -1263,7 +1377,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000074",
@@ -1274,7 +1389,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000075",
@@ -1285,7 +1401,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000076",
@@ -1296,7 +1413,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000077",
@@ -1307,7 +1425,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000078",
@@ -1318,7 +1437,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000079",
@@ -1329,7 +1449,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000007a",
@@ -1340,7 +1461,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000007b",
@@ -1351,7 +1473,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000007c",
@@ -1362,7 +1485,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000007d",
@@ -1373,7 +1497,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000007e",
@@ -1384,7 +1509,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000007f",
@@ -1395,7 +1521,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000080",
@@ -1406,7 +1533,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000081",
@@ -1417,7 +1545,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000082",
@@ -1428,7 +1557,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000083",
@@ -1439,7 +1569,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000084",
@@ -1450,7 +1581,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000085",
@@ -1461,7 +1593,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000086",
@@ -1472,7 +1605,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000087",
@@ -1483,7 +1617,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000088",
@@ -1494,7 +1629,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000089",
@@ -1505,7 +1641,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000008a",
@@ -1516,7 +1653,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000008b",
@@ -1527,7 +1665,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000008c",
@@ -1538,7 +1677,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000008d",
@@ -1549,7 +1689,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000008e",
@@ -1560,7 +1701,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000008f",
@@ -1571,7 +1713,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000090",
@@ -1582,7 +1725,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000091",
@@ -1593,7 +1737,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000092",
@@ -1604,7 +1749,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000093",
@@ -1615,7 +1761,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000094",
@@ -1626,7 +1773,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000095",
@@ -1637,7 +1785,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000096",
@@ -1648,7 +1797,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000097",
@@ -1659,7 +1809,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000098",
@@ -1670,7 +1821,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-000000000099",
@@ -1681,7 +1833,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000009a",
@@ -1692,7 +1845,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000009b",
@@ -1703,7 +1857,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000009c",
@@ -1714,7 +1869,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000009d",
@@ -1725,7 +1881,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000009e",
@@ -1736,7 +1893,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-00000000009f",
@@ -1747,7 +1905,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000a0",
@@ -1758,7 +1917,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000a1",
@@ -1769,7 +1929,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000a2",
@@ -1780,7 +1941,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000a3",
@@ -1791,7 +1953,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000a4",
@@ -1802,7 +1965,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000a5",
@@ -1813,7 +1977,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000a6",
@@ -1824,7 +1989,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000a7",
@@ -1835,7 +2001,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000a8",
@@ -1846,7 +2013,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000a9",
@@ -1857,7 +2025,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000aa",
@@ -1868,7 +2037,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000ab",
@@ -1879,7 +2049,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000ac",
@@ -1890,7 +2061,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000ad",
@@ -1901,7 +2073,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000ae",
@@ -1912,7 +2085,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000af",
@@ -1923,7 +2097,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000b0",
@@ -1934,7 +2109,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000b1",
@@ -1945,7 +2121,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000b2",
@@ -1956,7 +2133,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000b3",
@@ -1967,7 +2145,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000b4",
@@ -1978,7 +2157,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000b5",
@@ -1989,7 +2169,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000b6",
@@ -2000,7 +2181,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000b7",
@@ -2011,7 +2193,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000b8",
@@ -2022,7 +2205,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000b9",
@@ -2033,7 +2217,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000ba",
@@ -2044,7 +2229,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000bb",
@@ -2055,7 +2241,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000bc",
@@ -2066,7 +2253,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000bd",
@@ -2077,7 +2265,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000be",
@@ -2088,7 +2277,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000bf",
@@ -2099,7 +2289,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000c0",
@@ -2110,7 +2301,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000c1",
@@ -2121,7 +2313,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000c2",
@@ -2132,7 +2325,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000c3",
@@ -2143,7 +2337,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000c4",
@@ -2154,7 +2349,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000c5",
@@ -2165,7 +2361,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000c6",
@@ -2176,7 +2373,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000c7",
@@ -2187,7 +2385,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     },
     {
       "id": "00000000-0000-4000-8000-0000000000c8",
@@ -2198,7 +2397,8 @@
       "parentId": null,
       "environment": "dev",
       "createdAt": "2026-01-01T00:00:00Z",
-      "updatedAt": "2026-01-01T00:00:00Z"
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-deployments-service"
     }
   ],
   "nextCursor": "2100-01-01T00:03:20Z,00000000-0000-4000-8000-0000000000c8"

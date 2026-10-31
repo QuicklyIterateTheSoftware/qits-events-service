@@ -31,6 +31,10 @@ import java.util.function.Supplier;
  * <p><b>The events lie in the year 2100</b>, so they are the newest rows whatever else the test
  * database holds, and a list of the newest 20 always contains them. The recorder freezes every
  * instant anyway, so the year never reaches a golden master.
+ *
+ * <p><b>Every seeded event names its publisher</b> — the service that really dispatches that name
+ * on the estate ({@link #publisherOf}) — so the recorded answers carry a non-null {@code publisher}
+ * a consumer pact can bind by type. A null would only let it bind the key.
  */
 @ApplicationScoped
 public class ProviderStates {
@@ -70,11 +74,19 @@ public class ProviderStates {
   public static final String CURSOR_BEFORE_THE_STATE =
       "2100-01-01T00:00:00Z,00000000-0000-0000-0000-000000000000";
 
-  /** The envelope every publish state sends; {@code {eventId}} is the state's param. */
+  /**
+   * The envelope every publish state sends; {@code {eventId}} is the state's param. It names its
+   * {@code publisher}, as a stamping publisher's outbox does; a consumer pact built before the field
+   * sends none, which the provider accepts as null.
+   */
   public static final String PUBLISHED_ENVELOPE =
       "{\"name\":\"DeploymentActive\",\"occurredAt\":\"2026-01-01T00:00:00Z\","
           + "\"payload\":\"{\\\"application\\\":\\\"qits-eventstream-pact\\\"}\","
-          + "\"description\":null,\"parentId\":null,\"environment\":null}";
+          + "\"description\":null,\"parentId\":null,\"environment\":null,"
+          + "\"publisher\":\"eu.wohlben.qits:qits-deployments-service\"}";
+
+  /** The publisher {@link #PUBLISHED_ENVELOPE} names. */
+  private static final String PUBLISHED_PUBLISHER = "eu.wohlben.qits:qits-deployments-service";
 
   /** The payload {@link #PUBLISHED_ENVELOPE} carries. */
   private static final String PUBLISHED_PAYLOAD = "{\"application\":\"qits-eventstream-pact\"}";
@@ -509,7 +521,8 @@ public class ProviderStates {
         "{\"application\":\"another-application\"}",
         null,
         null,
-        null);
+        null,
+        PUBLISHED_PUBLISHER);
     created.add(eventId);
     return new Setup(Map.of("eventId", eventId), List.of());
   }
@@ -524,7 +537,8 @@ public class ProviderStates {
         PUBLISHED_PAYLOAD,
         null,
         null,
-        null);
+        null,
+        PUBLISHED_PUBLISHER);
     created.add(eventId);
     return new Setup(Map.of("eventId", eventId), List.of());
   }
@@ -631,8 +645,23 @@ public class ProviderStates {
       String description,
       String parentId,
       String environment) {
-    Event event = events.create(name, occurredAt, payload, description, parentId, environment);
+    Event event =
+        events.create(
+            name, occurredAt, payload, description, parentId, environment, publisherOf(name));
     created.add(event.id);
     return event;
+  }
+
+  /**
+   * The service that dispatches an event of this name on the estate: a {@code SoftwareRelease} is
+   * qits-ci's, a {@code DeploymentActive} qits-deployments', and the release-request, project, SCM
+   * and ticket events qits-projects'.
+   */
+  private static String publisherOf(String name) {
+    return switch (name) {
+      case "SoftwareRelease" -> "eu.wohlben.qits:qits-ci-service";
+      case "DeploymentActive" -> "eu.wohlben.qits:qits-deployments-service";
+      default -> "eu.wohlben.qits:qits-projects-service";
+    };
   }
 }

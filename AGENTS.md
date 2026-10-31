@@ -189,6 +189,9 @@ change of behaviour. The per-tier view the wall used to give for free came back 
 that serves every tier), stamped by the publisher from its own `QITS_ENVIRONMENT`, null for events
 recorded before the platform knew tiers — with `?environment=` on the list route as the read model
 (an indexed equality on its own column, `idx_event_environment`, unlike the payload scans).
+`publisher` sits beside it on the envelope: the service that dispatched the event
+(`eu.wohlben.qits:qits-ci-service`), null for events recorded before publishers stamped it, with no
+filter and so no index (`V3__publisher.sql`).
 
 `PUT /events/api/events/{id}` and `/events/stream` are the two surfaces that make this a bus rather
 than a log, and the wire contract for both is frozen in `eventsourcing-plan.md` in the superproject.
@@ -201,8 +204,8 @@ Three things about it are load-bearing here:
   reformatted the value — pretty-printing it, reordering keys, parsing and re-serializing it — would
   break the byte-for-byte equality the idempotent PUT rests on, and the break would look like
   "publishers keep getting 400 on their own retries".
-- **The comparison is `name` + `occurredAt` + `payload` + `parentId` + `environment`, and
-  `description` is outside it** on purpose. The line is *identity of the occurrence* versus *prose about it*: the human
+- **The comparison is `name` + `occurredAt` + `payload` + `parentId` + `environment` +
+  `publisher`, and `description` is outside it** on purpose. The line is *identity of the occurrence* versus *prose about it*: the human
   account is not part of an event's identity, and a cause is — it is machine-consumed structure and
   the edge a chain is drawn from, so two PUTs of one id claiming different parents are two different
   claims about history. Kept outside, the server would silently keep the first and answer 200 while
@@ -212,7 +215,9 @@ Three things about it are load-bearing here:
   identity side by the same argument: one id claiming two tiers is two claims about history. Its
   guard is shape rather than existence — a dns-safe name (`Validations.requireEnvironmentIfPresent`),
   never a lookup against qits-deployments' environments, which can delete an environment after its
-  events truthfully happened. `occurredAt` is truncated to
+  events truthfully happened. `publisher` sits there too — one id dispatched by two services is two
+  claims about history — under a length-only guard (`Validations.requirePublisherIfPresent`, at most
+  255), and is **never required**: an event without one is stored with null. `occurredAt` is truncated to
   microseconds on the way in, because the column is `timestamp(6)` and comparing the caller's
   nanoseconds against the database's microseconds would 400 a publisher's honest retry.
 - **`parentId` is validated twice and checked never.** It must be a canonical UUID when present, and

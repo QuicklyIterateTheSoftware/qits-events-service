@@ -144,7 +144,8 @@
             "payload": "{\"application\":\"qits-eventstream-pact\"}",
             "description": null,
             "parentId": null,
-            "environment": null
+            "environment": null,
+            "publisher": "eu.wohlben.qits:qits-deployments-service"
           },
           "status": 400,
           "file": "an-event-with-the-given-id/publishEvent.json",
@@ -366,7 +367,8 @@
             "payload": "{\"application\":\"qits-eventstream-pact\"}",
             "description": null,
             "parentId": null,
-            "environment": null
+            "environment": null,
+            "publisher": "eu.wohlben.qits:qits-deployments-service"
           },
           "status": 201,
           "file": "no-event-with-the-given-id/publishEvent.json",
@@ -675,7 +677,8 @@
             "payload": "{\"application\":\"qits-eventstream-pact\"}",
             "description": null,
             "parentId": null,
-            "environment": null
+            "environment": null,
+            "publisher": "eu.wohlben.qits:qits-deployments-service"
           },
           "status": 200,
           "file": "the-same-event-published-before/publishEvent.json",

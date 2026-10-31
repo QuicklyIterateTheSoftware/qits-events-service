@@ -89,6 +89,16 @@ class EventStreamSocketTest {
 
   private static io.restassured.response.Response publish(
       String id, String name, String payload, String parentId, String environment) {
+    return publish(id, name, payload, parentId, environment, null);
+  }
+
+  private static io.restassured.response.Response publish(
+      String id,
+      String name,
+      String payload,
+      String parentId,
+      String environment,
+      String publisher) {
     return given()
         .contentType(ContentType.JSON)
         .body(
@@ -100,6 +110,8 @@ class EventStreamSocketTest {
                 + (parentId == null ? "null" : "\"" + parentId + "\"")
                 + ",\"environment\":"
                 + (environment == null ? "null" : "\"" + environment + "\"")
+                + ",\"publisher\":"
+                + (publisher == null ? "null" : "\"" + publisher + "\"")
                 + "}")
         .when()
         .put("/events/api/events/" + id);
@@ -153,7 +165,7 @@ class EventStreamSocketTest {
       String id = record(name, "{\"branch\":\"main\"}");
       JsonNode frame = nextFrame(subscriber);
 
-      // The seven fields of the wire contract, and NOT createdAt/updatedAt: those are this
+      // The eight fields of the wire contract, and NOT createdAt/updatedAt: those are this
       // database's bookkeeping, not facts about the thing that happened. Their ORDER is no longer
       // part of the contract — both sides bind by name — but the set is, and so is the fact that
       // each new field was APPENDED: a subscriber built against the first five reads the frame it
@@ -161,7 +173,15 @@ class EventStreamSocketTest {
       List<String> fields = new ArrayList<>();
       frame.fieldNames().forEachRemaining(fields::add);
       assertEquals(
-          List.of("id", "name", "occurredAt", "payload", "description", "parentId", "environment"),
+          List.of(
+              "id",
+              "name",
+              "occurredAt",
+              "payload",
+              "description",
+              "parentId",
+              "environment",
+              "publisher"),
           fields);
 
       assertEquals(id, frame.get("id").asText());
@@ -177,6 +197,8 @@ class EventStreamSocketTest {
       // Same clause for the tier: null is "recorded before the platform knew tiers", and it is on
       // the wire as a value rather than a gap.
       assertTrue(frame.get("environment").isNull());
+      // ... and for the publisher: null is "recorded before publishers stamped it", on the wire.
+      assertTrue(frame.get("publisher").isNull());
     }
   }
 
@@ -214,6 +236,28 @@ class EventStreamSocketTest {
       JsonNode frame = nextFrame(subscriber);
       assertEquals(id, frame.get("id").asText());
       assertEquals("dev", frame.get("environment").asText());
+    }
+  }
+
+  @Test
+  void aFrameCarriesThePublisherThatDispatchedTheEvent() throws Exception {
+    // Who said it is a fact about the occurrence: the frame carries it, appended LAST, so a
+    // subscriber built against the seven-field frame reads the frame it always read.
+    String name = aSignature("Attributed");
+    String id = UUID.randomUUID().toString();
+    try (FakeSubscriber subscriber = FakeSubscriber.dial(endpoint)) {
+      subscriber.subscribe(name);
+      awaitSubscribed(name);
+
+      publish(id, name, "{\"attempt\":1}", null, "dev", "eu.wohlben.qits:qits-ci-service")
+          .then()
+          .statusCode(201);
+      JsonNode frame = nextFrame(subscriber);
+      assertEquals(id, frame.get("id").asText());
+      assertEquals("eu.wohlben.qits:qits-ci-service", frame.get("publisher").asText());
+      List<String> fields = new ArrayList<>();
+      frame.fieldNames().forEachRemaining(fields::add);
+      assertEquals("publisher", fields.get(fields.size() - 1));
     }
   }
 

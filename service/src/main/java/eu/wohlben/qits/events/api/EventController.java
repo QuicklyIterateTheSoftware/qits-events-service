@@ -187,8 +187,8 @@ public class EventController {
    * <p>{@code parentId} is optional here too, and validated exactly as it is on {@code PUT}: a
    * canonical UUID if present, never the new event's own id. A person recording by hand rarely names
    * a cause, but a field the bus accepts and this path dropped would be two definitions of an
-   * envelope behind one entity. {@code environment} follows for the same reason, under the same
-   * shape guard as {@code PUT}.
+   * envelope behind one entity. {@code environment} and {@code publisher} follow for the same
+   * reason, under the same shape guards as {@code PUT}.
    */
   public record CreateEventRequest(
       @NotBlank String name,
@@ -196,7 +196,8 @@ public class EventController {
       String payload,
       String description,
       String parentId,
-      String environment) {
+      String environment,
+      String publisher) {
     public record Response(EventDto event) {}
   }
 
@@ -211,7 +212,8 @@ public class EventController {
             request.payload(),
             request.description(),
             request.parentId(),
-            request.environment());
+            request.environment(),
+            request.publisher());
     return new CreateEventRequest.Response(eventMapper.toDto(event));
   }
 
@@ -234,6 +236,12 @@ public class EventController {
    * publisher serving every tier). Same clauses as the parent: absent is legal and means null — the
    * value of every event published before the field existed — and it is inside the replay
    * comparison, because one id claiming two tiers is two claims about history.
+   *
+   * <p>{@code publisher} is the service that dispatched the event, conventionally its maven
+   * coordinate ({@code eu.wohlben.qits:qits-ci-service}). Same clauses again: absent is legal and
+   * means null — an event is <b>never</b> refused for lacking one — at most 255 characters when
+   * present, and inside the replay comparison, because one id dispatched by two services is two
+   * claims about history.
    */
   public record PublishEventRequest(
       @NotBlank String name,
@@ -241,7 +249,8 @@ public class EventController {
       String payload,
       String description,
       String parentId,
-      String environment) {
+      String environment,
+      String publisher) {
     public record Response(EventDto event) {}
   }
 
@@ -251,7 +260,7 @@ public class EventController {
    * <ul>
    *   <li><b>201</b> — the id was unknown; the row was created and pushed to matching subscribers
    *   <li><b>200</b> — the id was known and {@code name}/{@code occurredAt}/{@code payload}/{@code
-   *       parentId}/{@code environment} match exactly: the same event arriving twice. Nothing
+   *       parentId}/{@code environment}/{@code publisher} match exactly: the same event arriving twice. Nothing
    *       written, nothing pushed
    *   <li><b>400</b> — the id was known and something differs (a reused UUID, which no retry fixes),
    *       or the id is not a UUID at all, or {@code parentId} is not a UUID, or {@code parentId} is
@@ -279,7 +288,8 @@ public class EventController {
             request.payload(),
             request.description(),
             request.parentId(),
-            request.environment());
+            request.environment(),
+            request.publisher());
     var body = new PublishEventRequest.Response(eventMapper.toDto(published.event()));
     return RestResponse.status(
         published.outcome() == EventService.PublishOutcome.CREATED

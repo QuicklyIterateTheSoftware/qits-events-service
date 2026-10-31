@@ -128,14 +128,17 @@ public class EventService {
       String payload,
       String description,
       String parentId,
-      String environment) {
+      String environment,
+      String publisher) {
     Validations.requireText(name, "name");
     String id = UUID.randomUUID().toString();
     Instant when = atStoredPrecision(occurredAt == null ? Instant.now() : occurredAt);
     String cause = causeOf(id, parentId);
     String tier = environmentOf(environment);
+    String source = publisherOf(publisher);
     return DbRetry.inNewTx(
-        "record an event", () -> store(id, name, when, payload, description, cause, tier));
+        "record an event",
+        () -> store(id, name, when, payload, description, cause, tier, source));
   }
 
   /**
@@ -147,17 +150,17 @@ public class EventService {
    * <ul>
    *   <li>the id is unknown → the row is created and announced ({@link PublishOutcome#CREATED},
    *       201);
-   *   <li>the id is known and {@code name}, {@code occurredAt}, {@code payload}, {@code parentId}
-   *       and {@code environment} are all exactly equal → this is the same event arriving twice,
-   *       because the publisher's first attempt got no answer. Nothing is written and <b>nothing is
-   *       announced</b> ({@link PublishOutcome#REPLAYED}, 200): a subscriber must not see an event
-   *       twice because a network dropped an acknowledgement;
-   *   <li>the id is known and any of the five differs → the caller reused a UUID, which is not
+   *   <li>the id is known and {@code name}, {@code occurredAt}, {@code payload}, {@code parentId},
+   *       {@code environment} and {@code publisher} are all exactly equal → this is the same event
+   *       arriving twice, because the publisher's first attempt got no answer. Nothing is written and
+   *       <b>nothing is announced</b> ({@link PublishOutcome#REPLAYED}, 200): a subscriber must not
+   *       see an event twice because a network dropped an acknowledgement;
+   *   <li>the id is known and any of the six differs → the caller reused a UUID, which is not
    *       something a retry can fix, so it is a 400 rather than a conflict to sit and poll on.
    * </ul>
    *
-   * <p><b>{@code description} is deliberately outside the comparison; {@code parentId} and {@code
-   * environment} are deliberately inside it.</b> The line is identity of the occurrence versus
+   * <p><b>{@code description} is deliberately outside the comparison; {@code parentId}, {@code
+   * environment} and {@code publisher} are deliberately inside it.</b> The line is identity of the occurrence versus
    * prose about it. Description is the human account; a publisher that improves its wording on a
    * retry has not published a different event. A parent is on the identity side: it is
    * machine-consumed structure, it is the edge a chain is drawn from, and two PUTs of one id
@@ -165,7 +168,8 @@ public class EventService {
    * would silently keep the first and answer 200 while the publisher believed it had published the
    * second, which is two services disagreeing about the shape of history with no error anywhere.
    * The environment sits on the same side by the same argument: which tier something happened in is
-   * machine-consumed structure, and one id claiming two tiers is two claims about history. The
+   * machine-consumed structure, and one id claiming two tiers is two claims about history. So does
+   * the publisher: one id dispatched by two services is two claims about who said it. The
    * strictness costs a well-behaved publisher nothing: an outbox stores the envelope whole, so its
    * own two attempts cannot disagree.
    *
@@ -188,7 +192,8 @@ public class EventService {
       String payload,
       String description,
       String parentId,
-      String environment) {
+      String environment,
+      String publisher) {
     Validations.requireUuid(id, "id");
     Validations.requireText(name, "name");
     // Unlike create, publish will not default it: an event whose time this server invented could
@@ -198,8 +203,10 @@ public class EventService {
     Instant when = atStoredPrecision(occurredAt);
     String cause = causeOf(id, parentId);
     String tier = environmentOf(environment);
+    String source = publisherOf(publisher);
     return DbRetry.inNewTx(
-        "publish an event", () -> decide(id, name, when, payload, description, cause, tier));
+        "publish an event",
+        () -> decide(id, name, when, payload, description, cause, tier, source));
   }
 
   /** One attempt at {@link #publish}: the whole of it, and nothing that is not database work. */
@@ -210,18 +217,21 @@ public class EventService {
       String payload,
       String description,
       String cause,
-      String environment) {
+      String environment,
+      String publisher) {
     Event existing = eventRepository.findById(id);
     if (existing == null) {
       return new Published(
-          store(id, name, when, payload, description, cause, environment), PublishOutcome.CREATED);
+          store(id, name, when, payload, description, cause, environment, publisher),
+          PublishOutcome.CREATED);
     }
 
     if (!name.equals(existing.name)
         || !when.equals(existing.occurredAt)
         || !Objects.equals(payload, existing.payload)
         || !Objects.equals(cause, existing.parentId)
-        || !Objects.equals(environment, existing.environment)) {
+        || !Objects.equals(environment, existing.environment)
+        || !Objects.equals(publisher, existing.publisher)) {
       throw new BadRequestException(
           "Event " + id + " already exists with different content — a UUID may not be reused");
     }
@@ -255,7 +265,8 @@ public class EventService {
       String payload,
       String description,
       String cause,
-      String environment) {
+      String environment,
+      String publisher) {
     Event event = new Event();
     event.id = id;
     event.name = name;
@@ -264,6 +275,7 @@ public class EventService {
     event.description = description;
     event.parentId = cause;
     event.environment = environment;
+    event.publisher = publisher;
     eventRepository.persist(event);
     eventRepository.flush();
     announce(event);
@@ -279,7 +291,8 @@ public class EventService {
             event.payload,
             event.description,
             event.parentId,
-            event.environment));
+            event.environment,
+            event.publisher));
   }
 
   /**
@@ -336,6 +349,25 @@ public class EventService {
   private static String environmentOf(String environment) {
     Validations.requireEnvironmentIfPresent(environment, "environment");
     return environment == null || environment.isBlank() ? null : environment;
+  }
+
+  /**
+   * The publisher to store, or null — {@link #environmentOf}'s shape for the field naming the
+   * service that dispatched the event ({@code eu.wohlben.qits:qits-ci-service}).
+   *
+   * <p>The guard is shape only — at most 255 characters, the column's width — and never a lookup:
+   * a publisher is a service of another context, it can be retired after its events truthfully
+   * happened, and a 400 here is unretryable. <b>Absence is never refused</b>: every publisher built
+   * before the field existed sends none, and refusing them would turn a new optional field into an
+   * outage.
+   *
+   * <p>Blank normalises to null, so that "no publisher" is one value and a replay of it compares
+   * equal. Null stays null rather than defaulting: only the publisher knows who it is, and an event
+   * that arrives without one predates the field.
+   */
+  private static String publisherOf(String publisher) {
+    Validations.requirePublisherIfPresent(publisher, "publisher");
+    return publisher == null || publisher.isBlank() ? null : publisher;
   }
 
   /**

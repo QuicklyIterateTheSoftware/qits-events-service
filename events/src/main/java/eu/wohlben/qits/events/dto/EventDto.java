@@ -17,6 +17,11 @@ import java.time.Instant;
  * <p>{@code environment} is the tier the publisher ran in ({@code dev}, {@code platform}), or null
  * for an event recorded before the platform knew tiers. Like {@code parentId} it may name an
  * environment this reader cannot resolve — one deleted since — and that is data, not an error.
+ *
+ * <p>{@code publisher} is the service that dispatched the event ({@code
+ * eu.wohlben.qits:qits-ci-service}), or null for an event recorded before publishers stamped it.
+ * It is appended last, after the row's own timestamps, so a client built against the earlier shape
+ * reads what it always read; the key is always emitted, null when absent.
  */
 public record EventDto(
     String id,
@@ -27,4 +32,5 @@ public record EventDto(
     String parentId,
     String environment,
     Instant createdAt,
-    Instant updatedAt) {}
+    Instant updatedAt,
+    String publisher) {}

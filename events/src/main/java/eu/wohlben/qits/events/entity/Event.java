@@ -87,6 +87,20 @@ public class Event extends PanacheEntityBase {
   @Column(length = 64)
   public String environment;
 
+  /**
+   * The service that dispatched the event — conventionally its maven coordinate, {@code
+   * eu.wohlben.qits:qits-ci-service} — or null for an event recorded before publishers stamped it.
+   * Envelope data like {@link #environment}, for the same reason: inside the payload, one occurrence
+   * relayed by two services would compare as two events.
+   *
+   * <p>Part of the identity of the occurrence, so the idempotent {@code PUT} compares it: one id
+   * dispatched by two services is two claims about history. It names a service by value with <b>no
+   * existence check</b>: a service can be retired after its events happened, and the events remain
+   * true.
+   */
+  @Column(length = 255)
+  public String publisher;
+
   @CreationTimestamp
   @Column(name = "created_at", nullable = false, updatable = false)
   public Instant createdAt;

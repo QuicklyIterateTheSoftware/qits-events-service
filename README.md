@@ -13,7 +13,7 @@ of what is here; nothing below describes a plan.
 
 | | |
 |---|---|
-| `Event` | a name, an `occurredAt`, an optional `payload`, an optional description, an optional `parentId` and an optional `environment` — plus the row's own `createdAt`/`updatedAt` |
+| `Event` | a name, an `occurredAt`, an optional `payload`, an optional description, an optional `parentId`, an optional `environment` and an optional `publisher` — plus the row's own `createdAt`/`updatedAt` |
 
 The three timestamps are not redundant. `occurredAt` is the **caller's** — when the thing happened,
 supplied on write and freely in the past, because a log is mostly written after the fact — while
@@ -36,6 +36,13 @@ row of another context's store (qits-deployments' environments) by value with no
 existence check: only its *shape* is validated (a dns-safe name), because an environment can be
 deleted after its events truthfully happened. `?environment=` on the list route filters by it,
 as an indexed equality on its own column.
+
+`publisher` is the service that dispatched the event — conventionally its maven coordinate,
+`eu.wohlben.qits:qits-ci-service` — or null for an event recorded before publishers stamped it.
+Envelope rather than payload, inside the replay comparison (one id dispatched by two services is two
+claims about history), and named by value with no existence check: only its length is validated (at
+most 255 characters, the column's width), because a service can be retired after its events
+truthfully happened. **An event is never refused for lacking one.** There is no filter on it yet.
 
 **A `parentId` this log cannot resolve is data, not an error, and there is no foreign key.** Nothing
 orders a parent's arrival before its child's — publishes are independent HTTP calls, and a parent
@@ -137,7 +144,8 @@ The envelope is one shape in both directions:
   "payload": "{\"branch\":\"main\",\"repoId\":\"qits-ci\"}",
   "description": null,
   "parentId": null,
-  "environment": "dev" }
+  "environment": "dev",
+  "publisher": "eu.wohlben.qits:qits-ci-service" }
 ```
 
 `payload` is the publishing event class's own fields as **canonical JSON in a string**. This service
@@ -146,7 +154,7 @@ the equality below is the only reason a retry is safe. `parentId` is envelope, n
 payload is compared byte for byte, so a cause that entered it would make one event published under
 two parents two events nothing could reconcile.
 
-**`parentId` and `environment` may be absent, and absent means null.** That is the whole of this
+**`parentId`, `environment` and `publisher` may be absent, and absent means null.** That is the whole of this
 contract's backward
 compatibility: a publisher that never learned about the field keeps working, which is why this
 service ships before any publisher that stamps. The reverse order is the unsafe one — a stamping
@@ -154,7 +162,7 @@ publisher against a service without the column has its parents silently dropped,
 as roots cannot be backfilled.
 
 The publish has three answers and no fourth — `201` for an id this log has not seen, `200` for the
-same `name`/`occurredAt`/`payload`/`parentId`/`environment` arriving again (nothing written,
+same `name`/`occurredAt`/`payload`/`parentId`/`environment`/`publisher` arriving again (nothing written,
 nothing pushed),
 `400` for an id that exists with anything different, which is a reused UUID and not something a
 retry fixes. `description` is deliberately outside that comparison and `parentId` is deliberately
@@ -163,11 +171,12 @@ claiming different causes are two different claims about history. Two more `400`
 cause — a `parentId` that is not a canonical UUID, and a `parentId` equal to the event's own id,
 since an event cannot cause itself. A `parentId` this log has never seen is **not** one of them.
 `POST /events/api/events` stays what it was, for recording something by hand, and takes an optional
-`parentId` validated identically so the two write paths cannot diverge about what an event is.
+`parentId` (and `environment` and `publisher`) validated identically so the two write paths cannot
+diverge about what an event is.
 
 A subscriber connects to `/events/stream` and sends one frame — `{"subscribe": ["BuildSuccessful"]}`,
 which *replaces* that connection's set; `["*"]` means everything — and is then pushed
-`{"id", "name", "occurredAt", "payload", "description", "parentId", "environment"}` for each newly created matching
+`{"id", "name", "occurredAt", "payload", "description", "parentId", "environment", "publisher"}` for each newly created matching
 event. `name` doubles as the **signature** a subscriber matches on. The field *order* is not part of
 the contract — both sides bind by name — but appending is: a subscriber built against the first five
 fields reads the frame it always read. Live only, at-most-once: no replay, no offset, no catch-up.

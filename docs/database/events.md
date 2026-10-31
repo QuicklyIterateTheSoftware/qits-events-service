@@ -15,6 +15,7 @@ erDiagram
     instant occurred_at "not null"
     string parent_id
     string payload
+    string publisher "length 255"
     instant updated_at "not null"
   }
 ```

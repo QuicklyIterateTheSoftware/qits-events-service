@@ -47,6 +47,17 @@ class EventApiTest {
       String description,
       String parentId,
       String environment) {
+    return create(name, occurredAt, payload, description, parentId, environment, null);
+  }
+
+  private String create(
+      String name,
+      String occurredAt,
+      String payload,
+      String description,
+      String parentId,
+      String environment,
+      String publisher) {
     return given()
         .contentType(ContentType.JSON)
         .body(
@@ -56,7 +67,8 @@ class EventApiTest {
                 payload,
                 description,
                 parentId,
-                environment))
+                environment,
+                publisher))
         .when()
         .post("/events/api/events")
         .then()
@@ -195,7 +207,31 @@ class EventApiTest {
         .body("event.parentId", nullValue())
         // ... and the tier key rides on the same clause: on the wire even when it is null.
         .body("event", hasKey("environment"))
-        .body("event.environment", nullValue());
+        .body("event.environment", nullValue())
+        // ... and so does the publisher key.
+        .body("event", hasKey("publisher"))
+        .body("event.publisher", nullValue());
+  }
+
+  @Test
+  void aManualRecordMayNameItsPublisherToo() {
+    // The manual path takes every envelope field the bus does: two write paths must not disagree
+    // about what an event is.
+    String id =
+        create(
+            "Attributed " + System.nanoTime(),
+            "2026-07-31T09:00:00Z",
+            null,
+            null,
+            null,
+            null,
+            "eu.wohlben.qits:qits-ci-service");
+    given()
+        .when()
+        .get("/events/api/events/" + id)
+        .then()
+        .statusCode(200)
+        .body("event.publisher", equalTo("eu.wohlben.qits:qits-ci-service"));
   }
 
   /**

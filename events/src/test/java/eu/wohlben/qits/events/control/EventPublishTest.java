@@ -22,6 +22,8 @@ import org.junit.jupiter.api.Test;
 @QuarkusTest
 class EventPublishTest extends EventsTestSupport {
 
+  private static final String CI = "eu.wohlben.qits:qits-ci-service";
+
   private static final String PAYLOAD =
       "{\"branch\":\"main\",\"commitSha\":\"abc123\",\"repoId\":\"qits-ci\"}";
 
@@ -36,7 +38,7 @@ class EventPublishTest extends EventsTestSupport {
     String id = aUuid();
     Instant when = Instant.parse("2026-07-31T12:46:03Z");
 
-    Published published = eventService.publish(id, "BuildSuccessful", when, PAYLOAD, null, null, null);
+    Published published = eventService.publish(id, "BuildSuccessful", when, PAYLOAD, null, null, null, null);
 
     assertEquals(PublishOutcome.CREATED, published.outcome());
     // The id is the PUBLISHER's, not one this service invented — that is the whole mechanism.
@@ -49,9 +51,9 @@ class EventPublishTest extends EventsTestSupport {
   void theSameEventArrivingTwiceIsAReplayAndWritesNothing() {
     String id = aUuid();
     Instant when = Instant.parse("2026-07-31T12:46:03Z");
-    eventService.publish(id, "BuildSuccessful", when, PAYLOAD, "first attempt", null, null);
+    eventService.publish(id, "BuildSuccessful", when, PAYLOAD, "first attempt", null, null, null);
 
-    Published again = eventService.publish(id, "BuildSuccessful", when, PAYLOAD, "first attempt", null, null);
+    Published again = eventService.publish(id, "BuildSuccessful", when, PAYLOAD, "first attempt", null, null, null);
 
     assertEquals(PublishOutcome.REPLAYED, again.outcome());
     assertEquals(1, eventService.list().size(), "a replay must not land a second row");
@@ -64,9 +66,9 @@ class EventPublishTest extends EventsTestSupport {
     // written, so the stored account stays the one that was committed.
     String id = aUuid();
     Instant when = Instant.parse("2026-07-31T12:46:03Z");
-    eventService.publish(id, "BuildSuccessful", when, PAYLOAD, "as first sent", null, null);
+    eventService.publish(id, "BuildSuccessful", when, PAYLOAD, "as first sent", null, null, null);
 
-    Published again = eventService.publish(id, "BuildSuccessful", when, PAYLOAD, "reworded", null, null);
+    Published again = eventService.publish(id, "BuildSuccessful", when, PAYLOAD, "reworded", null, null, null);
 
     assertEquals(PublishOutcome.REPLAYED, again.outcome());
     inFreshTx(() -> assertEquals("as first sent", eventService.get(id).description));
@@ -80,9 +82,9 @@ class EventPublishTest extends EventsTestSupport {
     // represent.
     String id = aUuid();
     Instant nanos = Instant.parse("2026-07-31T12:46:03Z").plusNanos(123_456_789L);
-    eventService.publish(id, "BuildSuccessful", nanos, PAYLOAD, null, null, null);
+    eventService.publish(id, "BuildSuccessful", nanos, PAYLOAD, null, null, null, null);
 
-    Published again = eventService.publish(id, "BuildSuccessful", nanos, PAYLOAD, null, null, null);
+    Published again = eventService.publish(id, "BuildSuccessful", nanos, PAYLOAD, null, null, null, null);
 
     assertEquals(PublishOutcome.REPLAYED, again.outcome());
     inFreshTx(
@@ -94,24 +96,28 @@ class EventPublishTest extends EventsTestSupport {
   void aReusedUuidIsUnretryableRatherThanAConflictToPollOn() {
     String id = aUuid();
     Instant when = Instant.parse("2026-07-31T12:46:03Z");
-    eventService.publish(id, "BuildSuccessful", when, PAYLOAD, null, null, null);
+    eventService.publish(id, "BuildSuccessful", when, PAYLOAD, null, null, null, null);
 
     for (Runnable differing :
         List.<Runnable>of(
-            () -> eventService.publish(id, "SomethingElse", when, PAYLOAD, null, null, null),
+            () -> eventService.publish(id, "SomethingElse", when, PAYLOAD, null, null, null, null),
             () ->
                 eventService.publish(
-                    id, "BuildSuccessful", when.plusSeconds(1), PAYLOAD, null, null, null),
+                    id, "BuildSuccessful", when.plusSeconds(1), PAYLOAD, null, null, null, null),
             () ->
                 eventService.publish(
-                    id, "BuildSuccessful", when, "{\"branch\":\"other\"}", null, null, null),
-            () -> eventService.publish(id, "BuildSuccessful", when, null, null, null, null),
+                    id, "BuildSuccessful", when, "{\"branch\":\"other\"}", null, null, null, null),
+            () -> eventService.publish(id, "BuildSuccessful", when, null, null, null, null, null),
             // ... and the fourth field: two PUTs of one id claiming different causes are two
             // different claims about history, in BOTH directions.
-            () -> eventService.publish(id, "BuildSuccessful", when, PAYLOAD, null, aUuid(), null),
+            () -> eventService.publish(id, "BuildSuccessful", when, PAYLOAD, null, aUuid(), null, null),
             // ... and the fifth: one id claiming two tiers is the same disagreement about history,
             // wearing the environment field.
-            () -> eventService.publish(id, "BuildSuccessful", when, PAYLOAD, null, null, "dev"))) {
+            () -> eventService.publish(id, "BuildSuccessful", when, PAYLOAD, null, null, "dev", null),
+            // ... and the sixth: one id dispatched by two services is two claims about who said it.
+            () ->
+                eventService.publish(
+                    id, "BuildSuccessful", when, PAYLOAD, null, null, null, CI))) {
       assertThrows(BadRequestException.class, differing::run);
     }
   }
@@ -121,11 +127,11 @@ class EventPublishTest extends EventsTestSupport {
     Instant when = Instant.parse("2026-07-31T12:46:03Z");
     assertThrows(
         BadRequestException.class,
-        () -> eventService.publish("not-a-uuid", "BuildSuccessful", when, PAYLOAD, null, null, null));
+        () -> eventService.publish("not-a-uuid", "BuildSuccessful", when, PAYLOAD, null, null, null, null));
     // UUID.fromString alone accepts this; the round-trip check is what does not.
     assertThrows(
         BadRequestException.class,
-        () -> eventService.publish("1-1-1-1-1", "BuildSuccessful", when, PAYLOAD, null, null, null));
+        () -> eventService.publish("1-1-1-1-1", "BuildSuccessful", when, PAYLOAD, null, null, null, null));
     assertEquals(List.of(), eventService.list());
   }
 
@@ -135,21 +141,21 @@ class EventPublishTest extends EventsTestSupport {
     // invented could never replay equal to itself.
     assertThrows(
         BadRequestException.class,
-        () -> eventService.publish(aUuid(), "BuildSuccessful", null, PAYLOAD, null, null, null));
+        () -> eventService.publish(aUuid(), "BuildSuccessful", null, PAYLOAD, null, null, null, null));
   }
 
   @Test
   void aPublishedEventNeedsNoPayloadEither() {
     String id = aUuid();
     Instant when = Instant.parse("2026-07-31T12:46:03Z");
-    Published published = eventService.publish(id, "SomethingHappened", when, null, null, null, null);
+    Published published = eventService.publish(id, "SomethingHappened", when, null, null, null, null, null);
     assertEquals(PublishOutcome.CREATED, published.outcome());
     assertNull(published.event().payload);
 
     // ... and null must compare equal to null on the replay, not fall into the mismatch branch.
     assertEquals(
         PublishOutcome.REPLAYED,
-        eventService.publish(id, "SomethingHappened", when, null, null, null, null).outcome());
+        eventService.publish(id, "SomethingHappened", when, null, null, null, null, null).outcome());
   }
 
   @Test
@@ -164,7 +170,7 @@ class EventPublishTest extends EventsTestSupport {
     Instant when = Instant.parse("2026-07-31T12:46:03Z");
 
     Published published =
-        eventService.publish(id, "BuildSuccessful", when, PAYLOAD, null, neverSeen, null);
+        eventService.publish(id, "BuildSuccessful", when, PAYLOAD, null, neverSeen, null, null);
 
     assertEquals(PublishOutcome.CREATED, published.outcome());
     assertEquals(neverSeen, published.event().parentId);
@@ -177,25 +183,83 @@ class EventPublishTest extends EventsTestSupport {
     Instant when = Instant.parse("2026-07-31T12:46:03Z");
 
     Published published =
-        eventService.publish(id, "BuildSuccessful", when, PAYLOAD, null, null, "dev");
+        eventService.publish(id, "BuildSuccessful", when, PAYLOAD, null, null, "dev", null);
 
     assertEquals(PublishOutcome.CREATED, published.outcome());
     assertEquals("dev", published.event().environment);
     assertEquals(
         PublishOutcome.REPLAYED,
-        eventService.publish(id, "BuildSuccessful", when, PAYLOAD, null, null, "dev").outcome());
+        eventService.publish(id, "BuildSuccessful", when, PAYLOAD, null, null, "dev", null).outcome());
   }
 
   @Test
   void aBlankEnvironmentNormalisesToNullSoAReplayOfNoTierComparesEqual() {
     String id = aUuid();
     Instant when = Instant.parse("2026-07-31T12:46:03Z");
-    eventService.publish(id, "BuildSuccessful", when, PAYLOAD, null, null, "  ");
+    eventService.publish(id, "BuildSuccessful", when, PAYLOAD, null, null, "  ", null);
 
     inFreshTx(() -> assertNull(eventService.get(id).environment));
     assertEquals(
         PublishOutcome.REPLAYED,
-        eventService.publish(id, "BuildSuccessful", when, PAYLOAD, null, null, null).outcome());
+        eventService.publish(id, "BuildSuccessful", when, PAYLOAD, null, null, null, null).outcome());
+  }
+
+  @Test
+  void thePublisherIsStoredAndAReplayUnderItComparesEqual() {
+    String id = aUuid();
+    Instant when = Instant.parse("2026-07-31T12:46:03Z");
+
+    Published published =
+        eventService.publish(id, "BuildSuccessful", when, PAYLOAD, null, null, "dev", CI);
+
+    assertEquals(PublishOutcome.CREATED, published.outcome());
+    assertEquals(CI, published.event().publisher);
+    inFreshTx(() -> assertEquals(CI, eventService.get(id).publisher));
+    assertEquals(
+        PublishOutcome.REPLAYED,
+        eventService.publish(id, "BuildSuccessful", when, PAYLOAD, null, null, "dev", CI).outcome());
+  }
+
+  @Test
+  void aDifferentPublisherIsAReusedIdInBothDirections() {
+    Instant when = Instant.parse("2026-07-31T12:46:03Z");
+    String stamped = aUuid();
+    eventService.publish(stamped, "BuildSuccessful", when, PAYLOAD, null, null, null, CI);
+    for (String other : java.util.Arrays.asList(null, "eu.wohlben.qits:qits-projects-service")) {
+      assertThrows(
+          BadRequestException.class,
+          () ->
+              eventService.publish(
+                  stamped, "BuildSuccessful", when, PAYLOAD, null, null, null, other));
+    }
+  }
+
+  @Test
+  void anAbsentPublisherIsAcceptedAsNullAndBlankNormalisesToIt() {
+    // NEVER refused for lacking one: every publisher built before the field sends none.
+    String id = aUuid();
+    Instant when = Instant.parse("2026-07-31T12:46:03Z");
+    Published published =
+        eventService.publish(id, "BuildSuccessful", when, PAYLOAD, null, null, null, null);
+
+    assertEquals(PublishOutcome.CREATED, published.outcome());
+    inFreshTx(() -> assertNull(eventService.get(id).publisher));
+    assertEquals(
+        PublishOutcome.REPLAYED,
+        eventService.publish(id, "BuildSuccessful", when, PAYLOAD, null, null, null, "  ").outcome());
+  }
+
+  @Test
+  void aPublisherLongerThanItsColumnIsRefusedBeforeAnythingIsStored() {
+    Instant when = Instant.parse("2026-07-31T12:46:03Z");
+    assertThrows(
+        BadRequestException.class,
+        () ->
+            eventService.publish(
+                aUuid(), "BuildSuccessful", when, PAYLOAD, null, null, null, "p".repeat(256)));
+    assertEquals(List.of(), eventService.list());
+    // ... while exactly the column's width is fine.
+    eventService.publish(aUuid(), "BuildSuccessful", when, PAYLOAD, null, null, null, "p".repeat(255));
   }
 
   @Test
@@ -207,7 +271,7 @@ class EventPublishTest extends EventsTestSupport {
     for (String bad : List.of("Dev", "dev/2", "-dev", "dev-", "d".repeat(64))) {
       assertThrows(
           BadRequestException.class,
-          () -> eventService.publish(aUuid(), "BuildSuccessful", when, PAYLOAD, null, null, bad));
+          () -> eventService.publish(aUuid(), "BuildSuccessful", when, PAYLOAD, null, null, bad, null));
     }
     assertEquals(List.of(), eventService.list());
   }
@@ -217,11 +281,11 @@ class EventPublishTest extends EventsTestSupport {
     String parent = aUuid();
     String id = aUuid();
     Instant when = Instant.parse("2026-07-31T12:46:03Z");
-    eventService.publish(id, "BuildSuccessful", when, PAYLOAD, null, parent, null);
+    eventService.publish(id, "BuildSuccessful", when, PAYLOAD, null, parent, null, null);
 
     assertEquals(
         PublishOutcome.REPLAYED,
-        eventService.publish(id, "BuildSuccessful", when, PAYLOAD, null, parent, null).outcome());
+        eventService.publish(id, "BuildSuccessful", when, PAYLOAD, null, parent, null, null).outcome());
   }
 
   @Test
@@ -231,10 +295,10 @@ class EventPublishTest extends EventsTestSupport {
     Instant when = Instant.parse("2026-07-31T12:46:03Z");
     assertThrows(
         BadRequestException.class,
-        () -> eventService.publish(aUuid(), "BuildSuccessful", when, PAYLOAD, null, "not-a-uuid", null));
+        () -> eventService.publish(aUuid(), "BuildSuccessful", when, PAYLOAD, null, "not-a-uuid", null, null));
     assertThrows(
         BadRequestException.class,
-        () -> eventService.publish(aUuid(), "BuildSuccessful", when, PAYLOAD, null, "1-1-1-1-1", null));
+        () -> eventService.publish(aUuid(), "BuildSuccessful", when, PAYLOAD, null, "1-1-1-1-1", null, null));
     assertEquals(List.of(), eventService.list());
   }
 
@@ -247,7 +311,7 @@ class EventPublishTest extends EventsTestSupport {
     Instant when = Instant.parse("2026-07-31T12:46:03Z");
     assertThrows(
         BadRequestException.class,
-        () -> eventService.publish(id, "BuildSuccessful", when, PAYLOAD, null, id, null));
+        () -> eventService.publish(id, "BuildSuccessful", when, PAYLOAD, null, id, null, null));
     assertEquals(List.of(), eventService.list());
   }
 
@@ -256,14 +320,14 @@ class EventPublishTest extends EventsTestSupport {
     String parent = aUuid();
     String other = aUuid();
     eventService.publish(
-        aUuid(), "Middle", Instant.parse("2026-06-01T00:00:00Z"), null, null, parent, null);
+        aUuid(), "Middle", Instant.parse("2026-06-01T00:00:00Z"), null, null, parent, null, null);
     eventService.publish(
-        aUuid(), "Oldest", Instant.parse("2026-01-01T00:00:00Z"), null, null, parent, null);
+        aUuid(), "Oldest", Instant.parse("2026-01-01T00:00:00Z"), null, null, parent, null, null);
     eventService.publish(
-        aUuid(), "Newest", Instant.parse("2026-12-01T00:00:00Z"), null, null, parent, null);
+        aUuid(), "Newest", Instant.parse("2026-12-01T00:00:00Z"), null, null, parent, null, null);
     eventService.publish(
-        aUuid(), "SomebodyElses", Instant.parse("2026-12-02T00:00:00Z"), null, null, other, null);
-    eventService.publish(aUuid(), "ARoot", Instant.parse("2026-12-03T00:00:00Z"), null, null, null, null);
+        aUuid(), "SomebodyElses", Instant.parse("2026-12-02T00:00:00Z"), null, null, other, null, null);
+    eventService.publish(aUuid(), "ARoot", Instant.parse("2026-12-03T00:00:00Z"), null, null, null, null, null);
 
     assertEquals(
         List.of("Newest", "Middle", "Oldest"),
