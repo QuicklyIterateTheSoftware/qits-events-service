@@ -174,12 +174,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <!-- Same as above: qits-configuration-service's pact against this provider. -->
-            <groupId>${project.groupId}</groupId>
-            <artifactId>qits-configuration-service-pacts-qits-events-service</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <!-- Same as above: qits-edge-service's pact against this provider. -->
             <groupId>${project.groupId}</groupId>
             <artifactId>qits-edge-service-pacts-qits-events-service</artifactId>

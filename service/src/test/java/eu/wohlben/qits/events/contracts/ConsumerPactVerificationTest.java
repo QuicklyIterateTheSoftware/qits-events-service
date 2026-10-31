@@ -34,9 +34,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * pins that jar as a test dependency, and qits-maintenance bumps the pin when the consumer releases
  * a changed pact. {@link ClasspathPactLoader} finds them all.
  *
- * <p><b>All nine consumers pin a pact now</b> (ticket qits-1163, "library-made calls pacted per
- * consuming service"). Each of the nine — {@code qits-ci-service}, {@code qits-githost-service},
- * {@code qits-deployments-service}, {@code qits-configuration-service}, {@code qits-edge-service},
+ * <p><b>All eight consumers pin a pact now</b> (ticket qits-1163, "library-made calls pacted per
+ * consuming service"). Each of the eight — {@code qits-ci-service}, {@code qits-githost-service},
+ * {@code qits-deployments-service}, {@code qits-edge-service},
  * {@code qits-maintenance-service}, {@code qits-orchestrator-service}, {@code qits-projects-service}
  * and {@code qits-workspaces-service} — commits {@code
  * pacts/<service>_qits-eventstream-javalib_qits-events-service.json}: the library's calls on its

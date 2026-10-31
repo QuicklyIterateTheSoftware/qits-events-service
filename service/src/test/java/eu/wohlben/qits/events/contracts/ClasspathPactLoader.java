@@ -30,9 +30,9 @@ import java.util.stream.Stream;
  * <p>It asks the class loader for every {@code pacts/} directory, then lists each one: a {@code jar:}
  * URL by walking the jar's entries, a {@code file:} URL by listing the directory.
  *
- * <p><b>All nine consumers pin a pact now.</b> Ticket qits-1163 (library-made calls pacted per
+ * <p><b>All eight consumers pin a pact now.</b> Ticket qits-1163 (library-made calls pacted per
  * consuming service) pins qits-ci-service, qits-githost-service, qits-deployments-service,
- * qits-configuration-service, qits-edge-service, qits-maintenance-service,
+ * qits-edge-service, qits-maintenance-service,
  * qits-orchestrator-service, qits-projects-service and qits-workspaces-service, each carrying a
  * {@code pacts/<consumer>_qits-eventstream-javalib_qits-events-service.json} written by the
  * library's kit qits-eventstream-contracts. qits-ci-service's earlier pin (ticket qits-1149, its own

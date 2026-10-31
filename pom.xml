@@ -51,9 +51,9 @@
              `pacts/<consumer>_qits-eventstream-javalib_qits-events-service.json`.
              ConsumerPactVerificationTest verifies them off the test classpath; qits-maintenance bumps
              a pin when its consumer publishes a changed pact. qits-1163 (“library-made calls pacted
-             per consuming service”) pins all nine as each is actually released —
-             qits-ci-service, qits-githost-service, qits-deployments-service and
-             qits-configuration-service first, then qits-edge-service, qits-maintenance-service,
+             per consuming service”) pins all eight as each is actually released —
+             qits-ci-service, qits-githost-service and qits-deployments-service first, then
+             qits-edge-service, qits-maintenance-service,
              qits-orchestrator-service and qits-projects-service, then qits-workspaces-service last,
              all below. qits-1149's earlier pins for qits-ci-service and qits-projects-service (their
              own committed `pacts/<name>_qits-events-service.json`, not through the library) are
@@ -62,7 +62,6 @@
         <qits.ci-service-pacts-qits-events-service.version>2026.1027.165202</qits.ci-service-pacts-qits-events-service.version>
         <qits.githost-service-pacts-qits-events-service.version>2026.1027.214012</qits.githost-service-pacts-qits-events-service.version>
         <qits.deployments-service-pacts-qits-events-service.version>2026.1027.235839</qits.deployments-service-pacts-qits-events-service.version>
-        <qits.configuration-service-pacts-qits-events-service.version>2026.1028.152249</qits.configuration-service-pacts-qits-events-service.version>
         <qits.edge-service-pacts-qits-events-service.version>2026.1027.173813</qits.edge-service-pacts-qits-events-service.version>
         <qits.maintenance-service-pacts-qits-events-service.version>2026.1027.225628</qits.maintenance-service-pacts-qits-events-service.version>
         <qits.orchestrator-service-pacts-qits-events-service.version>2026.1029.123028</qits.orchestrator-service-pacts-qits-events-service.version>
@@ -228,12 +227,6 @@
                 <groupId>${project.groupId}</groupId>
                 <artifactId>qits-deployments-service-pacts-qits-events-service</artifactId>
                 <version>${qits.deployments-service-pacts-qits-events-service.version}</version>
-            </dependency>
-            <dependency>
-                <!-- Same as above: qits-configuration-service's pact against this provider. -->
-                <groupId>${project.groupId}</groupId>
-                <artifactId>qits-configuration-service-pacts-qits-events-service</artifactId>
-                <version>${qits.configuration-service-pacts-qits-events-service.version}</version>
             </dependency>
             <dependency>
                 <!-- Same as above: qits-edge-service's pact against this provider. -->
