@@ -22,8 +22,8 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 /**
- * A person's bearer token, checked by the real quarkus-oidc against a local key, beside the
- * forward-auth headers that in-network callers keep sending.
+ * A bearer token, checked by the real quarkus-oidc against a local key. It is the only credential:
+ * the forward-auth headers authenticate nothing (qits-1363; forward-auth goes with qits-1338).
  *
  * <p>Why tokens reach this service at all: a person's command-line tool calls through the edge with
  * that person's token, and the edge strips the {@code X-Qits-*} headers from any request that
@@ -36,9 +36,6 @@ class BearerAuthTest {
 
   private static final String NAMES = "/events/api/events/names";
   private static final String LOG = "/events/api/events";
-
-  private static final Map<String, String> IN_NETWORK =
-      Map.of("X-Qits-User", "qits-eventstream", "X-Qits-Roles", "qits:system");
 
   @TestHTTPResource("/events/api/stream")
   URI sse;
@@ -173,29 +170,25 @@ class BearerAuthTest {
         .statusCode(401);
   }
 
+  // --- the forwarded identity headers -----------------------------------------------------------
+
+  /**
+   * The one test that sends {@code X-Qits-User} / {@code X-Qits-Roles}: they are not a credential.
+   * With no bearer the request is anonymous, so every door answers 401 and the socket refuses.
+   */
   @Test
-  void aBadTokenIsUnauthorizedEvenBesideForwardAuthHeaders() {
-    // The token decides whenever there is one: OIDC's mechanism runs before forward-auth.
+  void forwardedIdentityHeadersAreIgnored() {
+    Map<String, String> forwarded = Map.of("X-Qits-User", "alice", "X-Qits-Roles", "qits:admin");
     given()
-        .header("Authorization", bearer(BearerTokens.foreignToken("qits:admin")))
-        .header("X-Qits-User", "alice")
-        .header("X-Qits-Roles", "qits:admin")
+        .headers(forwarded)
         .when()
-        .get(NAMES)
+        .get("/events/api/test-identity")
         .then()
-        .statusCode(401);
-  }
-
-  // --- in-network callers, unchanged --------------------------------------------------------------
-
-  @Test
-  void anInNetworkCallerWithHeadersAndNoTokenStillReadsTheLog() {
-    given().headers(IN_NETWORK).when().get(LOG + "?limit=1").then().statusCode(200);
-  }
-
-  @Test
-  void anInNetworkCallerWithHeadersAndNoTokenStillOpensTheSocket() {
-    assertDoesNotThrow(() -> FakeSubscriber.dial(socket, IN_NETWORK).close());
+        .statusCode(200)
+        .body("anonymous", equalTo(true));
+    given().headers(forwarded).when().get(LOG + "?limit=1").then().statusCode(401);
+    given().headers(forwarded).when().get(NAMES).then().statusCode(401);
+    assertThrows(Exception.class, () -> FakeSubscriber.dial(socket, forwarded).close());
   }
 
   // --- no credential at all -----------------------------------------------------------------------

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
+import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import java.time.Duration;
 import java.util.Map;
@@ -35,6 +36,9 @@ import org.junit.jupiter.api.Test;
  * qits' requirement.
  */
 @QuarkusTest
+// The caller is stated, not inherited from forward-auth's %test dev user (qits-1363): a person
+// reading and recording through the events client.
+@TestSecurity(user = "alice", roles = "qits:admin")
 @TestProfile(OtelLogExporterUnreachableTest.DeadReceiver.class)
 public class OtelLogExporterUnreachableTest {
 

@@ -164,13 +164,23 @@ measured in the packaged ITs. `BearerJwksTest` pins the shipped key path against
 form `if (identity.isAnonymous()) deny` would look like a security control and be worth nothing,
 because reaching this service at all already implies you are inside the trusted network.
 
-`ForwardAuthTest` exercises the real header through the real mechanism rather than
-`@TestSecurity`, on purpose. The header **is** the contract, so an annotation that fabricates an
-identity proves a path the deployment never takes. That is exactly how the bug ran unseen in
-qits-projects: it shipped a `SecurityIdentity` with no mechanism behind it, every recorded principal
-was null, and the annotation went on passing the whole time. `BearerAuthTest` does the same for
-tokens: real RS256 tokens signed with a test key, checked by the real extension
-(`BearerAuthProfile` gives it the public key in place of the JWKS fetch).
+**The suite does not use forward-auth (epic qits-543, qits-1363).** A `@QuarkusTest` that is not
+about the token names its caller with `@TestSecurity` and the roles it means; `BearerAuthTest` and
+`BearerJwksTest` carry real RS256 tokens signed with a test key, checked by the real extension
+(`BearerAuthProfile` gives it the public key in place of the JWKS fetch). The test config blanks the
+`%test` dev user and renames the forward headers (`%test.qits.auth.forward.*` in
+`service/src/test/resources/application.properties`, which go with qits-1338), so a header-less
+request is anonymous and a stray `X-Qits-User` authenticates nothing.
+`BearerAuthTest.forwardedIdentityHeadersAreIgnored` is the one `@QuarkusTest` that sends the
+headers, to prove exactly that. `ForwardAuthTest` is gone with it: it proved the header is honoured,
+which stops being true at qits-1338. The packaged stories (`StoryTarget`) still present the header
+pair, because the packaged process still runs forward-auth; they move to bearers with qits-1338.
+
+**Dev mode needs a bearer.** The `%dev` dev user goes with qits-1338, and `%dev` keeps the OIDC
+tenant off, so a guarded route in `quarkus:dev` answers 401 until the tenant is pointed at an idp.
+Read it with a person's token, for example
+`curl -H "Authorization: Bearer $(qits-token qits-platform)" ...`, or through the `qits` CLI
+(`qits events`) against a deployed instance.
 
 Do not lift `events/security` into a shared `qits-auth` lib. Every repo builds from a clone of
 itself alone, so ~115 lines duplicated per service is cheaper than a jar that has to travel to all of

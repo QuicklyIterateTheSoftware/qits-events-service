@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import jakarta.inject.Inject;
 import java.net.URI;
@@ -35,6 +36,9 @@ import org.junit.jupiter.api.Test;
  * spelling the whole of it here is what would catch either half moving.
  */
 @QuarkusTest
+// The caller is stated, not inherited from forward-auth's %test dev user (qits-1363): a sibling
+// service that publishes and reads its own stream, both under the machine role.
+@TestSecurity(user = "qits-ci", roles = "qits:system")
 class EventStreamResourceTest {
 
   /** Generous — it is only ever spent when something is actually broken. */

@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import jakarta.inject.Inject;
 import java.net.URI;
@@ -31,6 +32,9 @@ import org.junit.jupiter.api.Test;
  * config derives, so a relative address here would not catch a segment regression.
  */
 @QuarkusTest
+// The caller is stated, not inherited from forward-auth's %test dev user (qits-1363): the class
+// publishes (qits:system) and records by hand (qits:admin) into the socket it reads.
+@TestSecurity(user = "qits-ci", roles = {"qits:system", "qits:admin"})
 class EventStreamSocketTest {
 
   /** Generous — it is only ever spent when something is actually broken. */

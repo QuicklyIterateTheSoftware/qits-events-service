@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,10 @@ import org.junit.jupiter.api.Test;
  * easily broken by a well-meaning change on either side.
  */
 @QuarkusTest
+// The caller is stated, not inherited from forward-auth's %test dev user (qits-1363): a publisher
+// (qits:system, the only role that PUTs) whose writes the class reads back by id, which only a
+// reader role may do.
+@TestSecurity(user = "qits-ci", roles = {"qits:system", "qits:admin"})
 class EventPublishApiTest {
 
   private static final String PAYLOAD =

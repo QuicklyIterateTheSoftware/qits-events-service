@@ -14,6 +14,7 @@ import au.com.dius.pact.provider.junitsupport.loader.PactSource;
 import eu.wohlben.qits.pact.consumer.RepeatedQuery;
 import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import jakarta.inject.Inject;
 import java.net.URL;
 import java.util.List;
@@ -62,7 +63,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * not rows another test class left in the shared database.
  *
  * <p>Each interaction runs against this {@code @QuarkusTest} application over real HTTP, as the
- * {@code %test} synthetic user — exactly as {@link GoldenMasterRecordingTest}'s calls run. Every
+ * {@code @TestSecurity} caller — exactly as {@link GoldenMasterRecordingTest}'s calls run. Every
  * {@code @State} method delegates to {@link ProviderStates}; {@link #target} fails an unknown state,
  * and an interaction without {@code comments.references.qits-call} or {@code qits-trigger}.
  *
@@ -73,6 +74,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * it goes red here, which is the point.
  */
 @QuarkusTest
+// The caller is stated, not inherited from forward-auth's %test dev user (qits-1363): its consumers
+// publish (qits:system) and read the reader-only routes (qits:admin).
+@TestSecurity(user = "qits-ci", roles = {"qits:system", "qits:admin"})
 @Provider(ConsumerPactVerificationTest.PROVIDER)
 @PactSource(ClasspathPactLoader.class)
 class ConsumerPactVerificationTest {

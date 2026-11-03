@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import eu.wohlben.qits.events.control.EventQuery;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import jakarta.ws.rs.core.Response;
 import java.time.Instant;
@@ -29,6 +30,9 @@ import org.junit.jupiter.api.Test;
  * different semantics and lives in {@link EventPublishApiTest}.
  */
 @QuarkusTest
+// The caller is stated, not inherited from forward-auth's %test dev user (qits-1363): a person at
+// the events client, holding the role that records, reads and removes by hand.
+@TestSecurity(user = "alice", roles = "qits:admin")
 class EventApiTest {
 
   private String create(String name, String occurredAt, String payload, String description) {
