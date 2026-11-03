@@ -228,7 +228,7 @@ public class DisjointInterestsIT {
     return FakeSubscriber.dial(stream, StoryTarget.machineCredential());
   }
 
-  /** The tab: the person's two headers, which this socket's door accepts exactly as it does a machine's. */
+  /** The tab: the person's bearer, which this socket's door accepts exactly as it does a machine's. */
   private FakeSubscriber dialAsThePerson() throws Exception {
     NetworkCapture.actor(SILENT_TAB);
     return FakeSubscriber.dial(stream, StoryTarget.personCredential());

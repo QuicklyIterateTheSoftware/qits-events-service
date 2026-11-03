@@ -139,7 +139,7 @@ public class EventBusBootstrapIT {
       One qits-events serves the whole platform, and every sibling service reaches it through the
       qits-eventstream jar it carries. This is the round trip that jar is written against.
 
-      A durable consumer opens the stream with the machine credential the edge asserts and names
+      A durable consumer opens the stream with its machine bearer and names
       the signatures it cares about. A publisher's outbox then PUTs an event under a UUID IT
       chose — the id is the idempotency key, which is what makes a retry safe — and the consumer
       is pushed the envelope while the write is still warm.
@@ -188,7 +188,7 @@ public class EventBusBootstrapIT {
       StoryStream.awaitSubscriptionIsLive(consumer, HANDSHAKE, HANDSHAKE_AT, PAYLOAD);
       story
           .note(
-              "the consumer dials with the machine credential the edge asserts and names the two"
+              "the consumer dials with its machine bearer and names the two"
                   + " signatures it cares about; the protocol acknowledges nothing, so the only"
                   + " proof a subscription took is a frame arriving")
           .as("subscribed");
@@ -363,7 +363,8 @@ public class EventBusBootstrapIT {
       goes the same way.
 
       And the doors, which only a deployed process has. Publishing is the machine role's; a
-      caller the edge never named is challenged at the socket's handshake and at the write alike,
+      caller with no bearer is challenged at the socket's handshake and at the write alike — and
+      so is one that forges the old X-Qits-User / X-Qits-Roles pair, which is not a credential —
       and a person's session — named, trusted, holding the role that reads every page of the
       events client — still cannot put anything into the log. The log is written by services and
       read by people, and getting that the wrong way round would let a browser forge the
@@ -381,7 +382,7 @@ public class EventBusBootstrapIT {
 
     // Five callers reach this service in this story and four of them reach the same route. Naming
     // each before it acts is the only thing that keeps them apart on the diagram — on the wire the
-    // difference is two headers, which is exactly what a diagram must not print.
+    // difference is one bearer, which is exactly what a diagram must not print.
     NetworkCapture.actor(StoryTarget.OUTBOX);
 
     // The publisher's first, honest attempt — the row this story then contests.
@@ -538,10 +539,11 @@ public class EventBusBootstrapIT {
                 + " it would silently skip a row inside the tie")
         .as("half-a-cursor-refused");
 
-    // --- the doors. Unreachable from any @QuarkusTest here: the %test dev-user hands every request
-    // all four platform roles, and ForwardAuthMechanism is LaunchMode-guarded away in this process.
+    // --- the doors, decided on the caller's bearer by the shipped OIDC tenant.
 
-    // No header at all: ForwardAuthMechanism yields no identity, so @RolesAllowed challenges.
+    // No bearer at all: no identity, so @RolesAllowed challenges. A forged X-Qits-User /
+    // X-Qits-Roles pair is no identity either (qits-1363) — the same caller, the same 401, so the
+    // same arrow on the diagram.
     NetworkCapture.actor(StoryTarget.UNNAMED);
     given()
         .contentType(ContentType.JSON)
@@ -550,11 +552,19 @@ public class EventBusBootstrapIT {
         .put(StoryTarget.event(UUID.randomUUID().toString()))
         .then()
         .statusCode(401);
+    given()
+        .header("X-Qits-User", StoryTarget.PUBLISHER)
+        .header("X-Qits-Roles", StoryTarget.SYSTEM_ROLE)
+        .contentType(ContentType.JSON)
+        .body(envelope)
+        .when()
+        .put(StoryTarget.event(UUID.randomUUID().toString()))
+        .then()
+        .statusCode(401);
     story
         .note(
-            "a caller the edge never named is challenged at the write — a status unreachable from"
-                + " any @QuarkusTest here, where the %test dev-user hands every request all four"
-                + " platform roles")
+            "a caller with no bearer is challenged at the write, and so is one that forges the"
+                + " X-Qits-User / X-Qits-Roles pair: the pair is not a credential")
         .as("unnamed-publisher-challenged");
 
     // The same door on the stream, and it is the HANDSHAKE that holds it — class-level
@@ -580,7 +590,7 @@ public class EventBusBootstrapIT {
                 + " ignored — which would be indistinguishable from a bus with nothing to say")
         .as("unnamed-consumer-refused");
 
-    // Named by the edge and holding the PERSON's role: authenticated, and still not a publisher.
+    // Named by its bearer and holding the PERSON's role: authenticated, and still not a publisher.
     // 403 and not 401, because there is a caller and it is the grant that is missing — collapsing
     // the two would tell an operator to log in again for something logging in cannot fix.
     NetworkCapture.actor(StoryTarget.PERSON_SESSION);
@@ -750,8 +760,8 @@ public class EventBusBootstrapIT {
       ReportAssertions.assertStepId(CATEGORY, REFUSAL_SLUG, step);
     }
 
-    // Nothing on this wire is a credential — the edge authenticates and this service reads two
-    // headers — so what these assertions protect is the HASHES: every id these stories minted is
+    // The bearers on this wire are the suite's own and protect nothing, and no label carries one —
+    // so what these assertions protect is the HASHES: every id these stories minted is
     // run-local, and one reaching a note or a label is exactly the symptom of a definitionHash or
     // networkHash that will never settle.
     for (String id : NEVER_IN_THE_BUNDLE) {

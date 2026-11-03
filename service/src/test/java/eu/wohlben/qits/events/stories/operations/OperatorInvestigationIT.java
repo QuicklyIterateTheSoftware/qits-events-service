@@ -44,9 +44,8 @@ import org.junit.jupiter.api.BeforeAll;
  *       signatures it subscribes to, and it reads pages rather than rows.
  * </ul>
  *
- * <p>Under {@code @QuarkusTest} qits-auth-core's {@code %test} dev-user hands every request all four
- * platform roles, so that asymmetry is invisible to the whole unit suite. Here it is two arrows on
- * the diagram.
+ * <p>Here, against the launched artifact's real bearer check, that asymmetry is two arrows on the
+ * diagram.
  *
  * <h2>Three filters, three different costs, and the story says which is which</h2>
  *
@@ -137,8 +136,8 @@ public class OperatorInvestigationIT {
       And last, the doors, which are not one door. The list route admits a machine, because a
       durable consumer catching up IS a machine reading the log. The vocabulary and the
       single-row read do not: a consumer already knows the signatures it subscribes to, and it
-      reads pages rather than rows. Under any @QuarkusTest here that asymmetry is invisible,
-      because the %test dev-user hands every request all four platform roles.
+      reads pages rather than rows. Each door is decided on the caller's bearer, by the tenant the
+      artifact ships.
       """)
   void anOperatorTracesOneEventsCausesAndConsequences(Interactions story, Network net) {
     net.declare(
@@ -311,8 +310,7 @@ public class OperatorInvestigationIT {
                 + " consumer catching up from its watermark IS a machine reading this log, and it"
                 + " must be able to. The vocabulary and the single-row read do not: a consumer"
                 + " already knows the signatures it subscribes to, and it reads pages rather than"
-                + " rows. Invisible to every @QuarkusTest here, where the %test dev-user hands"
-                + " every request all four platform roles")
+                + " rows. Each door is decided on the caller's bearer")
         .as("a-machine-reads-pages-not-rows");
   }
 

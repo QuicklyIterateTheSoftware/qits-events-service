@@ -173,8 +173,11 @@ about the token names its caller with `@TestSecurity` and the roles it means; `B
 request is anonymous and a stray `X-Qits-User` authenticates nothing.
 `BearerAuthTest.forwardedIdentityHeadersAreIgnored` is the one `@QuarkusTest` that sends the
 headers, to prove exactly that. `ForwardAuthTest` is gone with it: it proved the header is honoured,
-which stops being true at qits-1338. The packaged stories (`StoryTarget`) still present the header
-pair, because the packaged process still runs forward-auth; they move to bearers with qits-1338.
+which stops being true at qits-1338. The packaged stories present bearers too: `StoryTarget` signs
+each caller's token with the same suite key (`BearerTokens.tokenAs`, the caller's name as subject and
+the roles it means as `groups`), and `StoryProfile` hands the launched tenant the public key and
+issuer and renames the forward headers in that process (both go with qits-1338), so a forged pair is
+401 there too — `EventBusBootstrapIT`'s door story sends one to prove it.
 
 **Dev mode needs a bearer.** The `%dev` dev user goes with qits-1338, and `%dev` keeps the OIDC
 tenant off, so a guarded route in `quarkus:dev` answers 401 until the tenant is pointed at an idp.

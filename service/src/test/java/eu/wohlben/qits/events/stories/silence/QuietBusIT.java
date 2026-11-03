@@ -229,7 +229,7 @@ public class QuietBusIT {
 
       A publisher reuses a UUID for different content and is refused: 400, no row, no frame.
 
-      A caller the edge never named is challenged, and a person's session — named, trusted,
+      A caller with no bearer is challenged, and a person's session — named, trusted,
       holding the role that reads every page of the events client — is forbidden. Neither
       reaches a row, so neither could have announced one, and the diagram says so.
 
@@ -307,7 +307,7 @@ public class QuietBusIT {
         .statusCode(403);
     story
         .note(
-            "a caller the edge never named is challenged and a person's session is forbidden."
+            "a caller with no bearer is challenged and a person's session is forbidden."
                 + " Neither request reached a row, so neither could have announced one — the doors"
                 + " are in front of the write, not beside it")
         .as("a-challenged-caller-announces-nothing");

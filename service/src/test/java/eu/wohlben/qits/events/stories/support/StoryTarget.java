@@ -2,6 +2,7 @@ package eu.wohlben.qits.events.stories.support;
 
 import static io.restassured.RestAssured.given;
 
+import eu.wohlben.qits.events.security.BearerTokens;
 import eu.wohlben.qits.userflows.Labels;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
@@ -89,13 +90,16 @@ import java.util.function.UnaryOperator;
  *
  * <h2>What a caller is</h2>
  *
- * <p>Authentication happens at the edge; this service reads {@code X-Qits-User} / {@code
- * X-Qits-Roles} and authenticates nothing. So <b>there is no bearer anywhere in this catalogue</b> —
- * nothing on this wire is a credential in the sense a token is, and there is correspondingly nothing
- * for {@code assertNotLeaked} to protect. What every story does assert with it instead is the other
- * half of the same discipline: the <b>generated event ids</b> a story minted appear in no file of its
- * bundle at all. Notes never interpolate one (a note enters the definition hash) and every label
- * scrubs one, so a leak is precisely the symptom of a hash that will never settle.
+ * <p>A caller is <b>a bearer token</b>, checked by the shipped OIDC tenant (epic qits-543,
+ * qits-1363: the forwarded {@code X-Qits-User} / {@code X-Qits-Roles} pair authenticates nothing).
+ * Each one is signed with the suite's own key ({@code security/BearerTokens}) and its {@code groups}
+ * are the roles the caller means; {@link StoryProfile} hands the launched tenant the public half.
+ * The key pair exists for this suite only and protects nothing, so there is nothing for {@code
+ * assertNotLeaked} to protect either — and no label carries a token, because the shipped tap labels
+ * method, path and status alone. What every story does assert instead is the other half of the same
+ * discipline: the <b>generated event ids</b> a story minted appear in no file of its bundle at all.
+ * Notes never interpolate one (a note enters the definition hash) and every label scrubs one, so a
+ * leak is precisely the symptom of a hash that will never settle.
  */
 public final class StoryTarget {
 
@@ -144,12 +148,10 @@ public final class StoryTarget {
   /** Readiness, which the shipped tap skips — see the class javadoc. */
   public static final String READY = "/events/q/health/ready";
 
-  // --- the identities, as the edge presents them ---------------------------------------------
+  // --- the identities, as bearers ------------------------------------------------------------
 
-  /** The headers qits-gateway asserts and strips; qits-auth-core's defaults, unchanged here. */
-  public static final String USER_HEADER = "X-Qits-User";
-
-  public static final String ROLES_HEADER = "X-Qits-Roles";
+  /** The one header identity travels in. */
+  public static final String AUTHORIZATION = "Authorization";
 
   /** The machine role a sibling service's eventstream jar carries, and the only one that publishes. */
   public static final String SYSTEM_ROLE = "qits:system";
@@ -160,25 +162,32 @@ public final class StoryTarget {
   /** A real publisher: qits-ci's outbox is the busiest one on the platform. */
   public static final String PUBLISHER = "qits-ci";
 
-  /** The person behind the events client, as the edge names them. */
+  /** The person behind the events client, as their token names them. */
   public static final String PERSON = "alice";
+
+  /** A sibling service's machine bearer: its client as the subject, {@code qits:system} its role. */
+  private static String machineBearer() {
+    return BearerTokens.bearer(BearerTokens.tokenAs(PUBLISHER, SYSTEM_ROLE));
+  }
+
+  /** The person's bearer: their name as the subject, {@code qits:admin} their role. */
+  private static String personBearer() {
+    return BearerTokens.bearer(BearerTokens.tokenAs(PERSON, ADMIN_ROLE));
+  }
 
   /** A sibling service's outbox: the machine role, and a JSON body on every write. */
   public static RequestSpecification publisher() {
-    return given()
-        .header(USER_HEADER, PUBLISHER)
-        .header(ROLES_HEADER, SYSTEM_ROLE)
-        .contentType(ContentType.JSON);
+    return given().header(AUTHORIZATION, machineBearer()).contentType(ContentType.JSON);
   }
 
   /** The same service reading its own catch-up — the list route takes the machine role too. */
   public static RequestSpecification consumer() {
-    return given().header(USER_HEADER, PUBLISHER).header(ROLES_HEADER, SYSTEM_ROLE);
+    return given().header(AUTHORIZATION, machineBearer());
   }
 
-  /** A person at the events client: named by the edge, holding the role that reads. */
+  /** A person at the events client, holding the role that reads. */
   public static RequestSpecification operator() {
-    return given().header(USER_HEADER, PERSON).header(ROLES_HEADER, ADMIN_ROLE);
+    return given().header(AUTHORIZATION, personBearer());
   }
 
   /** The same person, sending a body — the manual {@code POST} record path. */
@@ -186,19 +195,19 @@ public final class StoryTarget {
     return operator().contentType(ContentType.JSON);
   }
 
-  /** The headers identity travels as on an UPGRADE, which is where the socket's door is. */
+  /** The header identity travels in on an UPGRADE, which is where the socket's door is. */
   public static Map<String, String> machineCredential() {
-    return Map.of(USER_HEADER, PUBLISHER, ROLES_HEADER, SYSTEM_ROLE);
+    return Map.of(AUTHORIZATION, machineBearer());
   }
 
   /** The same upgrade as a person: the socket takes {@code qits:admin} too, and only these two. */
   public static Map<String, String> personCredential() {
-    return Map.of(USER_HEADER, PERSON, ROLES_HEADER, ADMIN_ROLE);
+    return Map.of(AUTHORIZATION, personBearer());
   }
 
   // --- the initiators the wire cannot tell apart ----------------------------------------------
   //
-  // On this service four of these differ by TWO HEADERS and nothing else, and three of them reach
+  // On this service four of these differ by ONE HEADER and nothing else, and three of them reach
   // the same route. NetworkCapture.actor(...) is the only thing that keeps them apart on a diagram,
   // and the framework resets it to a default at every story start so nothing leaks between stories.
 
@@ -215,7 +224,7 @@ public final class StoryTarget {
    */
   public static final String PERSON_SESSION = "a person's session";
 
-  /** A caller the edge never named — no {@code X-Qits-User} at all, which is a 401 and not a 403. */
+  /** A caller nobody named — no credential at all, which is a 401 and not a 403. */
   public static final String UNNAMED = "an unnamed caller";
 
   /** The same absence at the socket's handshake, where it is a refused upgrade. */

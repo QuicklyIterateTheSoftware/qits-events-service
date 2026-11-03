@@ -1,5 +1,6 @@
 package eu.wohlben.qits.events.stories.support;
 
+import eu.wohlben.qits.events.security.BearerTokens;
 import eu.wohlben.qits.events.testdb.EmbeddedPg;
 import io.quarkus.test.junit.QuarkusTestProfile;
 import java.util.LinkedHashMap;
@@ -24,10 +25,8 @@ import java.util.Map;
  * <ul>
  *   <li><b>The doors are real.</b> Publishing takes {@code qits:system}, {@code /events/api/events}
  *       takes either role, {@code /names} and {@code GET /{id}} and {@code DELETE} take {@code
- *       qits:admin} alone, and the socket takes either. Under {@code @QuarkusTest} qits-auth-core's
- *       {@code %test} dev-user hands every request all four platform roles before an annotation is
- *       consulted, and {@code ForwardAuthMechanism} is {@code LaunchMode.NORMAL}-guarded on top of
- *       that — so a suite cannot tell one door from another.
+ *       qits:admin} alone, and the socket takes either — each decided on the caller's bearer by the
+ *       shipped OIDC tenant, which {@code %test} switches off.
  *   <li><b>The socket survived augmentation.</b> websockets-next registers {@code /events/stream} at
  *       AUGMENTATION and its class-level {@code @RolesAllowed} secures the HTTP <em>upgrade</em>, so
  *       both "the endpoint is there" and "the handshake is the door" are claims only a launched
@@ -42,6 +41,15 @@ import java.util.Map;
  * and these stories would prove something other than what they say. Everything that makes this
  * service what it is — {@code quarkus.rest.path}, the non-application root, the Quinoa ignore list,
  * the four OTel logging keys — is left exactly as it ships.
+ *
+ * <h2>Identity is a bearer, and there is still no idp</h2>
+ *
+ * <p>Every caller presents a bearer token (epic qits-543, qits-1363: the forwarded {@code X-Qits-*}
+ * headers authenticate nothing). The profile hands the tenant the suite's local verification key
+ * and the issuer the idp would publish, exactly as {@code security/BearerAuthProfile} does, so a
+ * token is checked without a key fetch and no story draws an arrow to an idp. It also renames the
+ * forward headers in the launched process, so a forged pair authenticates nothing there until
+ * qits-1338 takes forward-auth out of qits-auth-core.
  *
  * <h2>What a deployment supplies, and it is nearly all of what is here</h2>
  *
@@ -102,6 +110,20 @@ public class StoryProfile implements QuarkusTestProfile {
     // Dark outside a deployment, like %dev and %test — and the only dial-out this process has
     // besides its datasource. See the class javadoc for why it is a neutralisation, not tidiness.
     overrides.put("quarkus.otel.sdk.disabled", "true");
+
+    // Identity is a bearer, checked by the shipped tenant without an idp: the suite's local key
+    // replaces discovery and the key fetch, and the issuer stands in for the one discovery would
+    // publish — exactly as security/BearerAuthProfile does (qits-1363).
+    overrides.put("quarkus.oidc.auth-server-url", "");
+    overrides.put("quarkus.oidc.public-key", BearerTokens.verificationKey());
+    overrides.put("quarkus.oidc.token.issuer", BearerTokens.ISSUER);
+
+    // The posture after qits-1338, today: qits-auth-core still reads X-Qits-User / X-Qits-Roles in
+    // a packaged process, and nothing strips them in front of a launched artifact, so the forward
+    // headers are renamed and a forged pair authenticates nothing. Both keys go with qits-1338,
+    // which removes forward-auth from the library.
+    overrides.put("qits.auth.forward.user-header", "X-Qits-Disabled-User");
+    overrides.put("qits.auth.forward.roles-header", "X-Qits-Disabled-Roles");
 
     return Map.copyOf(overrides);
   }
