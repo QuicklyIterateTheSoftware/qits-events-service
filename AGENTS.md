@@ -626,6 +626,16 @@ holding a socket has to do).
 handler, on the same exporter as traces and metrics. Nothing in this service's own code does that
 work and nothing should — the extension **is** the logging library.
 
+**The exporters are qits-telemetry-core's, not Quarkus' own** (epic qits-428). The receiver is
+reached at its edge host, `https://observability.qits.<QITS_DOMAIN>/observability/api/otel` (the
+module's default for `qits.telemetry.endpoint`), and the edge refuses an anonymous POST there, so
+the module's CDI exporters attach this service's own bearer — the named oidc client
+`quarkus.oidc-client.qits`, minted by client credentials from the `idp:client` resource in
+`.config/qits/deployments.yml` — on every export. `qits.observability.url` and
+`quarkus.otel.exporter.otlp.*` are gone: with the module on the classpath nothing reads them. The
+mint is pacted (`contracts/IdpConsumerPactTest`'s `MINT` row, run through the real client by
+`contracts/IdpTokenMintPactTest`).
+
 The arrangement is four keys in `application.properties`, and all four are spelled out even though
 three are Quarkus' own defaults, because the integration is still marked **preview**: an upgrade
 that flipped one would stop the platform's logging with a green build. `quarkus.otel.logs.level` is
@@ -634,11 +644,15 @@ logging stays untouched. The OTel handler is an **additional** copy of every rec
 one; stdout is the fallback that survives the receiver being down.
 
 `telemetry/OtlpLogStub` is the machinery, and it decodes rather than counts: a JDK `HttpServer` on
-an ephemeral loopback port, wired in as `quarkus.otel.exporter.otlp.endpoint`, parsing each
+an ephemeral loopback port, wired in as `qits.telemetry.endpoint`, parsing each
 `ExportLogsServiceRequest` (`io.opentelemetry.proto:opentelemetry-proto`, **test scope only** —
 compile scope would drag protobuf into the native image for nothing). It also sets
 `quarkus.otel.sdk.disabled=false`, because the shipped file turns the SDK off under `%test` so an
-ordinary suite does not retry against an unresolvable `qits-observability`.
+ordinary suite does not retry against an unresolvable `qits-observability`. It is the idp too: it
+answers `POST /idp/token` with a fixed token and switches the `qits` client on against itself, so
+`PackagedLogBridgeIT` can assert that every log export carries that bearer. Only the packaged run
+can: under `@QuarkusTest` the module's header supplier reads config on the JDK sender's thread,
+which does not see the test profile's overrides, so in the build JVM the exports go out bare.
 
 Three classes use it, and they answer different questions:
 

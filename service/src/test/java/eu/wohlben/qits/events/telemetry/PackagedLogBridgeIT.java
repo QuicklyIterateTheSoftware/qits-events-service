@@ -2,6 +2,7 @@ package eu.wohlben.qits.events.telemetry;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -13,6 +14,7 @@ import io.quarkus.test.junit.QuarkusTestProfile;
 import io.quarkus.test.junit.TestProfile;
 import io.restassured.http.ContentType;
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -121,6 +123,23 @@ public class PackagedLogBridgeIT {
         "the packaged process must identify itself; " + OtlpLogStub.describe());
     assertEquals("INFO", started.record().getSeverityText());
     assertTrue(started.record().getTimeUnixNano() > 0, "the record carried no timestamp");
+  }
+
+  @Test
+  public void everyExportCarriesTheQitsClientsBearer() {
+    // The receiver sits behind the edge, which refuses an anonymous POST (epic qits-428), so a
+    // record that arrived without the `qits` client's token is a record the deployment drops. The
+    // stub is the idp as well: the shipped client, switched on against it, mints its token there,
+    // and qits-telemetry-core's header supplier hands it to every export.
+    OtlpLogStub.await(c -> c.body().contains("started in"), ARRIVAL)
+        .orElseThrow(() -> new AssertionError("nothing exported; " + OtlpLogStub.describe()));
+
+    List<String> authorizations = OtlpLogStub.authorizations();
+    assertFalse(authorizations.isEmpty(), "no log export was seen at all");
+    assertEquals(
+        List.of("Bearer " + OtlpLogStub.TOKEN),
+        authorizations.stream().distinct().toList(),
+        "every log export must carry the qits client's bearer");
   }
 
   @Test

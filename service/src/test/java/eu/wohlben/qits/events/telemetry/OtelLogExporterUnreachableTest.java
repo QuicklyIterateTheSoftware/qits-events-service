@@ -51,7 +51,9 @@ public class OtelLogExporterUnreachableTest {
           "false",
           // Port 1 is privileged and unbound: connect refused immediately. NOT an unresolvable host
           // name, which would make every export a DNS timeout and this suite a slow one.
-          "quarkus.otel.exporter.otlp.endpoint",
+          // qits-telemetry-core's exporters (epic qits-428) read qits.telemetry.endpoint; the `qits`
+          // oidc client stays off as %test ships it, so each export also goes out with no bearer.
+          "qits.telemetry.endpoint",
           "http://127.0.0.1:1");
     }
   }

@@ -14,11 +14,12 @@ import org.junit.jupiter.api.Test;
  * pact row must fail a build, and the set of calls has to come from the code rather than from a
  * literal someone forgot to update.
  *
- * <p>qits-events-service makes exactly one outbound call to another qits service — quarkus-oidc's
- * discovery and JWKS fetch against qits-idp-service, both rows of {@link
- * IdpConsumerPactTest#PACT}. There is no {@code qits-http-core}, no MicroProfile REST client and no
- * {@code quarkus-oidc-client} on this repository's classpath (see this repo's {@code CLAUDE.md},
- * "Dependencies"), so there is no client-credentials token mint here to pact either. {@link
+ * <p>qits-events-service makes two kinds of outbound call to other qits services, and both are
+ * pacted rows of {@link IdpConsumerPactTest#PACT}: quarkus-oidc's discovery and JWKS fetch against
+ * qits-idp-service, and the client-credentials mint of its named client {@code qits} (epic
+ * qits-428), whose one reader is qits-telemetry-core — a library, outside the packages this guard
+ * imports, that attaches the token to every OTLP export to qits-observability. No class of this
+ * repository's own touches the client, and there is no MicroProfile REST client here. {@link
  * eu.wohlben.qits.events.ArchRulesTest} already guards the one mechanism a hand-rolled outbound call
  * would use that it can see ({@code java.net.http.HttpClient}, through qits-arch-rules'
  * {@code HttpClientRules}); this class guards the two it cannot:
@@ -79,16 +80,18 @@ class OutboundCallGuardTest {
   }
 
   /**
-   * The premise the two checks above stand on: exactly the two rows this service already pacts. A
-   * third interaction here with none of the checks above tripping would be the framework learning
-   * to dial a second qits service on its own, which is exactly the gap a hand-written literal would
-   * miss.
+   * The premise the two checks above stand on: exactly the three rows this service already pacts.
+   * A fourth interaction here with none of the checks above tripping would be the framework
+   * learning to dial a second qits service on its own, which is exactly the gap a hand-written
+   * literal would miss.
    */
   @Test
-  void theOnlyPactedCallsAreTheIdpDiscoveryAndJwksRows() {
+  void theOnlyPactedCallsAreTheIdpDiscoveryJwksAndMintRows() {
     Set<String> operations =
         Set.of(
-            IdpConsumerPactTest.DISCOVERY.operationId(), IdpConsumerPactTest.JWKS.operationId());
-    assertEquals(Set.of("getOpenIdConfiguration", "getJwks"), operations);
+            IdpConsumerPactTest.DISCOVERY.operationId(),
+            IdpConsumerPactTest.JWKS.operationId(),
+            IdpConsumerPactTest.MINT.operationId());
+    assertEquals(Set.of("getOpenIdConfiguration", "getJwks", "issueToken"), operations);
   }
 }

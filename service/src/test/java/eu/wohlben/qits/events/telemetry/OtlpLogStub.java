@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,9 +37,24 @@ import java.util.zip.GZIPInputStream;
  * records themselves. A stub that only counted requests would keep passing against an exporter that
  * shipped empty batches.
  *
- * <p>Wired in as {@code quarkus.otel.exporter.otlp.endpoint} with qits' own non-default path prefix
- * on it, because that prefix is part of what is under test: the SDK appends {@code /v1/logs} to the
- * base, and a receiver mounted under a path is the arrangement the deployment actually has.
+ * <p>Wired in as {@code qits.telemetry.endpoint} — qits-telemetry-core's exporters, which replaced
+ * Quarkus' own (epic qits-428) — with qits' own non-default path prefix on it, because that prefix
+ * is part of what is under test: the exporter appends {@code /v1/logs} to the base, and a receiver
+ * mounted under a path is the arrangement the deployment actually has.
+ *
+ * <p><b>It is the idp too.</b> Those exporters attach the {@code qits} oidc client's bearer on every
+ * export, because the edge in front of the real receiver refuses an anonymous POST. So the stub also
+ * answers qits-idp's client-credentials mint ({@code POST /idp/token}) with {@value #TOKEN}, the
+ * client is switched on and pointed at it, and every log export's {@code Authorization} header is
+ * kept for {@link #authorizations()} — a proof that the records arrive which did not also prove the
+ * bearer would be proving a path the deployment no longer has.
+ *
+ * <p><b>The bearer is asserted against the packaged artifact only</b> ({@code PackagedLogBridgeIT}).
+ * The module's header supplier reads its config through {@code ConfigProvider.getConfig()} on the
+ * JDK sender's own executor thread, and under {@code @QuarkusTest} that thread sees a config without
+ * the test profile's overrides — the shipped {@code %test} values, client off and no {@code
+ * QITS_DOMAIN} — so in the build JVM every export goes out bare (measured 2026-11-03). A launched
+ * process has one config, which is the arrangement a deployment has.
  *
  * <p>It also turns the SDK back on. {@code application.properties} carries {@code
  * %test.quarkus.otel.sdk.disabled=true} so that an ordinary suite does not spend itself retrying
@@ -104,11 +120,23 @@ public class OtlpLogStub implements QuarkusTestResourceLifecycleManager {
    */
   private static final List<ExportLogsServiceRequest> REQUESTS = new CopyOnWriteArrayList<>();
 
+  /** The access token the stub's {@code /idp/token} mints, every time. */
+  public static final String TOKEN = "stub-telemetry-token";
+
+  /** Each log export's Authorization header, in arrival order; {@code ""} when it carried none. */
+  private static final List<String> AUTHORIZATIONS = new CopyOnWriteArrayList<>();
+
   private HttpServer server;
 
   /** Forget everything captured so far. Call it in {@code @BeforeEach}. */
   public static void reset() {
     REQUESTS.clear();
+    AUTHORIZATIONS.clear();
+  }
+
+  /** The Authorization header of every log export so far; {@code ""} for one that carried none. */
+  public static List<String> authorizations() {
+    return List.copyOf(AUTHORIZATIONS);
   }
 
   /** Every log record exported so far, flattened out of its resource/scope envelopes. */
@@ -183,9 +211,24 @@ public class OtlpLogStub implements QuarkusTestResourceLifecycleManager {
     server.createContext(
         "/",
         exchange -> {
+          if (exchange.getRequestURI().getPath().equals("/idp/token")) {
+            // qits-idp's client-credentials answer, as much of it as quarkus-oidc-client reads.
+            exchange.getRequestBody().readAllBytes();
+            byte[] minted =
+                ("{\"access_token\":\"" + TOKEN + "\",\"token_type\":\"Bearer\","
+                        + "\"expires_in\":3600}")
+                    .getBytes(StandardCharsets.UTF_8);
+            exchange.getResponseHeaders().set("Content-Type", "application/json");
+            exchange.sendResponseHeaders(200, minted.length);
+            exchange.getResponseBody().write(minted);
+            exchange.close();
+            return;
+          }
           byte[] body = read(exchange.getRequestBody().readAllBytes(),
               exchange.getRequestHeaders().getFirst("Content-Encoding"));
           if (exchange.getRequestURI().getPath().endsWith("/v1/logs")) {
+            String authorization = exchange.getRequestHeaders().getFirst("Authorization");
+            AUTHORIZATIONS.add(authorization == null ? "" : authorization);
             REQUESTS.add(ExportLogsServiceRequest.parseFrom(body));
           }
           // The OTLP success answer for every signal is the signal's own empty response message,
@@ -196,15 +239,18 @@ public class OtlpLogStub implements QuarkusTestResourceLifecycleManager {
           exchange.close();
         });
     server.start();
-    String endpoint =
+    String base =
         "http://"
             + InetAddress.getLoopbackAddress().getHostAddress()
             + ":"
-            + server.getAddress().getPort()
-            + "/observability/api/otel";
+            + server.getAddress().getPort();
     return Map.of(
         "quarkus.otel.sdk.disabled", "false",
-        "quarkus.otel.exporter.otlp.endpoint", endpoint);
+        "qits.telemetry.endpoint", base + "/observability/api/otel",
+        "quarkus.oidc-client.qits.client-enabled", "true",
+        "quarkus.oidc-client.qits.auth-server-url", base + "/idp",
+        "quarkus.oidc-client.qits.client-id", "stub-client",
+        "quarkus.oidc-client.qits.credentials.secret", "stub-secret");
   }
 
   @Override

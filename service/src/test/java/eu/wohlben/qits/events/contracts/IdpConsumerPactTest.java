@@ -22,9 +22,16 @@ import org.jose4j.jwk.RsaJsonWebKey;
 import org.junit.jupiter.api.Test;
 
 /**
- * This service's pact with qits-idp-service (ticket qits-1149). The only calls it makes to the idp
- * are quarkus-oidc's: the discovery document, then the JWKS. The tenant is lazy ({@code
+ * This service's pact with qits-idp-service (ticket qits-1149). Two of its calls to the idp are
+ * quarkus-oidc's: the discovery document, then the JWKS. The tenant is lazy ({@code
  * jwks.resolve-early=false}), so the trigger is the first authenticated request.
+ *
+ * <p>The third is the client-credentials mint of the named client {@code qits} (epic qits-428),
+ * {@link #MINT}: {@code POST /idp/token} with HTTP Basic, {@code grant_type=client_credentials} and
+ * {@code audience=qits-platform}, recorded by qits-idp as {@code issueToken} in {@value
+ * #A_SERVICE_CLIENT_CALLING_ITS_PEERS}. qits-telemetry-core's exporters spend the token on every
+ * OTLP export, so those exports are the row's trigger. {@link IdpTokenMintPactTest} runs it through
+ * the real oidc client, because the client only exists inside the application.
  *
  * <p>Each row's call reads the answer the way quarkus-oidc does: the discovery document through
  * {@link OidcConfigurationMetadata}, the keys as a jose4j {@link JsonWebKeySet}.
@@ -51,7 +58,19 @@ class IdpConsumerPactTest {
       GoldenInteraction.of(FIRST_BEARER, STATE, "getJwks")
           .consumes("keys[].kid", "keys[].kty", "keys[].n", "keys[].e", "keys[].alg", "keys[].use");
 
-  static final ConsumerPact PACT = ConsumerPact.of(CONSUMER, IDP, DISCOVERY, JWKS);
+  /** The qits-idp state that records the client-credentials mint of a service client. */
+  static final String A_SERVICE_CLIENT_CALLING_ITS_PEERS = "a service client calling its peers";
+
+  /** The mint, caused by whichever OTLP export needs a bearer first. */
+  static final GoldenInteraction MINT =
+      GoldenInteraction.of(
+              Trigger.of("call", "call", "qits-telemetry-core's BearerHeaders (every OTLP export)"),
+              A_SERVICE_CLIENT_CALLING_ITS_PEERS,
+              "issueToken")
+          .header("Authorization", "{authorization}")
+          .consumes("access_token", "expires_in");
+
+  static final ConsumerPact PACT = ConsumerPact.of(CONSUMER, IDP, DISCOVERY, JWKS, MINT);
 
   private static final HttpClient HTTP = HttpClient.newHttpClient();
 

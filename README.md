@@ -346,7 +346,7 @@ The `events` jar ships its defaults at ordinal 100
 
 Storage is **declared, not configured**. `.config/qits/deployments.yml` carries one line —
 
-    resources: postgresql:db
+    resources: postgresql:db, idp:client
 
 — and qits-platform-deployments creates the role and the database (`qits_events`, derived from the
 application name) on the platform environment's PostgreSQL — this is a platform service, so it has
@@ -356,6 +356,12 @@ no tier of its own — before the successor container starts, then injects
 
 which is what the jar's datasource defaults expand. Those three names are the platform's generic
 resource contract; nothing about them is events-specific.
+
+`idp:client` is this application's own qits-idp service client, injected as
+`QITS_RESOURCE_IDP_URL` / `_CLIENT_ID` / `_CLIENT_SECRET`. The named oidc client
+`quarkus.oidc-client.qits` mints a bearer from it, which qits-telemetry-core attaches to every OTLP
+export: telemetry reaches qits-observability at its edge host, and the edge refuses an anonymous
+POST (epic qits-428). Off under `%dev` and `%test`.
 
 The triple has no fallback. An unconfigured `docker run` leaves the expressions unresolvable and the
 process dies at Flyway's first connect naming the missing variable — the honest behaviour, and the
