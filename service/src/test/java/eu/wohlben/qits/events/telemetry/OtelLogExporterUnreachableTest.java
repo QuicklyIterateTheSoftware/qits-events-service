@@ -92,7 +92,7 @@ public class OtelLogExporterUnreachableTest {
     // both run on threads the exporter shares.
     given()
         .contentType(ContentType.JSON)
-        .body("{\"name\":\"UnreachableReceiver\",\"occurredAt\":\"2026-08-05T09:00:00Z\"}")
+        .body("{\"name\":\"UnreachableReceiver\",\"occurredAt\":\"2026-08-05T09:00:00Z\",\"publisher\":\"eu.wohlben.qits:qits-events-test\"}")
         .when()
         .post("/events/api/events")
         .then()

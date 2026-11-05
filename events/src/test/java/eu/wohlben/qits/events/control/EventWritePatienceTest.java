@@ -31,6 +31,8 @@ import org.junit.jupiter.api.Test;
 @QuarkusTest
 class EventWritePatienceTest extends EventsTestSupport {
 
+  private static final String PUBLISHER = "eu.wohlben.qits:qits-events-test";
+
   private static final String PAYLOAD = "{\"repoId\":\"qits-ci\"}";
 
   @Inject EventService eventService;
@@ -80,7 +82,7 @@ class EventWritePatienceTest extends EventsTestSupport {
     FlakyEventRepository flaky = flaky();
     flaky.plant(connectionLost());
 
-    Event recorded = eventService.create("BuildSucceeded", Instant.now(), PAYLOAD, null, null, null, null);
+    Event recorded = eventService.create("BuildSucceeded", Instant.now(), PAYLOAD, null, null, null, PUBLISHER);
 
     assertEquals(2, flaky.flushes, "the first attempt must have reached the database");
     inFreshTx(
@@ -97,7 +99,7 @@ class EventWritePatienceTest extends EventsTestSupport {
     String id = UUID.randomUUID().toString();
     Instant when = Instant.parse("2026-08-11T09:00:00Z");
 
-    var published = eventService.publish(id, "BuildSucceeded", when, PAYLOAD, null, null, null, null);
+    var published = eventService.publish(id, "BuildSucceeded", when, PAYLOAD, null, null, null, PUBLISHER);
 
     assertEquals(PublishOutcome.CREATED, published.outcome());
     assertEquals(2, flaky.flushes);
@@ -111,7 +113,7 @@ class EventWritePatienceTest extends EventsTestSupport {
 
     assertThrows(
         IllegalStateException.class,
-        () -> eventService.create("BuildSucceeded", Instant.now(), PAYLOAD, null, null, null, null));
+        () -> eventService.create("BuildSucceeded", Instant.now(), PAYLOAD, null, null, null, PUBLISHER));
 
     assertEquals(1, flaky.flushes, "a second attempt would fail the same way and hide the cause");
     inFreshTx(() -> assertEquals(0L, rowsNamed("BuildSucceeded")));

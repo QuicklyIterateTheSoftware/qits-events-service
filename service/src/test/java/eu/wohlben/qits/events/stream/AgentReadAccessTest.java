@@ -56,7 +56,7 @@ class AgentReadAccessTest {
   void anAgentWritesNothing() {
     String id = UUID.randomUUID().toString();
     String body =
-        "{\"name\":\"AgentProbe\",\"occurredAt\":\"2026-09-12T00:00:00Z\",\"payload\":\"{}\"}";
+        "{\"name\":\"AgentProbe\",\"occurredAt\":\"2026-09-12T00:00:00Z\",\"payload\":\"{}\",\"publisher\":\"eu.wohlben.qits:qits-events-test\"}";
     given().contentType("application/json").body(body).post("/events/api/events").then()
         .statusCode(403);
     given().contentType("application/json").body(body).put("/events/api/events/" + id).then()
@@ -101,7 +101,7 @@ class AgentReadAccessTest {
   @TestSecurity(user = "dyn-admin-workspace-agent", roles = "qits:admin-agent")
   void anAdminAgentRecordsAndRemovesAnEvent() {
     String body =
-        "{\"name\":\"AdminAgentProbe\",\"occurredAt\":\"2026-09-12T00:00:00Z\",\"payload\":\"{}\"}";
+        "{\"name\":\"AdminAgentProbe\",\"occurredAt\":\"2026-09-12T00:00:00Z\",\"payload\":\"{}\",\"publisher\":\"eu.wohlben.qits:qits-events-test\"}";
     String id =
         given()
             .contentType("application/json")
@@ -147,7 +147,7 @@ class AgentReadAccessTest {
   @TestSecurity(user = "dyn-delivery-desk", roles = "qits:desk")
   void theDeskRecordsAndRemovesAnEvent() {
     String body =
-        "{\"name\":\"DeskProbe\",\"occurredAt\":\"2026-09-12T00:00:00Z\",\"payload\":\"{}\"}";
+        "{\"name\":\"DeskProbe\",\"occurredAt\":\"2026-09-12T00:00:00Z\",\"payload\":\"{}\",\"publisher\":\"eu.wohlben.qits:qits-events-test\"}";
     String id =
         given()
             .contentType("application/json")

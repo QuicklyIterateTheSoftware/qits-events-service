@@ -68,6 +68,9 @@ class EventStreamResourceTest {
         : URI.create(endpoint + "?names=" + names.replace("*", "%2A").replace(",", "%2C"));
   }
 
+  /** The publisher the suite's writes name — required on write since qits-1771. */
+  private static final String PUBLISHER = "eu.wohlben.qits:qits-events-test";
+
   /** The bus's own publish route, which is what a frame has to come out of to prove anything. */
   private static String publish(String name) {
     String id = UUID.randomUUID().toString();
@@ -76,7 +79,10 @@ class EventStreamResourceTest {
         .body(
             "{\"name\":\""
                 + name
-                + "\",\"occurredAt\":\"2026-07-31T12:46:03Z\",\"payload\":\"{\\\"branch\\\":\\\"main\\\"}\"}")
+                + "\",\"occurredAt\":\"2026-07-31T12:46:03Z\",\"payload\":\"{\\\"branch\\\":\\\"main\\\"}\""
+                + ",\"publisher\":\""
+                + PUBLISHER
+                + "\"}")
         .when()
         .put("/events/api/events/" + id)
         .then()
@@ -191,7 +197,7 @@ class EventStreamResourceTest {
       assertTrue(frame.data().startsWith("{"), "data must be the envelope: " + frame.data());
       assertTrue(frame.data().contains("\"parentId\":null"), frame.data());
       assertTrue(frame.data().contains("\"environment\":null"), frame.data());
-      assertTrue(frame.data().contains("\"publisher\":null"), frame.data());
+      assertTrue(frame.data().contains("\"publisher\":\"" + PUBLISHER + "\""), frame.data());
 
       JsonNode envelope = JSON.readTree(frame.data());
       List<String> fields = new ArrayList<>();
@@ -212,7 +218,7 @@ class EventStreamResourceTest {
       assertEquals("{\"branch\":\"main\"}", envelope.get("payload").asText());
       assertTrue(envelope.get("parentId").isNull());
       assertTrue(envelope.get("environment").isNull());
-      assertTrue(envelope.get("publisher").isNull());
+      assertEquals(PUBLISHER, envelope.get("publisher").asText());
     }
   }
 

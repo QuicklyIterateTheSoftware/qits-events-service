@@ -13,7 +13,7 @@ of what is here; nothing below describes a plan.
 
 | | |
 |---|---|
-| `Event` | a name, an `occurredAt`, an optional `payload`, an optional description, an optional `parentId`, an optional `environment` and an optional `publisher` — plus the row's own `createdAt`/`updatedAt` |
+| `Event` | a name, an `occurredAt`, an optional `payload`, an optional description, an optional `parentId`, an optional `environment` and a `publisher` (required on write, null only on rows stored before 2026-10-31) — plus the row's own `createdAt`/`updatedAt` |
 
 The three timestamps are not redundant. `occurredAt` is the **caller's** — when the thing happened,
 supplied on write and freely in the past, because a log is mostly written after the fact — while
@@ -38,11 +38,14 @@ deleted after its events truthfully happened. `?environment=` on the list route 
 as an indexed equality on its own column.
 
 `publisher` is the service that dispatched the event — conventionally its maven coordinate,
-`eu.wohlben.qits:qits-ci-service` — or null for an event recorded before publishers stamped it.
-Envelope rather than payload, inside the replay comparison (one id dispatched by two services is two
-claims about history), and named by value with no existence check: only its length is validated (at
-most 255 characters, the column's width), because a service can be retired after its events
-truthfully happened. **An event is never refused for lacking one.** There is no filter on it yet.
+`eu.wohlben.qits:qits-ci-service`. **It is required on both write paths**: a write without one,
+or with a blank one, is a `400` naming `publisher` (qits-1771). It is null only on events stored
+before 2026-10-31, when publishers built before the field (qits-1770) were still running; those rows
+keep their null and every read answers it as `publisher: null`. Envelope rather than payload, inside
+the replay comparison (one id dispatched by two services is two claims about history), and named by
+value with no existence check: beyond presence only its length is validated (at most 255 characters,
+the column's width), because a service can be retired after its events truthfully happened. There is
+no filter on it yet.
 
 **A `parentId` this log cannot resolve is data, not an error, and there is no foreign key.** Nothing
 orders a parent's arrival before its child's — publishes are independent HTTP calls, and a parent
@@ -154,10 +157,11 @@ the equality below is the only reason a retry is safe. `parentId` is envelope, n
 payload is compared byte for byte, so a cause that entered it would make one event published under
 two parents two events nothing could reconcile.
 
-**`parentId`, `environment` and `publisher` may be absent, and absent means null.** That is the whole of this
-contract's backward
-compatibility: a publisher that never learned about the field keeps working, which is why this
-service ships before any publisher that stamps. The reverse order is the unsafe one — a stamping
+**`parentId` and `environment` may be absent, and absent means null.** That is the whole of this
+contract's backward compatibility: a publisher that never learned about the field keeps working,
+which is why this service ships before any publisher that stamps. **`publisher` is the exception:
+it is required**, and a missing, null or blank one is a `400` naming it — every publisher on the
+estate has stamped it since 2026-10-31, so its absence is a broken client rather than an old one. The reverse order is the unsafe one — a stamping
 publisher against a service without the column has its parents silently dropped, and chains recorded
 as roots cannot be backfilled.
 
@@ -169,10 +173,11 @@ retry fixes. `description` is deliberately outside that comparison and `parentId
 inside it: the line is identity of the occurrence versus prose about it, and two PUTs of one id
 claiming different causes are two different claims about history. Two more `400`s belong to the
 cause — a `parentId` that is not a canonical UUID, and a `parentId` equal to the event's own id,
-since an event cannot cause itself. A `parentId` this log has never seen is **not** one of them.
+since an event cannot cause itself. One more belongs to the publisher — missing, blank or longer
+than 255 characters. A `parentId` this log has never seen is **not** one of them.
 `POST /events/api/events` stays what it was, for recording something by hand, and takes an optional
-`parentId` (and `environment` and `publisher`) validated identically so the two write paths cannot
-diverge about what an event is.
+`parentId` and `environment` and a required `publisher`, validated identically so the two write
+paths cannot diverge about what an event is.
 
 A subscriber connects to `/events/stream` and sends one frame — `{"subscribe": ["BuildSuccessful"]}`,
 which *replaces* that connection's set; `["*"]` means everything — and is then pushed

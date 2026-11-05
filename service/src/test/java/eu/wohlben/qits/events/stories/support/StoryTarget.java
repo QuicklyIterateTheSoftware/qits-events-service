@@ -162,6 +162,9 @@ public final class StoryTarget {
   /** A real publisher: qits-ci's outbox is the busiest one on the platform. */
   public static final String PUBLISHER = "qits-ci";
 
+  /** The same publisher as its envelopes name it: its maven coordinate. */
+  public static final String PUBLISHER_COORDINATE = "eu.wohlben.qits:qits-ci-service";
+
   /** The person behind the events client, as their token names them. */
   public static final String PERSON = "alice";
 
@@ -247,8 +250,9 @@ public final class StoryTarget {
   /**
    * The same envelope, optionally naming the event that caused this one and the tier the publisher
    * ran in. A null parent is left off the wire entirely rather than sent as {@code null}:
-   * absent-means-null is the contract's one backward-compatibility clause — the bytes an older
-   * publisher sends — and it is the shape most of the fleet still publishes in.
+   * absent-means-null is the contract's backward-compatibility clause for both. The {@code
+   * publisher} is always on it — required on write since qits-1771 — and names {@link #PUBLISHER}'s
+   * maven coordinate, the convention every service on the estate stamps.
    */
   public static String envelope(
       String name, String occurredAt, String payload, String parentId, String environment) {
@@ -261,12 +265,23 @@ public final class StoryTarget {
         + "\",\"description\":null"
         + (parentId == null ? "" : ",\"parentId\":\"" + parentId + "\"")
         + (environment == null ? "" : ",\"environment\":\"" + environment + "\"")
-        + "}";
+        + ",\"publisher\":\""
+        + PUBLISHER_COORDINATE
+        + "\"}";
   }
 
-  /** The manual record path's body: {@code POST} invents the id and may omit {@code occurredAt}. */
+  /**
+   * The manual record path's body: {@code POST} invents the id and may omit {@code occurredAt}, but
+   * not the publisher — required on both write paths since qits-1771.
+   */
   public static String record(String name, String payload) {
-    return "{\"name\":\"" + name + "\",\"payload\":\"" + escape(payload) + "\"}";
+    return "{\"name\":\""
+        + name
+        + "\",\"payload\":\""
+        + escape(payload)
+        + "\",\"publisher\":\""
+        + PUBLISHER_COORDINATE
+        + "\"}";
   }
 
   /** JSON-in-a-string, as a publisher escapes it. */

@@ -188,7 +188,8 @@ public class EventController {
    * canonical UUID if present, never the new event's own id. A person recording by hand rarely names
    * a cause, but a field the bus accepts and this path dropped would be two definitions of an
    * envelope behind one entity. {@code environment} and {@code publisher} follow for the same
-   * reason, under the same shape guards as {@code PUT}.
+   * reason, under the same guards as {@code PUT} — so {@code publisher} is <b>required</b> here as
+   * well, and a missing or blank one is a 400 naming it.
    */
   public record CreateEventRequest(
       @NotBlank String name,
@@ -197,7 +198,7 @@ public class EventController {
       String description,
       String parentId,
       String environment,
-      String publisher) {
+      @NotBlank String publisher) {
     public record Response(EventDto event) {}
   }
 
@@ -238,10 +239,12 @@ public class EventController {
    * comparison, because one id claiming two tiers is two claims about history.
    *
    * <p>{@code publisher} is the service that dispatched the event, conventionally its maven
-   * coordinate ({@code eu.wohlben.qits:qits-ci-service}). Same clauses again: absent is legal and
-   * means null — an event is <b>never</b> refused for lacking one — at most 255 characters when
-   * present, and inside the replay comparison, because one id dispatched by two services is two
-   * claims about history.
+   * coordinate ({@code eu.wohlben.qits:qits-ci-service}). Unlike the parent and the environment it
+   * is <b>required</b>: a missing, null or blank publisher is a 400 naming {@code publisher}. Absence
+   * was legal only while publishers built before the field (qits-1770) were still running; none is
+   * left since 2026-10-31. Events stored before then keep {@code publisher: null} on every read —
+   * the requirement guards writes, it rewrites nothing. It is at most 255 characters, and inside the
+   * replay comparison, because one id dispatched by two services is two claims about history.
    */
   public record PublishEventRequest(
       @NotBlank String name,
@@ -250,7 +253,7 @@ public class EventController {
       String description,
       String parentId,
       String environment,
-      String publisher) {
+      @NotBlank String publisher) {
     public record Response(EventDto event) {}
   }
 
@@ -264,7 +267,8 @@ public class EventController {
    *       written, nothing pushed
    *   <li><b>400</b> — the id was known and something differs (a reused UUID, which no retry fixes),
    *       or the id is not a UUID at all, or {@code parentId} is not a UUID, or {@code parentId} is
-   *       the event's own id
+   *       the event's own id, or {@code publisher} is missing, null, blank or longer than 255
+   *       characters
    * </ul>
    *
    * <p>A {@code parentId} naming an event this log does not have is <b>not</b> one of them: it is

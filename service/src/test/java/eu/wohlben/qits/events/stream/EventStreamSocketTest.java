@@ -48,6 +48,9 @@ class EventStreamSocketTest {
 
   private static final ObjectMapper JSON = new ObjectMapper();
 
+  /** The publisher the suite's writes name — required on write since qits-1771. */
+  private static final String PUBLISHER = "eu.wohlben.qits:qits-events-test";
+
   @TestHTTPResource("/events/stream")
   URI endpoint;
 
@@ -73,7 +76,9 @@ class EventStreamSocketTest {
                 + name
                 + "\",\"occurredAt\":\"2026-07-31T12:46:03Z\",\"payload\":"
                 + quoted(payload)
-                + ",\"description\":\"recorded by the suite\"}")
+                + ",\"description\":\"recorded by the suite\",\"publisher\":\""
+                + PUBLISHER
+                + "\"}")
         .when()
         .post("/events/api/events")
         .then()
@@ -93,7 +98,7 @@ class EventStreamSocketTest {
 
   private static io.restassured.response.Response publish(
       String id, String name, String payload, String parentId, String environment) {
-    return publish(id, name, payload, parentId, environment, null);
+    return publish(id, name, payload, parentId, environment, PUBLISHER);
   }
 
   private static io.restassured.response.Response publish(
@@ -201,8 +206,8 @@ class EventStreamSocketTest {
       // Same clause for the tier: null is "recorded before the platform knew tiers", and it is on
       // the wire as a value rather than a gap.
       assertTrue(frame.get("environment").isNull());
-      // ... and for the publisher: null is "recorded before publishers stamped it", on the wire.
-      assertTrue(frame.get("publisher").isNull());
+      // ... and the publisher, which every write names since qits-1771, so every frame carries one.
+      assertEquals(PUBLISHER, frame.get("publisher").asText());
     }
   }
 

@@ -152,7 +152,7 @@ public class PackagedLogBridgeIT {
     String body =
         given()
             .contentType(ContentType.JSON)
-            .body("{\"name\":\"" + "x".repeat(600) + "\",\"occurredAt\":\"2026-08-05T09:00:00Z\"}")
+            .body("{\"name\":\"" + "x".repeat(600) + "\",\"occurredAt\":\"2026-08-05T09:00:00Z\",\"publisher\":\"eu.wohlben.qits:qits-events-test\"}")
             .when()
             .post("/events/api/events")
             .then()

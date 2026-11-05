@@ -82,19 +82,16 @@ final class Validations {
   }
 
   /**
-   * Throws {@link BadRequestException} if {@code value} is longer than 255 characters, the width of
-   * the {@code publisher} column — null and blank are fine, the shape an <em>optional</em> field
-   * takes (see {@link #requireUuidIfPresent} for why both read as "no value").
+   * Throws {@link BadRequestException} unless {@code value} names a publisher: not null, not blank,
+   * and at most 255 characters, the width of the {@code publisher} column.
    *
    * <p>The value names the service that dispatched the event, conventionally its maven coordinate
    * ({@code eu.wohlben.qits:qits-ci-service}). That convention is deliberately not enforced: the
-   * guard is about what the column can hold, not about who may publish, and whether such a service
-   * exists is never checked.
+   * guard is about presence and what the column can hold, not about who may publish, and whether
+   * such a service exists is never checked.
    */
-  static void requirePublisherIfPresent(String value, String field) {
-    if (value == null || value.isBlank()) {
-      return;
-    }
+  static void requirePublisher(String value, String field) {
+    requireText(value, field);
     if (value.length() > 255) {
       throw new BadRequestException(field + " must be at most 255 characters");
     }

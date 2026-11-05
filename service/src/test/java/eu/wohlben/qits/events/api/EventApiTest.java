@@ -2,6 +2,7 @@ package eu.wohlben.qits.events.api;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
@@ -35,6 +36,9 @@ import org.junit.jupiter.api.Test;
 @TestSecurity(user = "alice", roles = "qits:admin")
 class EventApiTest {
 
+  /** The publisher every hand-recorded event here names — required on write since qits-1771. */
+  private static final String PUBLISHER = "eu.wohlben.qits:qits-events-test";
+
   private String create(String name, String occurredAt, String payload, String description) {
     return create(name, occurredAt, payload, description, null);
   }
@@ -51,7 +55,7 @@ class EventApiTest {
       String description,
       String parentId,
       String environment) {
-    return create(name, occurredAt, payload, description, parentId, environment, null);
+    return create(name, occurredAt, payload, description, parentId, environment, PUBLISHER);
   }
 
   private String create(
@@ -212,9 +216,9 @@ class EventApiTest {
         // ... and the tier key rides on the same clause: on the wire even when it is null.
         .body("event", hasKey("environment"))
         .body("event.environment", nullValue())
-        // ... and so does the publisher key.
+        // ... and so does the publisher key, which a write now always fills.
         .body("event", hasKey("publisher"))
-        .body("event.publisher", nullValue());
+        .body("event.publisher", equalTo(PUBLISHER));
   }
 
   @Test
@@ -920,11 +924,39 @@ class EventApiTest {
   void aBlankNameIsRejectedByBeanValidationBeforeItReachesTheService() {
     given()
         .contentType(ContentType.JSON)
-        .body("{\"name\":\"  \"}")
+        .body("{\"name\":\"  \",\"publisher\":\"" + PUBLISHER + "\"}")
         .when()
         .post("/events/api/events")
         .then()
         .statusCode(400);
+  }
+
+  @Test
+  void aManualRecordWithoutAPublisherIsFourHundredNamingTheField() {
+    // Required on the manual path exactly as on PUT: two write paths must not disagree about what
+    // an event is. Absent, JSON null and blank are the same refusal.
+    String name = "Unattributed " + System.nanoTime();
+    for (String body :
+        java.util.List.of(
+            "{\"name\":\"" + name + "\"}",
+            "{\"name\":\"" + name + "\",\"publisher\":null}",
+            "{\"name\":\"" + name + "\",\"publisher\":\"  \"}")) {
+      given()
+          .contentType(ContentType.JSON)
+          .body(body)
+          .when()
+          .post("/events/api/events")
+          .then()
+          .statusCode(400)
+          .body(containsString("publisher"));
+    }
+    given()
+        .queryParam("name", name)
+        .when()
+        .get("/events/api/events")
+        .then()
+        .statusCode(200)
+        .body("events", empty());
   }
 
   @Test

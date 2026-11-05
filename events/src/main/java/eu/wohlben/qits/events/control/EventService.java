@@ -171,7 +171,8 @@ public class EventService {
    * machine-consumed structure, and one id claiming two tiers is two claims about history. So does
    * the publisher: one id dispatched by two services is two claims about who said it. The
    * strictness costs a well-behaved publisher nothing: an outbox stores the envelope whole, so its
-   * own two attempts cannot disagree.
+   * own two attempts cannot disagree. The publisher is also required ({@link #publisherOf}), so a
+   * PUT naming the id of a row stored without one, before 2026-10-31, can never replay equal to it.
    *
    * <p>The stored description is left as it was — a replay writes nothing at all, which is what
    * makes 200 free of a transaction.
@@ -352,22 +353,22 @@ public class EventService {
   }
 
   /**
-   * The publisher to store, or null — {@link #environmentOf}'s shape for the field naming the
-   * service that dispatched the event ({@code eu.wohlben.qits:qits-ci-service}).
+   * The publisher to store — the field naming the service that dispatched the event ({@code
+   * eu.wohlben.qits:qits-ci-service}), required on both write paths.
    *
-   * <p>The guard is shape only — at most 255 characters, the column's width — and never a lookup:
-   * a publisher is a service of another context, it can be retired after its events truthfully
-   * happened, and a 400 here is unretryable. <b>Absence is never refused</b>: every publisher built
-   * before the field existed sends none, and refusing them would turn a new optional field into an
-   * outage.
+   * <p>Null and blank are refused with a 400 naming {@code publisher}. Absence was accepted only
+   * while publishers built before the field existed (qits-1770) were still running; none is left
+   * since 2026-10-31, so an event without a publisher is now a broken client, not an old one. Rows
+   * stored before that date keep their null — this guards writes, it never rewrites history.
    *
-   * <p>Blank normalises to null, so that "no publisher" is one value and a replay of it compares
-   * equal. Null stays null rather than defaulting: only the publisher knows who it is, and an event
-   * that arrives without one predates the field.
+   * <p>Beyond presence the guard is shape only — at most 255 characters, the column's width — and
+   * never a lookup: a publisher is a service of another context, it can be retired after its events
+   * truthfully happened, and a 400 here is unretryable. Nothing is defaulted: only the publisher
+   * knows who it is.
    */
   private static String publisherOf(String publisher) {
-    Validations.requirePublisherIfPresent(publisher, "publisher");
-    return publisher == null || publisher.isBlank() ? null : publisher;
+    Validations.requirePublisher(publisher, "publisher");
+    return publisher;
   }
 
   /**

@@ -75,6 +75,9 @@ public class PackagedSurfaceIT {
   /** What the client's index.html spells now that it is mounted at the root of its own host. */
   private static final String BASE_HREF = "<base href=\"/\">";
 
+  /** The publisher the suite's writes name — required on write since qits-1771. */
+  private static final String PUBLISHER = "eu.wohlben.qits:qits-events-test";
+
   /**
    * Hands the launched artifact a database the way a deployment does — as the generic resource
    * triple, not as the datasource keys. The events jar ships {@code
@@ -210,7 +213,10 @@ public class PackagedSurfaceIT {
     // @QuarkusTest, where Quinoa is disabled and there is no client at all.
     given()
         .contentType(ContentType.JSON)
-        .body("{\"name\":\"PackagedVocabulary\",\"occurredAt\":\"2026-07-31T09:00:00Z\"}")
+        .body(
+            "{\"name\":\"PackagedVocabulary\",\"occurredAt\":\"2026-07-31T09:00:00Z\",\"publisher\":\""
+                + PUBLISHER
+                + "\"}")
         .when()
         .post("/events/api/events")
         .then()
@@ -239,7 +245,9 @@ public class PackagedSurfaceIT {
                   + i
                   + "-01T00:00:00Z\",\"payload\":\"{\\\"mark\\\":\\\""
                   + mark
-                  + "\\\"}\"}")
+                  + "\\\"}\",\"publisher\":\""
+                  + PUBLISHER
+                  + "\"}")
           .when()
           .post("/events/api/events")
           .then()
@@ -295,7 +303,10 @@ public class PackagedSurfaceIT {
     String id =
         given()
             .contentType(ContentType.JSON)
-            .body("{\"name\":\"Packaged surface\",\"occurredAt\":\"2026-07-31T09:00:00Z\"}")
+            .body(
+                "{\"name\":\"Packaged surface\",\"occurredAt\":\"2026-07-31T09:00:00Z\",\"publisher\":\""
+                    + PUBLISHER
+                    + "\"}")
             .when()
             .post("/events/api/events")
             .then()
@@ -408,7 +419,9 @@ public class PackagedSurfaceIT {
         "{\"name\":\""
             + signature
             + "\",\"occurredAt\":\"2026-07-31T12:46:03Z\",\"payload\":\"{\\\"probe\\\":true}\","
-            + "\"description\":null}";
+            + "\"description\":null,\"publisher\":\""
+            + PUBLISHER
+            + "\"}";
 
     try (FakeSubscriber subscriber = FakeSubscriber.dial(stream)) {
       subscriber.subscribe(signature);
@@ -430,12 +443,12 @@ public class PackagedSurfaceIT {
       assertNotNull(frame, "the packaged artifact's stream pushed nothing");
       assertTrue(frame.contains("\"name\":\"" + signature + "\""), frame);
       assertTrue(frame.contains("\"payload\":\"{\\\"probe\\\":true}\""), frame);
-      // The envelope above never mentions parentId, environment or publisher — an older
-      // publisher's exact bytes — and the frame carries all three as explicit nulls all the same.
-      // Both halves of the compatibility clause in one assertion, on the artifact.
+      // The envelope above never mentions parentId or environment — both optional — and the frame
+      // carries them as explicit nulls all the same, beside the publisher it did name. Both halves
+      // of the compatibility clause in one assertion, on the artifact.
       assertTrue(frame.contains("\"parentId\":null"), frame);
       assertTrue(frame.contains("\"environment\":null"), frame);
-      assertTrue(frame.contains("\"publisher\":null"), frame);
+      assertTrue(frame.contains("\"publisher\":\"" + PUBLISHER + "\""), frame);
     }
   }
 
@@ -523,6 +536,17 @@ public class PackagedSurfaceIT {
         .put("/events/api/events/not-a-uuid")
         .then()
         .statusCode(400);
+
+    // The publisher is required (qits-1771): bean validation has to survive the native image too,
+    // or an unattributed write would land a row instead of answering 400.
+    given()
+        .contentType(ContentType.JSON)
+        .body(envelope.replace(",\"publisher\":\"eu.wohlben.qits:qits-ci-service\"", ""))
+        .when()
+        .put("/events/api/events/" + UUID.randomUUID())
+        .then()
+        .statusCode(400)
+        .body(org.hamcrest.Matchers.containsString("publisher"));
   }
 
   @Test
@@ -535,7 +559,10 @@ public class PackagedSurfaceIT {
     String id =
         given()
             .contentType(ContentType.JSON)
-            .body("{\"name\":\"PackagedRoot\",\"occurredAt\":\"2026-07-31T09:00:00Z\"}")
+            .body(
+                "{\"name\":\"PackagedRoot\",\"occurredAt\":\"2026-07-31T09:00:00Z\",\"publisher\":\""
+                    + PUBLISHER
+                    + "\"}")
             .when()
             .post("/events/api/events")
             .then()
@@ -553,8 +580,8 @@ public class PackagedSurfaceIT {
         // The tier key is pinned the same way, for the same probing consumer.
         .body("event", org.hamcrest.Matchers.hasKey("environment"))
         .body("event.environment", org.hamcrest.Matchers.nullValue())
-        // ... and so is the publisher key.
+        // ... and the publisher key, which a write now always fills.
         .body("event", org.hamcrest.Matchers.hasKey("publisher"))
-        .body("event.publisher", org.hamcrest.Matchers.nullValue());
+        .body("event.publisher", org.hamcrest.Matchers.equalTo(PUBLISHER));
   }
 }

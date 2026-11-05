@@ -1,14 +1,19 @@
 package eu.wohlben.qits.events.api;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
+import eu.wohlben.qits.events.entity.Event;
+import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
+import java.time.Instant;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
@@ -45,7 +50,9 @@ class EventPublishApiTest {
         + (payload == null ? "null" : "\"" + payload + "\"")
         + ",\"description\":null,\"parentId\":"
         + (parentId == null ? "null" : "\"" + parentId + "\"")
-        + "}";
+        + ",\"publisher\":\""
+        + CI
+        + "\"}";
   }
 
   /** The whole envelope as today's publisher sends it — {@code environment} always present too. */
@@ -61,7 +68,9 @@ class EventPublishApiTest {
         + (parentId == null ? "null" : "\"" + parentId + "\"")
         + ",\"environment\":"
         + (environment == null ? "null" : "\"" + environment + "\"")
-        + "}";
+        + ",\"publisher\":\""
+        + CI
+        + "\"}";
   }
 
   /** The envelope with a {@code publisher} — what a publisher that stamps its own name sends. */
@@ -78,9 +87,9 @@ class EventPublishApiTest {
   }
 
   /**
-   * The envelope <b>without</b> the field at all — what a publisher built against the five-field
-   * contract sends, and what this service must go on accepting. That compatibility clause is the
-   * reason this side ships before any publisher that stamps.
+   * The envelope <b>without</b> the optional {@code parentId} and {@code environment} at all — what
+   * this service must go on accepting, because absent is legal for both. The publisher is on it all
+   * the same: it is required since qits-1771.
    */
   private static String envelope(String name, String occurredAt, String payload) {
     return "{\"name\":\""
@@ -89,7 +98,9 @@ class EventPublishApiTest {
         + occurredAt
         + "\",\"payload\":"
         + (payload == null ? "null" : "\"" + payload + "\"")
-        + ",\"description\":null}";
+        + ",\"description\":null,\"publisher\":\""
+        + CI
+        + "\"}";
   }
 
   private static io.restassured.response.Response put(String id, String body) {
@@ -162,9 +173,13 @@ class EventPublishApiTest {
     String id = UUID.randomUUID().toString();
     // occurredAt is required here and optional on POST: it is one of the three fields a replay is
     // compared on, so a time this server invented would make the event unable to replay as itself.
-    put(id, "{\"name\":\"BuildSuccessful\"}").then().statusCode(400);
-    put(id, "{\"occurredAt\":\"2026-07-31T12:46:03Z\"}").then().statusCode(400);
-    put(id, "{\"name\":\"  \",\"occurredAt\":\"2026-07-31T12:46:03Z\"}").then().statusCode(400);
+    // Each body carries a publisher, so the refusal is the field the line is about.
+    String publisher = ",\"publisher\":\"" + CI + "\"}";
+    put(id, "{\"name\":\"BuildSuccessful\"" + publisher).then().statusCode(400);
+    put(id, "{\"occurredAt\":\"2026-07-31T12:46:03Z\"" + publisher).then().statusCode(400);
+    put(id, "{\"name\":\"  \",\"occurredAt\":\"2026-07-31T12:46:03Z\"" + publisher)
+        .then()
+        .statusCode(400);
   }
 
   @Test
@@ -340,54 +355,92 @@ class EventPublishApiTest {
   }
 
   @Test
-  void aPublishWithoutAPublisherIsAcceptedAndThePublisherKeyIsStillEmitted() {
-    // Absent means null and is NEVER refused: every publisher built before the field sends none.
+  void aPublishWithoutAPublisherIsFourHundredNamingTheField() {
+    // Required since qits-1771: every publisher on the estate has stamped one since 2026-10-31, so
+    // an envelope without one is a broken client, not an old one. Absent, JSON null, empty and
+    // blank are all the same refusal, and none of them writes a row.
     String id = UUID.randomUUID().toString();
-    put(id, envelope("BuildSuccessful", "2026-07-31T12:46:03Z", PAYLOAD, null, "dev"))
-        .then()
-        .statusCode(201)
-        .body("event", hasKey("publisher"))
-        .body("event.publisher", nullValue());
-    // ... and a replay of the same publisher-less bytes is a replay: null compares equal to null.
-    put(id, envelope("BuildSuccessful", "2026-07-31T12:46:03Z", PAYLOAD, null, "dev"))
-        .then()
-        .statusCode(200);
-
-    given().when().get("/events/api/events/" + id).then().body("event", hasKey("publisher"));
+    String withoutTheKey =
+        "{\"name\":\"BuildSuccessful\",\"occurredAt\":\"2026-07-31T12:46:03Z\",\"payload\":\""
+            + PAYLOAD
+            + "\",\"description\":null,\"parentId\":null,\"environment\":\"dev\"}";
+    for (String body :
+        java.util.List.of(
+            withoutTheKey,
+            stamped("BuildSuccessful", "2026-07-31T12:46:03Z", PAYLOAD, null),
+            stamped("BuildSuccessful", "2026-07-31T12:46:03Z", PAYLOAD, ""),
+            stamped("BuildSuccessful", "2026-07-31T12:46:03Z", PAYLOAD, "   "))) {
+      put(id, body).then().statusCode(400).body(containsString("publisher"));
+    }
+    given().when().get("/events/api/events/" + id).then().statusCode(404);
   }
 
   @Test
-  void reAttributingOneIdIsFourHundredInBothDirections() {
-    // publisher is INSIDE the comparison, like environment: one id dispatched by two services is
-    // two different claims about history.
-    String first = UUID.randomUUID().toString();
-    put(first, stamped("BuildSuccessful", "2026-07-31T12:46:03Z", PAYLOAD, null))
+  void anEventStoredBeforePublishersWereRequiredStillReadsWithANullPublisher() {
+    // Rows from before 2026-10-31 keep their null: the requirement guards writes and rewrites
+    // nothing. Inserted through the entity, past every write-path guard, as such a row was.
+    String id = UUID.randomUUID().toString();
+    String name = "LegacyUnattributed" + System.nanoTime();
+    QuarkusTransaction.requiringNew()
+        .run(
+            () -> {
+              Event legacy = new Event();
+              legacy.id = id;
+              legacy.name = name;
+              legacy.occurredAt = Instant.parse("2026-07-31T12:46:03Z");
+              legacy.persist();
+            });
+
+    given()
+        .when()
+        .get("/events/api/events/" + id)
         .then()
-        .statusCode(201);
-    // null → set
-    put(first, stamped("BuildSuccessful", "2026-07-31T12:46:03Z", PAYLOAD, CI))
+        .statusCode(200)
+        .body("event", hasKey("publisher"))
+        .body("event.publisher", nullValue());
+    given()
+        .queryParam("name", name)
+        .when()
+        .get("/events/api/events")
+        .then()
+        .statusCode(200)
+        .body("events.id", contains(id))
+        .body("events[0]", hasKey("publisher"))
+        .body("events[0].publisher", nullValue());
+
+    // ... and the replay comparison is unchanged: a stamped PUT of that id is a reused UUID.
+    put(id, stamped(name, "2026-07-31T12:46:03Z", null, CI))
         .then()
         .statusCode(400)
         .contentType(ContentType.JSON)
         .body("message", notNullValue());
+  }
 
-    String second = UUID.randomUUID().toString();
-    put(second, stamped("BuildSuccessful", "2026-07-31T12:46:03Z", PAYLOAD, CI))
+  @Test
+  void reAttributingOneIdIsFourHundred() {
+    // publisher is INSIDE the comparison, like environment: one id dispatched by two services is
+    // two different claims about history. (The null → set direction only exists for rows stored
+    // before publishers were required — see the test above.)
+    String id = UUID.randomUUID().toString();
+    put(id, stamped("BuildSuccessful", "2026-07-31T12:46:03Z", PAYLOAD, CI))
         .then()
         .statusCode(201);
-    // set → null, and set → a different one
-    put(second, stamped("BuildSuccessful", "2026-07-31T12:46:03Z", PAYLOAD, null))
-        .then()
-        .statusCode(400);
     put(
-            second,
+            id,
             stamped(
                 "BuildSuccessful",
                 "2026-07-31T12:46:03Z",
                 PAYLOAD,
                 "eu.wohlben.qits:qits-projects-service"))
         .then()
-        .statusCode(400);
+        .statusCode(400)
+        .contentType(ContentType.JSON)
+        .body("message", notNullValue());
+    // ... while the original bytes are still a replay.
+    put(id, stamped("BuildSuccessful", "2026-07-31T12:46:03Z", PAYLOAD, CI))
+        .then()
+        .statusCode(200)
+        .body("event.publisher", equalTo(CI));
   }
 
   @Test

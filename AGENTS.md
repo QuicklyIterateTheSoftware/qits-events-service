@@ -203,8 +203,9 @@ that serves every tier), stamped by the publisher from its own `QITS_ENVIRONMENT
 recorded before the platform knew tiers — with `?environment=` on the list route as the read model
 (an indexed equality on its own column, `idx_event_environment`, unlike the payload scans).
 `publisher` sits beside it on the envelope: the service that dispatched the event
-(`eu.wohlben.qits:qits-ci-service`), null for events recorded before publishers stamped it, with no
-filter and so no index (`V3__publisher.sql`).
+(`eu.wohlben.qits:qits-ci-service`), **required on write** on both paths since qits-1771 (a missing
+or blank one is a 400 naming `publisher`), and null only on events stored before 2026-10-31, which
+keep it — with no filter and so no index (`V3__publisher.sql`).
 
 `PUT /events/api/events/{id}` and `/events/stream` are the two surfaces that make this a bus rather
 than a log, and the wire contract for both is frozen in `eventsourcing-plan.md` in the superproject.
@@ -229,8 +230,11 @@ Three things about it are load-bearing here:
   guard is shape rather than existence — a dns-safe name (`Validations.requireEnvironmentIfPresent`),
   never a lookup against qits-deployments' environments, which can delete an environment after its
   events truthfully happened. `publisher` sits there too — one id dispatched by two services is two
-  claims about history — under a length-only guard (`Validations.requirePublisherIfPresent`, at most
-  255), and is **never required**: an event without one is stored with null. `occurredAt` is truncated to
+  claims about history — and is **required** (`Validations.requirePublisher`: non-blank, at most
+  255, a 400 naming `publisher` otherwise, plus `@NotBlank` on both request records so the OpenAPI
+  document lists it). Absence was accepted only while publishers built before qits-1770 were still
+  running; none is left since 2026-10-31. Rows stored before then keep their null — the column stays
+  nullable, nothing is backfilled — so a PUT naming such a row's id can never replay equal to it. `occurredAt` is truncated to
   microseconds on the way in, because the column is `timestamp(6)` and comparing the caller's
   nanoseconds against the database's microseconds would 400 a publisher's honest retry.
 - **`parentId` is validated twice and checked never.** It must be a canonical UUID when present, and
@@ -240,8 +244,9 @@ Three things about it are load-bearing here:
   permanent data loss. A dangling parent is data. The reasoning is written where the check would
   otherwise live (`EventService.causeOf`) and beside the column in `V1__init.sql`; if a future change makes it
   look like an oversight, read those first.
-- **The field is on the wire as an explicit `null`.** Absent-means-null is the contract's one
-  backward-compatibility clause (an older publisher keeps working), but this service always *emits*
+- **The field is on the wire as an explicit `null`.** Absent-means-null is the contract's
+  backward-compatibility clause for `parentId` and `environment` (an older publisher keeps working;
+  `publisher` is required instead), but this service always *emits*
   the key — a consumer probes for it to learn whether this service knows about causation, so an
   omit-nulls Jackson customizer here would be a silent break. `PackagedSurfaceIT` pins it with
   `hasKey`, not `nullValue()`: an absent JSON path also reads as null, so `nullValue()` alone would
