@@ -117,7 +117,7 @@
 
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>3.34.6</quarkus.platform.version>
+        <quarkus.platform.version>3.40.1</quarkus.platform.version>
 
         <!-- The OTLP wire's generated message classes, TEST SCOPE ONLY (declared in service/pom.xml)
              — what OtlpLogStub decodes an ExportLogsServiceRequest with, so the log-bridge proof
