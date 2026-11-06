@@ -59,11 +59,11 @@
              own committed `pacts/<name>_qits-events-service.json`, not through the library) are
              retired by this ticket — qits-ci-service's pin above replaces its old one outright, and
              qits-projects-service's pin below replaces its placeholder. -->
-        <qits.ci-service-pacts-qits-events-service.version>2026.1104.61258</qits.ci-service-pacts-qits-events-service.version>
+        <qits.ci-service-pacts-qits-events-service.version>2026.1106.24753</qits.ci-service-pacts-qits-events-service.version>
         <qits.githost-service-pacts-qits-events-service.version>2026.1104.22323</qits.githost-service-pacts-qits-events-service.version>
         <qits.deployments-service-pacts-qits-events-service.version>2026.1104.13145</qits.deployments-service-pacts-qits-events-service.version>
-        <qits.edge-service-pacts-qits-events-service.version>2026.1104.73928</qits.edge-service-pacts-qits-events-service.version>
-        <qits.maintenance-service-pacts-qits-events-service.version>2026.1104.11015</qits.maintenance-service-pacts-qits-events-service.version>
+        <qits.edge-service-pacts-qits-events-service.version>2026.1106.40834</qits.edge-service-pacts-qits-events-service.version>
+        <qits.maintenance-service-pacts-qits-events-service.version>2026.1106.34504</qits.maintenance-service-pacts-qits-events-service.version>
         <qits.orchestrator-service-pacts-qits-events-service.version>2026.1104.52541</qits.orchestrator-service-pacts-qits-events-service.version>
         <qits.projects-service-pacts-qits-events-service.version>2026.1104.64907</qits.projects-service-pacts-qits-events-service.version>
         <qits.workspaces-service-pacts-qits-events-service.version>2026.1104.34429</qits.workspaces-service-pacts-qits-events-service.version>
