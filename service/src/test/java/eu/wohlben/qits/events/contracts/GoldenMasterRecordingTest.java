@@ -549,7 +549,6 @@ class GoldenMasterRecordingTest {
     return out;
   }
 
-  /** Every committed {@code .json} under the directory, relative and {@code /}-separated. */
   /**
    * slug → frozen params of every state in the committed index ({@code states[].slug}, {@code
    * states[].params}); empty when there is no index yet.
@@ -567,6 +566,7 @@ class GoldenMasterRecordingTest {
     return out;
   }
 
+  /** Every committed {@code .json} under the directory, relative and {@code /}-separated. */
   private static List<String> committedJson(Path dir) throws IOException {
     if (!Files.isDirectory(dir)) {
       return List.of();
