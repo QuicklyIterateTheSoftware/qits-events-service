@@ -65,7 +65,7 @@
         <qits.edge-service-pacts-qits-events-service.version>2026.1106.40834</qits.edge-service-pacts-qits-events-service.version>
         <qits.maintenance-service-pacts-qits-events-service.version>2026.1106.34504</qits.maintenance-service-pacts-qits-events-service.version>
         <qits.orchestrator-service-pacts-qits-events-service.version>2026.1106.45601</qits.orchestrator-service-pacts-qits-events-service.version>
-        <qits.projects-service-pacts-qits-events-service.version>2026.1106.43546</qits.projects-service-pacts-qits-events-service.version>
+        <qits.projects-service-pacts-qits-events-service.version>2026.1106.202329</qits.projects-service-pacts-qits-events-service.version>
         <qits.workspaces-service-pacts-qits-events-service.version>2026.1106.85459</qits.workspaces-service-pacts-qits-events-service.version>
         <!-- The two CLIs (ticket qits-1149) call this provider themselves, not through the library,
              so each jar carries the CLI's own `pacts/<cli>_qits-events-service.json` (both still
