@@ -56,24 +56,10 @@
           "kind" : "returns"
         },
         {
-          "operationId" : "createEvent",
-          "method" : "POST",
-          "path" : "/events",
-          "dto" : "eu.wohlben.qits.events.dto.EventDto",
-          "kind" : "returns"
-        },
-        {
           "operationId" : "getEvent",
           "method" : "GET",
           "path" : "/events/{id}",
           "dto" : "eu.wohlben.qits.events.api.EventController$GetEventRequest$Response",
-          "kind" : "returns"
-        },
-        {
-          "operationId" : "getEvent",
-          "method" : "GET",
-          "path" : "/events/{id}",
-          "dto" : "eu.wohlben.qits.events.dto.EventDto",
           "kind" : "returns"
         },
         {
@@ -84,24 +70,10 @@
           "kind" : "returns"
         },
         {
-          "operationId" : "listEvents",
-          "method" : "GET",
-          "path" : "/events",
-          "dto" : "eu.wohlben.qits.events.dto.EventDto",
-          "kind" : "returns"
-        },
-        {
           "operationId" : "publishEvent",
           "method" : "PUT",
           "path" : "/events/{id}",
           "dto" : "eu.wohlben.qits.events.api.EventController$PublishEventRequest$Response",
-          "kind" : "returns"
-        },
-        {
-          "operationId" : "publishEvent",
-          "method" : "PUT",
-          "path" : "/events/{id}",
-          "dto" : "eu.wohlben.qits.events.dto.EventDto",
           "kind" : "returns"
         }
       ]
