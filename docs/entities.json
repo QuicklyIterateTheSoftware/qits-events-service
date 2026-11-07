@@ -1,0 +1,82 @@
+{
+  "formatVersion" : 1,
+  "application" : "qits-events",
+  "entities" : [
+    {
+      "entity" : "eu.wohlben.qits.events.entity.Event",
+      "table" : null,
+      "marking" : "domain",
+      "reason" : null,
+      "projectionOf" : null,
+      "knownGap" : null,
+      "dtos" : [
+        {
+          "type" : "eu.wohlben.qits.events.api.EventController$CreateEventRequest$Response",
+          "kind" : "assembler",
+          "via" : null,
+          "site" : "EventController.create(CreateEventRequest)"
+        },
+        {
+          "type" : "eu.wohlben.qits.events.api.EventController$GetEventRequest$Response",
+          "kind" : "assembler",
+          "via" : null,
+          "site" : "EventController.get(String)"
+        },
+        {
+          "type" : "eu.wohlben.qits.events.api.EventController$ListEventsRequest$Response",
+          "kind" : "via",
+          "via" : "eu.wohlben.qits.events.control.EventCursor",
+          "site" : "EventController.list(String, String, String, String, List, String, String, String, String)"
+        },
+        {
+          "type" : "eu.wohlben.qits.events.api.EventController$PublishEventRequest$Response",
+          "kind" : "assembler",
+          "via" : null,
+          "site" : "EventController.publish(String, PublishEventRequest)"
+        },
+        {
+          "type" : "eu.wohlben.qits.events.control.EventCursor",
+          "kind" : "assembler",
+          "via" : null,
+          "site" : "EventService.list(EventQuery)"
+        },
+        {
+          "type" : "eu.wohlben.qits.events.dto.EventDto",
+          "kind" : "mapper",
+          "via" : null,
+          "site" : "EventController.toDtos(List)"
+        }
+      ],
+      "operations" : [
+        {
+          "operationId" : "createEvent",
+          "method" : "POST",
+          "path" : "/events",
+          "dto" : "eu.wohlben.qits.events.api.EventController$CreateEventRequest$Response",
+          "kind" : "returns"
+        },
+        {
+          "operationId" : "getEvent",
+          "method" : "GET",
+          "path" : "/events/{id}",
+          "dto" : "eu.wohlben.qits.events.api.EventController$GetEventRequest$Response",
+          "kind" : "returns"
+        },
+        {
+          "operationId" : "listEvents",
+          "method" : "GET",
+          "path" : "/events",
+          "dto" : "eu.wohlben.qits.events.api.EventController$ListEventsRequest$Response",
+          "kind" : "returns"
+        },
+        {
+          "operationId" : "publishEvent",
+          "method" : "PUT",
+          "path" : "/events/{id}",
+          "dto" : "eu.wohlben.qits.events.api.EventController$PublishEventRequest$Response",
+          "kind" : "returns"
+        }
+      ]
+    }
+  ]
+}
