@@ -44,7 +44,7 @@
              golden masters and writes pacts/qits-events-service_qits-idp-service.json. Exact
              pins: a newer recording is a deliberate bump. -->
         <qits.pact-consumer.version>2026.1106.507</qits.pact-consumer.version>
-        <qits.idp-golden-masters.version>2026.1027.165632</qits.idp-golden-masters.version>
+        <qits.idp-golden-masters.version>2026.1107.220215</qits.idp-golden-masters.version>
         <!-- THE PROVIDER HALF: every published `eu.wohlben.qits:<consumer>-pacts-qits-events-service`
              jar, one per consumer that calls through qits-eventstream-javalib's kit
              qits-eventstream-contracts and commits
@@ -59,14 +59,14 @@
              own committed `pacts/<name>_qits-events-service.json`, not through the library) are
              retired by this ticket — qits-ci-service's pin above replaces its old one outright, and
              qits-projects-service's pin below replaces its placeholder. -->
-        <qits.ci-service-pacts-qits-events-service.version>2026.1106.24753</qits.ci-service-pacts-qits-events-service.version>
-        <qits.githost-service-pacts-qits-events-service.version>2026.1106.52935</qits.githost-service-pacts-qits-events-service.version>
-        <qits.deployments-service-pacts-qits-events-service.version>2026.1106.50941</qits.deployments-service-pacts-qits-events-service.version>
+        <qits.ci-service-pacts-qits-events-service.version>2026.1108.11411</qits.ci-service-pacts-qits-events-service.version>
+        <qits.githost-service-pacts-qits-events-service.version>2026.1107.215950</qits.githost-service-pacts-qits-events-service.version>
+        <qits.deployments-service-pacts-qits-events-service.version>2026.1108.952</qits.deployments-service-pacts-qits-events-service.version>
         <qits.edge-service-pacts-qits-events-service.version>2026.1106.40834</qits.edge-service-pacts-qits-events-service.version>
-        <qits.maintenance-service-pacts-qits-events-service.version>2026.1106.34504</qits.maintenance-service-pacts-qits-events-service.version>
-        <qits.orchestrator-service-pacts-qits-events-service.version>2026.1106.45601</qits.orchestrator-service-pacts-qits-events-service.version>
+        <qits.maintenance-service-pacts-qits-events-service.version>2026.1108.24102</qits.maintenance-service-pacts-qits-events-service.version>
+        <qits.orchestrator-service-pacts-qits-events-service.version>2026.1107.215311</qits.orchestrator-service-pacts-qits-events-service.version>
         <qits.projects-service-pacts-qits-events-service.version>2026.1106.202329</qits.projects-service-pacts-qits-events-service.version>
-        <qits.workspaces-service-pacts-qits-events-service.version>2026.1106.85459</qits.workspaces-service-pacts-qits-events-service.version>
+        <qits.workspaces-service-pacts-qits-events-service.version>2026.1107.235403</qits.workspaces-service-pacts-qits-events-service.version>
         <!-- The two CLIs (ticket qits-1149) call this provider themselves, not through the library,
              so each jar carries the CLI's own `pacts/<cli>_qits-events-service.json` (both still
              committed on their mains, checked 2026-10-19): qits-bootstrap-cli's head poll and the
@@ -82,7 +82,7 @@
              image build can point it at the address the builder container can actually reach —
              see docker/Dockerfile and .qits-maven-settings.xml. -->
         <qits.db-core.version>2026.1107.191249</qits.db-core.version>
-        <qits.arch-rules.version>2026.1107.205842</qits.arch-rules.version>
+        <qits.arch-rules.version>2026.1108.20205</qits.arch-rules.version>
         <qits.auth-core.version>2026.1106.507</qits.auth-core.version>
         <!-- CallerServerFilter/CallerClientFilter: jandex-indexed filters that record inbound
              X-Qits-Caller as the qits.caller span attribute and stamp it on outgoing REST-client
