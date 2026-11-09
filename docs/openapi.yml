@@ -335,6 +335,7 @@ paths:
         \ (comma-separated; '*' means everything; absent means nothing) as an SSE\
         \ event whose id: field is the event id and whose data is the EventCreated\
         \ envelope. Live only: no replay, no offset, no catch-up."
+      operationId: streamEvents
       parameters:
       - name: names
         in: query

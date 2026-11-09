@@ -1,0 +1,14 @@
+{
+  "event": {
+    "id": "00000000-0000-4000-8000-000000000001",
+    "name": "ManualNote",
+    "occurredAt": "2026-01-01T00:00:00Z",
+    "payload": "{\"note\":\"recorded by hand\"}",
+    "description": "recorded by hand",
+    "parentId": null,
+    "environment": null,
+    "createdAt": "2026-01-01T00:00:00Z",
+    "updatedAt": "2026-01-01T00:00:00Z",
+    "publisher": "eu.wohlben.qits:qits-events-frontend"
+  }
+}

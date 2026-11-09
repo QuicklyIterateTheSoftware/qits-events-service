@@ -135,6 +135,38 @@
       "dependsOn": [],
       "operations": [
         {
+          "operationId": "deleteEvent",
+          "method": "DELETE",
+          "path": "/events/api/events/{eventId}",
+          "status": 200,
+          "file": "an-event-with-the-given-id/deleteEvent.json",
+          "frozen": {
+            "ids": [],
+            "instants": [],
+            "strings": [],
+            "listFilteredTo": null
+          }
+        },
+        {
+          "operationId": "getEvent",
+          "method": "GET",
+          "path": "/events/api/events/{eventId}",
+          "status": 200,
+          "file": "an-event-with-the-given-id/getEvent.json",
+          "frozen": {
+            "ids": [
+              "$.event.id"
+            ],
+            "instants": [
+              "$.event.occurredAt",
+              "$.event.createdAt",
+              "$.event.updatedAt"
+            ],
+            "strings": [],
+            "listFilteredTo": null
+          }
+        },
+        {
           "operationId": "publishEvent",
           "method": "PUT",
           "path": "/events/api/events/{eventId}",
@@ -236,6 +268,30 @@
               "$.nextCursor"
             ],
             "listFilteredTo": "$.events"
+          }
+        }
+      ]
+    },
+    {
+      "name": "events of two names",
+      "slug": "events-of-two-names",
+      "params": {
+        "firstName": "GoldenMasterAlpha",
+        "secondName": "GoldenMasterBeta"
+      },
+      "dependsOn": [],
+      "operations": [
+        {
+          "operationId": "listEventNames",
+          "method": "GET",
+          "path": "/events/api/events/names",
+          "status": 200,
+          "file": "events-of-two-names/listEventNames.json",
+          "frozen": {
+            "ids": [],
+            "instants": [],
+            "strings": [],
+            "listFilteredTo": "$.names"
           }
         }
       ]
@@ -350,6 +406,42 @@
       ]
     },
     {
+      "name": "no event recorded by hand",
+      "slug": "no-event-recorded-by-hand",
+      "params": {},
+      "dependsOn": [],
+      "operations": [
+        {
+          "operationId": "createEvent",
+          "method": "POST",
+          "path": "/events/api/events",
+          "body": {
+            "name": "ManualNote",
+            "occurredAt": "2100-01-01T00:00:00Z",
+            "payload": "{\"note\":\"recorded by hand\"}",
+            "description": "recorded by hand",
+            "parentId": null,
+            "environment": null,
+            "publisher": "eu.wohlben.qits:qits-events-frontend"
+          },
+          "status": 200,
+          "file": "no-event-recorded-by-hand/createEvent.json",
+          "frozen": {
+            "ids": [
+              "$.event.id"
+            ],
+            "instants": [
+              "$.event.occurredAt",
+              "$.event.createdAt",
+              "$.event.updatedAt"
+            ],
+            "strings": [],
+            "listFilteredTo": null
+          }
+        }
+      ]
+    },
+    {
       "name": "no event with the given id",
       "slug": "no-event-with-the-given-id",
       "params": {
@@ -357,6 +449,21 @@
       },
       "dependsOn": [],
       "operations": [
+        {
+          "operationId": "getEvent",
+          "method": "GET",
+          "path": "/events/api/events/{eventId}",
+          "status": 404,
+          "file": "no-event-with-the-given-id/getEvent.json",
+          "frozen": {
+            "ids": [],
+            "instants": [],
+            "strings": [
+              "$.message"
+            ],
+            "listFilteredTo": null
+          }
+        },
         {
           "operationId": "publishEvent",
           "method": "PUT",
@@ -407,6 +514,28 @@
             "instants": [],
             "strings": [],
             "listFilteredTo": "$.events"
+          }
+        },
+        {
+          "operationId": "streamEvents",
+          "method": "GET",
+          "path": "/events/api/stream",
+          "query": {
+            "names": "DeploymentActive"
+          },
+          "status": 200,
+          "responseHeaders": {
+            "Content-Type": "text/event-stream"
+          },
+          "file": null,
+          "frozen": {
+            "ids": [],
+            "instants": [],
+            "strings": [],
+            "responseHeaders": [
+              "Content-Type"
+            ],
+            "listFilteredTo": null
           }
         }
       ]

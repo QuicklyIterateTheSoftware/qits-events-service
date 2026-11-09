@@ -4,6 +4,7 @@ import eu.wohlben.qits.events.control.EventService;
 import eu.wohlben.qits.events.entity.Event;
 import eu.wohlben.qits.events.error.NotFoundException;
 import eu.wohlben.qits.events.persistence.EventRepository;
+import io.quarkus.narayana.jta.QuarkusTransaction;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -65,6 +66,21 @@ public class ProviderStates {
   public static final String NO_EVENT_WITH_THE_GIVEN_ID = "no event with the given id";
   public static final String AN_EVENT_WITH_THE_GIVEN_ID = "an event with the given id";
   public static final String THE_SAME_EVENT_PUBLISHED_BEFORE = "the same event published before";
+  public static final String EVENTS_OF_TWO_NAMES = "events of two names";
+  public static final String NO_EVENT_RECORDED_BY_HAND = "no event recorded by hand";
+
+  /** The name an event recorded by hand carries: no other state seeds one. */
+  static final String MANUAL_NAME = "ManualNote";
+
+  /**
+   * The event a person records by hand ({@code POST}), every field present. The provider mints its
+   * id, so {@link #cleanUp()} removes it by {@link #MANUAL_NAME}.
+   */
+  public static final String RECORDED_BY_HAND =
+      "{\"name\":\"" + MANUAL_NAME + "\",\"occurredAt\":\"2100-01-01T00:00:00Z\","
+          + "\"payload\":\"{\\\"note\\\":\\\"recorded by hand\\\"}\","
+          + "\"description\":\"recorded by hand\",\"parentId\":null,\"environment\":null,"
+          + "\"publisher\":\"eu.wohlben.qits:qits-events-frontend\"}";
 
   /**
    * The cursor a catch-up page resumes after: the instant just before every event a state seeds,
@@ -132,6 +148,8 @@ public class ProviderStates {
     states.put(NO_EVENT_WITH_THE_GIVEN_ID, this::noEventWithTheGivenId);
     states.put(AN_EVENT_WITH_THE_GIVEN_ID, this::anEventWithTheGivenId);
     states.put(THE_SAME_EVENT_PUBLISHED_BEFORE, this::theSameEventPublishedBefore);
+    states.put(EVENTS_OF_TWO_NAMES, this::eventsOfTwoNames);
+    states.put(NO_EVENT_RECORDED_BY_HAND, this::noEventRecordedByHand);
   }
 
   /** Every state name this provider answers for. */
@@ -157,8 +175,10 @@ public class ProviderStates {
   /**
    * Deletes every event a state created since the last clean-up, and every event a publish state
    * expected the request to create. An id that is not there (a publish that was refused) is skipped.
+   * Events recorded by hand ({@link #MANUAL_NAME}) go by name, since the provider minted their ids.
    */
   public void cleanUp() {
+    deleteRecordedByHand();
     List<String> ids;
     synchronized (created) {
       ids = List.copyOf(created);
@@ -193,6 +213,11 @@ public class ProviderStates {
       created.clear();
     }
     repository.deleteAll();
+  }
+
+  /** Deletes every event of {@link #MANUAL_NAME}: their ids are the provider's, not a state's. */
+  private void deleteRecordedByHand() {
+    QuarkusTransaction.joiningExisting().run(() -> repository.delete("name", MANUAL_NAME));
   }
 
   /** The state's slug: lower-cased, every run of non-alphanumerics replaced by {@code -}. */
@@ -549,6 +574,24 @@ public class ProviderStates {
         PUBLISHED_PUBLISHER);
     created.add(eventId);
     return new Setup(Map.of("eventId", eventId), List.of());
+  }
+
+  /**
+   * Two events under names only this state uses, so the names list, filtered to the state's
+   * {@code firstName} and {@code secondName}, is exactly those two, alphabetical.
+   */
+  private Setup eventsOfTwoNames() {
+    String first = "GoldenMasterAlpha";
+    String second = "GoldenMasterBeta";
+    create(first, FUTURE.plusSeconds(1), "{\"note\":\"alpha\"}", null, null, "dev");
+    create(second, FUTURE.plusSeconds(2), "{\"note\":\"beta\"}", null, null, "dev");
+    return new Setup(new TreeMap<>(Map.of("firstName", first, "secondName", second)), List.of());
+  }
+
+  /** No event of {@link #MANUAL_NAME} exists, whatever an earlier run left: the POST creates one. */
+  private Setup noEventRecordedByHand() {
+    deleteRecordedByHand();
+    return new Setup(Map.of(), List.of());
   }
 
   // --- payloads: canonical JSON (keys sorted, no nulls), as qits-eventstream publishes them -----

@@ -175,6 +175,7 @@ public class EventStreamResource {
   @Produces(MediaType.SERVER_SENT_EVENTS)
   @RolesAllowed({"qits:admin", "qits:admin-agent", "qits:desk-admin", "qits:desk", "qits:system", "qits:agent"})
   @Operation(
+      operationId = "streamEvents",
       summary = "Live event stream (Server-Sent Events)",
       description =
           "Pushes each newly created event whose name is named by ?names= (comma-separated; '*'"

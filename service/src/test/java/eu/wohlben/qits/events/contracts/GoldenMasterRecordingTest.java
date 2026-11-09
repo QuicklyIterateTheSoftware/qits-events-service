@@ -7,13 +7,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import eu.wohlben.qits.events.stream.EventStreamSubscriptions;
+import eu.wohlben.qits.events.stream.SseReader;
+import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 import io.restassured.response.Response;
 import jakarta.inject.Inject;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -38,6 +45,12 @@ import org.junit.jupiter.api.Test;
  * only the list entries the state created, freezes ids, instants and unique tokens ({@link
  * Freezer}) and renders {@code golden-masters/<state-slug>/<operationId>.json}; then it renders
  * {@code golden-masters/index.json} describing all of them.
+ *
+ * <p>The one answer that is not JSON, the SSE stream, is recorded <b>body-less</b> (qits-1927, the
+ * shape of qits-projects-service's qits-1934): an answer that never ends cannot be read whole, so
+ * the request is opened raw ({@link SseReader}), its status and named response headers are taken
+ * off the head and the connection is dropped. No golden file is written; the index records {@code
+ * "file": null} and those headers.
  *
  * <p>It <b>compares by default</b> and fails with a unified diff per differing file — including a
  * committed {@code .json} no interaction produces any more. {@code -Dgolden.update=true} (or {@code
@@ -72,6 +85,11 @@ class GoldenMasterRecordingTest {
    *     body}; null for a read and for a write whose operation takes no body (the openapi says
    *     which — the recording fails on a mismatch). A {@code {param}} in it is expanded and recorded
    *     unexpanded
+   * @param responseHeaders null for a JSON answer, the common case. Otherwise the answer is not
+   *     JSON — the stream, which never ends: no golden file is written, the index records {@code
+   *     "file": null}, and these response headers — exactly the ones named, valued as answered —
+   *     are the recording, as the index's {@code responseHeaders} and {@code
+   *     frozen.responseHeaders}
    */
   record Interaction(
       String state,
@@ -83,7 +101,25 @@ class GoldenMasterRecordingTest {
       String listFilteredTo,
       String sortedBy,
       List<String> dropped,
-      String requestBody) {
+      String requestBody,
+      List<String> responseHeaders) {
+
+    /** A JSON answer. */
+    Interaction(
+        String state,
+        String operationId,
+        String method,
+        String path,
+        Map<String, Object> query,
+        int status,
+        String listFilteredTo,
+        String sortedBy,
+        List<String> dropped,
+        String requestBody) {
+      this(
+          state, operationId, method, path, query, status, listFilteredTo, sortedBy, dropped,
+          requestBody, null);
+    }
 
     /** A read with no query and nothing dropped. */
     Interaction(
@@ -98,6 +134,34 @@ class GoldenMasterRecordingTest {
           state, operationId, method, path, Map.of(), status, listFilteredTo, sortedBy, List.of(),
           null);
     }
+
+    /**
+     * A read whose answer is not JSON — the stream: recorded body-less, by its status and the named
+     * response headers.
+     */
+    static Interaction bodyless(
+        String state,
+        String operationId,
+        String path,
+        Map<String, Object> query,
+        int status,
+        String... responseHeaders) {
+      return new Interaction(
+          state, operationId, "GET", path, query, status, null, null, List.of(), null,
+          List.of(responseHeaders));
+    }
+
+    /** Whether the answer is recorded body-less: not JSON. */
+    boolean isBodyless() {
+      return responseHeaders != null;
+    }
+  }
+
+  /** A read or write with no query, nothing dropped and nothing filtered. */
+  private static Interaction single(
+      String state, String operationId, String method, String path, int status, String body) {
+    return new Interaction(
+        state, operationId, method, path, Map.of(), status, null, null, List.of(), body);
   }
 
   /** A read of the list route: kept whole, {@code nextCursor} included, filtered to the state. */
@@ -138,6 +202,8 @@ class GoldenMasterRecordingTest {
    * names whichever row happened to be 20th in the shared test database), and every other shape a
    * consumer asks: the newest event of a name ({@code limit=1}), a forward page from a cursor
    * ({@code order=asc}, {@code nextCursor} kept — null on the last page), and the bus's publish.
+   * Then the rest of the surface (qits-1927): one event read (found and not), deleted, the names
+   * filtered to the state's two, an event recorded by hand, and the SSE stream, body-less.
    */
   static final List<Interaction> INTERACTIONS =
       List.of(
@@ -242,12 +308,64 @@ class GoldenMasterRecordingTest {
                   "1")),
           publish(ProviderStates.NO_EVENT_WITH_THE_GIVEN_ID, 201),
           publish(ProviderStates.THE_SAME_EVENT_PUBLISHED_BEFORE, 200),
-          publish(ProviderStates.AN_EVENT_WITH_THE_GIVEN_ID, 400));
+          publish(ProviderStates.AN_EVENT_WITH_THE_GIVEN_ID, 400),
+          single(
+              ProviderStates.AN_EVENT_WITH_THE_GIVEN_ID,
+              "getEvent",
+              "GET",
+              "/events/api/events/{eventId}",
+              200,
+              null),
+          single(
+              ProviderStates.NO_EVENT_WITH_THE_GIVEN_ID,
+              "getEvent",
+              "GET",
+              "/events/api/events/{eventId}",
+              404,
+              null),
+          single(
+              ProviderStates.AN_EVENT_WITH_THE_GIVEN_ID,
+              "deleteEvent",
+              "DELETE",
+              "/events/api/events/{eventId}",
+              200,
+              null),
+          new Interaction(
+              ProviderStates.EVENTS_OF_TWO_NAMES,
+              "listEventNames",
+              "GET",
+              "/events/api/events/names",
+              Map.of(),
+              200,
+              "$.names",
+              null,
+              List.of(),
+              null),
+          single(
+              ProviderStates.NO_EVENT_RECORDED_BY_HAND,
+              "createEvent",
+              "POST",
+              "/events/api/events",
+              200,
+              ProviderStates.RECORDED_BY_HAND),
+          Interaction.bodyless(
+              ProviderStates.NO_EVENTS,
+              "streamEvents",
+              "/events/api/stream",
+              Map.of("names", "DeploymentActive"),
+              200,
+              "Content-Type"));
 
   private static final ObjectMapper JSON = new ObjectMapper();
   private static final Pattern TEMPLATE_PARAM = Pattern.compile("\\{([A-Za-z][A-Za-z0-9]*)}");
 
   @Inject ProviderStates states;
+
+  @Inject EventStreamSubscriptions subscriptions;
+
+  /** Where a raw request is sent: the stream is not read through REST-assured. */
+  @TestHTTPResource("/")
+  URI base;
 
   /**
    * The committed index's frozen params, slug → param → frozen value: what pins a param's frozen id
@@ -313,11 +431,20 @@ class GoldenMasterRecordingTest {
         operation.set("body", JSON.readTree(interaction.requestBody()));
       }
       operation.put("status", interaction.status());
-      operation.put("file", file);
+      if (interaction.isBodyless()) {
+        // No file for an answer that is not JSON: its headers are the record.
+        operation.set("responseHeaders", recorded.headers());
+        operation.putNull("file");
+      } else {
+        operation.put("file", file);
+      }
       ObjectNode frozen = operation.putObject("frozen");
       frozen.set("ids", strings(recorded.freezer().idPaths()));
       frozen.set("instants", strings(recorded.freezer().instantPaths()));
       frozen.set("strings", strings(recorded.freezer().stringPaths()));
+      if (interaction.isBodyless()) {
+        frozen.set("responseHeaders", strings(interaction.responseHeaders()));
+      }
       if (interaction.listFilteredTo() == null) {
         frozen.putNull("listFilteredTo");
       } else {
@@ -330,8 +457,10 @@ class GoldenMasterRecordingTest {
         failures.add("Duplicate interaction " + file);
       }
 
-      written.add(file);
-      check(dir.resolve(file), GoldenJson.render(recorded.body()), update, failures);
+      if (!interaction.isBodyless()) {
+        written.add(file);
+        check(dir.resolve(file), GoldenJson.render(recorded.body()), update, failures);
+      }
     }
 
     ObjectNode index = JsonNodeFactory.instance.objectNode();
@@ -373,8 +502,12 @@ class GoldenMasterRecordingTest {
     }
   }
 
-  /** One interaction's frozen answer, its frozen params and what was frozen where. */
-  record Recorded(JsonNode body, ObjectNode params, Freezer freezer) {}
+  /**
+   * One interaction's frozen answer, its frozen params and what was frozen where. A body-less
+   * recording's body is null and its named response headers are {@code headers}; a JSON one's
+   * {@code headers} are empty.
+   */
+  record Recorded(JsonNode body, ObjectNode headers, ObjectNode params, Freezer freezer) {}
 
   private Recorded record(Interaction interaction) throws IOException {
     ProviderStates.Setup setup = states.setUp(interaction.state());
@@ -386,6 +519,9 @@ class GoldenMasterRecordingTest {
   }
 
   private Recorded recordIn(Interaction interaction, ProviderStates.Setup setup) throws IOException {
+    if (interaction.isBodyless()) {
+      return recordBodyless(interaction, setup);
+    }
     Map<String, String> params = setup.params();
 
     var request = given();
@@ -436,7 +572,111 @@ class GoldenMasterRecordingTest {
             .uniqueTokens(setup.uniqueTokens());
     ObjectNode frozenParams = JsonNodeFactory.instance.objectNode();
     params.forEach((k, v) -> frozenParams.put(k, freezer.freezeParam(v)));
-    return new Recorded(freezer.freeze(body), frozenParams, freezer);
+    return new Recorded(
+        freezer.freeze(body), JsonNodeFactory.instance.objectNode(), frozenParams, freezer);
+  }
+
+  /**
+   * A body-less recording: the request opened raw, as a browser's {@code EventSource} opens it,
+   * since REST-assured would wait for an end the stream never reaches. Only the status and the
+   * named headers are taken off the head; then the connection is dropped and the recording waits
+   * for the server to unregister the reader, so no sink outlives it.
+   */
+  private Recorded recordBodyless(Interaction interaction, ProviderStates.Setup setup)
+      throws IOException {
+    Map<String, String> params = setup.params();
+    StringBuilder uri =
+        new StringBuilder(base.resolve(expand(interaction.path(), params)).toString());
+    char separator = '?';
+    for (Map.Entry<String, Object> entry : new TreeMap<>(interaction.query()).entrySet()) {
+      List<?> values =
+          entry.getValue() instanceof List<?> list ? list : List.of(entry.getValue());
+      for (Object value : values) {
+        uri.append(separator)
+            .append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8))
+            .append('=')
+            .append(URLEncoder.encode(expand((String) value, params), StandardCharsets.UTF_8));
+        separator = '&';
+      }
+    }
+
+    String names = expand((String) interaction.query().getOrDefault("names", ""), params);
+    int before = readersOf(names);
+    int status;
+    ObjectNode headers = JsonNodeFactory.instance.objectNode();
+    try (SseReader reader = SseReader.open(URI.create(uri.toString()))) {
+      status = reader.status();
+      if (status != interaction.status()) {
+        throw new AssertionError(
+            interaction.method()
+                + " "
+                + interaction.path()
+                + " in state '"
+                + interaction.state()
+                + "' answered "
+                + status
+                + ", expected "
+                + interaction.status());
+      }
+      for (String name : interaction.responseHeaders()) {
+        String value = reader.header(name);
+        if (value == null) {
+          throw new AssertionError(
+              interaction.operationId()
+                  + " in state '"
+                  + interaction.state()
+                  + "' carries no "
+                  + name
+                  + " header");
+        }
+        headers.put(name, value);
+      }
+    } catch (IOException | RuntimeException e) {
+      throw e;
+    } catch (Exception e) {
+      throw new IOException("Could not open " + uri, e);
+    }
+    awaitReaders(names, before);
+
+    Freezer freezer =
+        new Freezer()
+            .seed(
+                params,
+                committedParams.getOrDefault(ProviderStates.slug(interaction.state()), Map.of()))
+            .uniqueTokens(setup.uniqueTokens());
+    ObjectNode frozenParams = JsonNodeFactory.instance.objectNode();
+    params.forEach((k, v) -> frozenParams.put(k, freezer.freezeParam(v)));
+    return new Recorded(null, headers, frozenParams, freezer);
+  }
+
+  /** The open readers of every name in a comma-separated {@code names} value, summed. */
+  private int readersOf(String names) {
+    int count = 0;
+    for (String name : names.split(",")) {
+      if (!name.isBlank()) {
+        count += subscriptions.subscriberCountFor(name.trim());
+      }
+    }
+    return count;
+  }
+
+  /**
+   * Waits, bounded, until the dropped reader has left the subscription table: the readers of its
+   * names are back to what they were before it opened.
+   */
+  private void awaitReaders(String names, int before) {
+    long deadline = System.nanoTime() + Duration.ofSeconds(10).toNanos();
+    while (readersOf(names) != before) {
+      if (System.nanoTime() > deadline) {
+        throw new AssertionError("The recorded stream's reader was never unregistered");
+      }
+      try {
+        Thread.sleep(20);
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+        throw new AssertionError("Interrupted waiting for the stream's reader to go", e);
+      }
+    }
   }
 
   /**

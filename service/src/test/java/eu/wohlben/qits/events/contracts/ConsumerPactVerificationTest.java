@@ -267,4 +267,14 @@ class ConsumerPactVerificationTest {
   Map<String, String> theSameEventPublishedBefore() {
     return states.params(ProviderStates.THE_SAME_EVENT_PUBLISHED_BEFORE);
   }
+
+  @State(ProviderStates.EVENTS_OF_TWO_NAMES)
+  Map<String, String> eventsOfTwoNames() {
+    return states.params(ProviderStates.EVENTS_OF_TWO_NAMES);
+  }
+
+  @State(ProviderStates.NO_EVENT_RECORDED_BY_HAND)
+  Map<String, String> noEventRecordedByHand() {
+    return states.params(ProviderStates.NO_EVENT_RECORDED_BY_HAND);
+  }
 }

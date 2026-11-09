@@ -101,6 +101,11 @@ public final class SseReader implements AutoCloseable {
     return response.headers().firstValue("content-type").orElse("");
   }
 
+  /** The first value of a response header, matched case-insensitively, or null if absent. */
+  public String header(String name) {
+    return response.headers().firstValue(name).orElse(null);
+  }
+
   /** The next raw line, blank lines included, or null if none arrived in time. */
   public String nextLine(Duration timeout) throws InterruptedException {
     return lines.poll(timeout.toMillis(), TimeUnit.MILLISECONDS);
