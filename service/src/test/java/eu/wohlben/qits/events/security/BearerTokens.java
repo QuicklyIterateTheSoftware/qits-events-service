@@ -28,9 +28,9 @@ public final class BearerTokens {
   static final String KEY_ID = "events-suite-key";
 
   /**
-   * The issuer the idp publishes in its discovery document, {@code https://idp.qits.<domain>}, here
-   * for the {@code localhost} domain. {@link JwksStub} publishes it, and {@link BearerAuthProfile}
-   * names it where no discovery runs.
+   * The issuer the idp stamps, {@code https://idp.qits.<domain>}, here for the {@code localhost}
+   * domain. {@link JwksStub} gets it from the shipped expression, and {@link BearerAuthProfile}
+   * names it outright.
    */
   public static final String ISSUER = "https://idp.qits.localhost";
 

@@ -14,7 +14,7 @@ import eu.wohlben.qits.archrules.HttpClientRules;
  * that calls {@code HttpClient.newBuilder()}/{@code newHttpClient()} must also use {@code
  * QitsHttpClients} (qits-http-core) or declare {@code @RawHttpClient(reason = "...")}. This
  * repository builds no {@code java.net.http.HttpClient} of its own anywhere — the one outbound call
- * it makes, quarkus-oidc's discovery and JWKS fetch against qits-idp-service, is the extension's own
+ * it makes, quarkus-oidc's JWKS fetch against qits-idp-service, is the extension's own
  * doing — so this rule passes with nothing to report, and would be the first thing to catch a new
  * one landing unwrapped (ticket qits-1149's {@code contracts/OutboundCallGuardTest} is the rest of
  * that guard: the mechanisms this rule cannot see).
