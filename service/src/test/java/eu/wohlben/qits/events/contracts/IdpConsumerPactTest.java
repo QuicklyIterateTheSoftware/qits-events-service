@@ -9,8 +9,6 @@ import eu.wohlben.qits.pact.consumer.ConsumerPact;
 import eu.wohlben.qits.pact.consumer.GoldenInteraction;
 import eu.wohlben.qits.pact.consumer.GoldenMasters;
 import eu.wohlben.qits.pact.consumer.Trigger;
-import io.quarkus.oidc.OidcConfigurationMetadata;
-import io.vertx.core.json.JsonObject;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -22,22 +20,21 @@ import org.jose4j.jwk.RsaJsonWebKey;
 import org.junit.jupiter.api.Test;
 
 /**
- * This service's pact with qits-idp-service (ticket qits-1149). Two of its calls to the idp are
- * quarkus-oidc's: the discovery document, then the JWKS. The tenant is lazy ({@code
- * jwks.resolve-early=false}), so the trigger is the first authenticated request.
+ * This service's pact with qits-idp-service (ticket qits-1149). One of its calls to the idp is
+ * quarkus-oidc's: the JWKS, {@link #JWKS}, at the idp's internal address. Discovery is off
+ * (qits-2160: the tenant must not need the edge, so it reads no discovery document and names the
+ * issuer itself), and the tenant is lazy ({@code jwks.resolve-early=false}), so the trigger is the
+ * first authenticated request.
  *
- * <p>The third is the client-credentials mint of the named client {@code qits} (epic qits-428),
+ * <p>The other is the client-credentials mint of the named client {@code qits} (epic qits-428),
  * {@link #MINT}: {@code POST /idp/token} with HTTP Basic, {@code grant_type=client_credentials} and
  * {@code audience=qits-platform}, recorded by qits-idp as {@code issueToken} in {@value
  * #A_SERVICE_CLIENT_CALLING_ITS_PEERS}. qits-telemetry-core's exporters spend the token on every
  * OTLP export, so those exports are the row's trigger. {@link IdpTokenMintPactTest} runs it through
  * the real oidc client, because the client only exists inside the application.
  *
- * <p>Each row's call reads the answer the way quarkus-oidc does: the discovery document through
- * {@link OidcConfigurationMetadata}, the keys as a jose4j {@link JsonWebKeySet}.
- *
- * <p>{@code issuer} is bound EXACTLY, not by type: quarkus-oidc refuses every token whose {@code
- * iss} differs from it by one character.
+ * <p>The JWKS row's call reads the answer the way quarkus-oidc does: the keys as a jose4j {@link
+ * JsonWebKeySet}.
  */
 class IdpConsumerPactTest {
 
@@ -48,11 +45,6 @@ class IdpConsumerPactTest {
   static final Trigger FIRST_BEARER = Trigger.operation("the first authenticated request");
 
   static final String STATE = "a published signing key";
-
-  static final GoldenInteraction DISCOVERY =
-      GoldenInteraction.of(FIRST_BEARER, STATE, "getOpenIdConfiguration")
-          .consumes("issuer", "jwks_uri", "token_endpoint")
-          .exact("issuer");
 
   static final GoldenInteraction JWKS =
       GoldenInteraction.of(FIRST_BEARER, STATE, "getJwks")
@@ -70,24 +62,9 @@ class IdpConsumerPactTest {
           .header("Authorization", "{authorization}")
           .consumes("access_token", "expires_in");
 
-  static final ConsumerPact PACT = ConsumerPact.of(CONSUMER, IDP, DISCOVERY, JWKS, MINT);
+  static final ConsumerPact PACT = ConsumerPact.of(CONSUMER, IDP, JWKS, MINT);
 
   private static final HttpClient HTTP = HttpClient.newHttpClient();
-
-  @Test
-  void discoveryNamesTheIssuerAndTheKeyAddress() {
-    PACT.run(
-        DISCOVERY,
-        (url, recorded) -> {
-          OidcConfigurationMetadata metadata =
-              new OidcConfigurationMetadata(
-                  new JsonObject(get(url + "/idp/.well-known/openid-configuration")));
-          String recordedIssuer = IDP.json(STATE, "getOpenIdConfiguration").path("issuer").asText();
-          assertEquals(recordedIssuer, metadata.getIssuer());
-          assertNotNull(metadata.getJsonWebKeySetUri());
-          assertNotNull(metadata.getTokenUri());
-        });
-  }
 
   @Test
   void theKeysParseAsRsaSigningKeys() {

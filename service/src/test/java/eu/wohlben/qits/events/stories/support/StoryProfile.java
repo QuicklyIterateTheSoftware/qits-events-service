@@ -112,8 +112,8 @@ public class StoryProfile implements QuarkusTestProfile {
     overrides.put("quarkus.otel.sdk.disabled", "true");
 
     // Identity is a bearer, checked by the shipped tenant without an idp: the suite's local key
-    // replaces discovery and the key fetch, and the issuer stands in for the one discovery would
-    // publish — exactly as security/BearerAuthProfile does (qits-1363).
+    // replaces the key fetch, and the issuer stands in for the shipped QITS_DOMAIN-derived one —
+    // exactly as security/BearerAuthProfile does (qits-1363).
     overrides.put("quarkus.oidc.auth-server-url", "");
     overrides.put("quarkus.oidc.public-key", BearerTokens.verificationKey());
     overrides.put("quarkus.oidc.token.issuer", BearerTokens.ISSUER);

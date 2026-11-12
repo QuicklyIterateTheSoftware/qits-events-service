@@ -163,7 +163,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <!-- IdpConsumerPactTest: this service's pact with qits-idp-service (discovery + JWKS). -->
+            <!-- IdpConsumerPactTest: this service's pact with qits-idp-service (JWKS + mint). -->
             <groupId>${project.groupId}</groupId>
             <artifactId>qits-pact-consumer</artifactId>
             <scope>test</scope>

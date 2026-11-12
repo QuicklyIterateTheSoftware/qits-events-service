@@ -11,8 +11,8 @@ import java.util.Map;
  *   <li>{@code quarkus.oidc.public-key} replaces the key fetch. {@code auth-server-url} is cleared
  *       beside it, because a tenant that still has a server URL tries to reach it on the first
  *       bearer.
- *   <li>{@code quarkus.oidc.token.issuer} stands in for the issuer the idp's discovery document
- *       publishes: with no server URL there is no discovery to read it from.
+ *   <li>{@code quarkus.oidc.token.issuer} stands in for the shipped one, which expands {@code
+ *       QITS_DOMAIN}: the suite runs without it.
  * </ul>
  *
  * <p>Everything else, the audience included, is the shipped configuration.

@@ -138,12 +138,11 @@ Two ways in. Both end in one `SecurityIdentity`, and Jakarta `@RolesAllowed` dec
   `X-Qits-*` header from a request that carries a Bearer or Basic credential and injects none, so
   headers cannot carry that person. `quarkus-oidc` validates the token (signature, issuer, and an
   `aud` that holds `qits-platform`, the one platform-wide audience every token qits-platform-idp
-  mints carries), and its `groups` claim becomes the roles. The issuer is never configuration:
-  the tenant reads the idp's discovery document (`/.well-known/openid-configuration`) and refuses a
-  token whose `iss` is not the `issuer` published there (`https://idp.qits.<domain>`). There is no
-  `quarkus.oidc.token.issuer`. The roles are the permission system;
-  nothing else is checked. The audience check says the token was minted for this platform and
-  nothing more — a sibling service's machine token passes it too, and its roles decide from there.
+  mints carries), and its `groups` claim becomes the roles. The issuer is
+  `quarkus.oidc.token.issuer=https://idp.qits.${QITS_DOMAIN}`, the public name the idp stamps
+  (qits-730), with no default domain, so a container without `QITS_DOMAIN` refuses to boot. The
+  roles are the permission system; nothing else is checked. The audience check says the token was
+  minted for this platform and nothing more — a sibling service's machine token passes it too, and its roles decide from there.
 
 A request with no `Authorization` header never reaches the token check, so header traffic is
 exactly what it was. A request with a token is decided by the token: OIDC's mechanism runs first
@@ -154,9 +153,14 @@ The OIDC tenant is **on by default** and needs no deploy config: it requires not
 secret. It is not behind `qits.auth.machine.required`, which the deployer does not set for this
 service. `%dev` and `%test` turn it off, because neither has an idp.
 
-**Only a bearer fetches keys** (`quarkus.oidc.jwks.resolve-early=false`). The tenant reads the
-discovery document, never the JWKS, at boot; the key is fetched by the token's `kid` when a bearer
-needs it, and cached. The idp's host name is resolved off the event loop
+**The tenant reaches the idp at its wire alias, not its edge host** (exception E1, qits-1403,
+qits-2160): the edge's readiness waits on catching up from this service, so a token check through
+the edge deadlocked both at boot (outage 2026-11-12). `auth-server-url` is
+`http://${QITS_ENVIRONMENT:dev}-qits-idp:8080/idp` with discovery off and `jwks-path=jwks`;
+`security/ShippedOidcTenantTest` pins the shipped lines.
+
+**Only a bearer fetches keys** (`quarkus.oidc.jwks.resolve-early=false`). The tenant dials nothing
+at boot; the key is fetched by the token's `kid` when a bearer needs it, and cached. The idp's host name is resolved off the event loop
 (`quarkus.oidc.use-blocking-dns-lookup=true`): a resolution on it was a 2.7 s blocked thread,
 measured in the packaged ITs. `BearerJwksTest` pins the shipped key path against `JwksStub`.
 
