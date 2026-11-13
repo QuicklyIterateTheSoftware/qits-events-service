@@ -1,5 +1,5 @@
 {
-  "formatVersion" : 1,
+  "formatVersion" : 2,
   "application" : "qits-events",
   "entities" : [
     {
@@ -53,28 +53,32 @@
           "method" : "POST",
           "path" : "/events",
           "dto" : "eu.wohlben.qits.events.api.EventController$CreateEventRequest$Response",
-          "kind" : "returns"
+          "kind" : "returns",
+          "cardinality" : "single"
         },
         {
           "operationId" : "getEvent",
           "method" : "GET",
           "path" : "/events/{id}",
           "dto" : "eu.wohlben.qits.events.api.EventController$GetEventRequest$Response",
-          "kind" : "returns"
+          "kind" : "returns",
+          "cardinality" : "single"
         },
         {
           "operationId" : "listEvents",
           "method" : "GET",
           "path" : "/events",
           "dto" : "eu.wohlben.qits.events.api.EventController$ListEventsRequest$Response",
-          "kind" : "returns"
+          "kind" : "returns",
+          "cardinality" : "collection"
         },
         {
           "operationId" : "publishEvent",
           "method" : "PUT",
           "path" : "/events/{id}",
           "dto" : "eu.wohlben.qits.events.api.EventController$PublishEventRequest$Response",
-          "kind" : "returns"
+          "kind" : "returns",
+          "cardinality" : "single"
         }
       ]
     }
