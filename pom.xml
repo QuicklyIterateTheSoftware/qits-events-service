@@ -62,7 +62,7 @@
         <qits.ci-service-pacts-qits-events-service.version>2026.1111.11639</qits.ci-service-pacts-qits-events-service.version>
         <qits.githost-service-pacts-qits-events-service.version>2026.1111.82105</qits.githost-service-pacts-qits-events-service.version>
         <qits.deployments-service-pacts-qits-events-service.version>2026.1110.235053</qits.deployments-service-pacts-qits-events-service.version>
-        <qits.edge-service-pacts-qits-events-service.version>2026.1111.5419</qits.edge-service-pacts-qits-events-service.version>
+        <qits.edge-service-pacts-qits-events-service.version>2026.1116.30122</qits.edge-service-pacts-qits-events-service.version>
         <qits.maintenance-service-pacts-qits-events-service.version>2026.1111.2519</qits.maintenance-service-pacts-qits-events-service.version>
         <qits.orchestrator-service-pacts-qits-events-service.version>2026.1112.180008</qits.orchestrator-service-pacts-qits-events-service.version>
         <qits.projects-service-pacts-qits-events-service.version>2026.1111.82815</qits.projects-service-pacts-qits-events-service.version>
