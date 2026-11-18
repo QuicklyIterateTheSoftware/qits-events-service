@@ -38,6 +38,119 @@
       ]
     },
     {
+      "name": "a project with no events",
+      "slug": "a-project-with-no-events",
+      "params": {
+        "projectId": "00000000-0000-4000-8000-000000000001"
+      },
+      "dependsOn": [],
+      "operations": [
+        {
+          "operationId": "listEvents",
+          "method": "GET",
+          "path": "/events/api/events",
+          "query": {
+            "attr": "projectid={projectId}",
+            "limit": "50",
+            "order": "desc"
+          },
+          "status": 200,
+          "file": "a-project-with-no-events/listEvents.json",
+          "frozen": {
+            "ids": [],
+            "instants": [],
+            "strings": [],
+            "listFilteredTo": "$.events"
+          }
+        }
+      ]
+    },
+    {
+      "name": "a project with recent events",
+      "slug": "a-project-with-recent-events",
+      "params": {
+        "buildEventId": "00000000-0000-4000-8000-000000000001",
+        "commitEventId": "00000000-0000-4000-8000-000000000002",
+        "otherProjectEventId": "00000000-0000-4000-8000-000000000003",
+        "otherProjectId": "00000000-0000-4000-8000-000000000004",
+        "projectId": "00000000-0000-4000-8000-000000000005",
+        "releaseRequestEventId": "00000000-0000-4000-8000-000000000006",
+        "ticketEventId": "00000000-0000-4000-8000-000000000007"
+      },
+      "dependsOn": [],
+      "operations": [
+        {
+          "operationId": "listEvents",
+          "method": "GET",
+          "path": "/events/api/events",
+          "query": {
+            "attr": "projectid={projectId}",
+            "limit": "50",
+            "order": "desc"
+          },
+          "status": 200,
+          "file": "a-project-with-recent-events/listEvents.json",
+          "frozen": {
+            "ids": [
+              "$.events[*].id"
+            ],
+            "instants": [
+              "$.events[*].occurredAt",
+              "$.events[*].createdAt",
+              "$.events[*].updatedAt"
+            ],
+            "strings": [
+              "$.events[*].payload"
+            ],
+            "listFilteredTo": "$.events"
+          }
+        }
+      ]
+    },
+    {
+      "name": "a project with recent events, filtered by name",
+      "slug": "a-project-with-recent-events-filtered-by-name",
+      "params": {
+        "buildEventId": "00000000-0000-4000-8000-000000000001",
+        "commitEventId": "00000000-0000-4000-8000-000000000002",
+        "otherProjectEventId": "00000000-0000-4000-8000-000000000003",
+        "otherProjectId": "00000000-0000-4000-8000-000000000004",
+        "projectId": "00000000-0000-4000-8000-000000000005",
+        "releaseRequestEventId": "00000000-0000-4000-8000-000000000006",
+        "ticketEventId": "00000000-0000-4000-8000-000000000007"
+      },
+      "dependsOn": [],
+      "operations": [
+        {
+          "operationId": "listEvents",
+          "method": "GET",
+          "path": "/events/api/events",
+          "query": {
+            "attr": "projectid={projectId}",
+            "limit": "50",
+            "name": "ReleaseRequestStateChanged",
+            "order": "desc"
+          },
+          "status": 200,
+          "file": "a-project-with-recent-events-filtered-by-name/listEvents.json",
+          "frozen": {
+            "ids": [
+              "$.events[*].id"
+            ],
+            "instants": [
+              "$.events[*].occurredAt",
+              "$.events[*].createdAt",
+              "$.events[*].updatedAt"
+            ],
+            "strings": [
+              "$.events[*].payload"
+            ],
+            "listFilteredTo": "$.events"
+          }
+        }
+      ]
+    },
+    {
       "name": "a repository with a finalized release request",
       "slug": "a-repository-with-a-finalized-release-request",
       "params": {

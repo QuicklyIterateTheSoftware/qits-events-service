@@ -68,6 +68,10 @@ public class ProviderStates {
   public static final String THE_SAME_EVENT_PUBLISHED_BEFORE = "the same event published before";
   public static final String EVENTS_OF_TWO_NAMES = "events of two names";
   public static final String NO_EVENT_RECORDED_BY_HAND = "no event recorded by hand";
+  public static final String A_PROJECT_WITH_RECENT_EVENTS = "a project with recent events";
+  public static final String A_PROJECT_WITH_RECENT_EVENTS_FILTERED_BY_NAME =
+      "a project with recent events, filtered by name";
+  public static final String A_PROJECT_WITH_NO_EVENTS = "a project with no events";
 
   /** The name an event recorded by hand carries: no other state seeds one. */
   static final String MANUAL_NAME = "ManualNote";
@@ -150,6 +154,9 @@ public class ProviderStates {
     states.put(THE_SAME_EVENT_PUBLISHED_BEFORE, this::theSameEventPublishedBefore);
     states.put(EVENTS_OF_TWO_NAMES, this::eventsOfTwoNames);
     states.put(NO_EVENT_RECORDED_BY_HAND, this::noEventRecordedByHand);
+    states.put(A_PROJECT_WITH_RECENT_EVENTS, this::aProjectWithRecentEvents);
+    states.put(A_PROJECT_WITH_RECENT_EVENTS_FILTERED_BY_NAME, this::aProjectWithRecentEvents);
+    states.put(A_PROJECT_WITH_NO_EVENTS, this::aProjectWithNoEvents);
   }
 
   /** Every state name this provider answers for. */
@@ -594,6 +601,131 @@ public class ProviderStates {
     return new Setup(Map.of(), List.of());
   }
 
+  /**
+   * A project's events page (qits-2312): four events of four names in one project, oldest first —
+   * a release request moved, a build finished, a ticket refined (its {@code projectId} nested in
+   * {@code entities[]} only) and a commit pushed — and, newest of all, a release request of
+   * another project, which a read filtered by {@code attr=projectid} must leave out. The other
+   * project's id is a param so a recording that let its event through would keep it, not hide it.
+   * The populated read and the read filtered by name share this seed.
+   */
+  private Setup aProjectWithRecentEvents() {
+    String projectId = UUID.randomUUID().toString();
+    String otherProjectId = UUID.randomUUID().toString();
+    Event releaseRequest =
+        create(
+            "ReleaseRequestStateChanged",
+            FUTURE.plusSeconds(1),
+            releaseRequestStateChanged(
+                projectId,
+                "00000000-0000-4000-8000-0000000000a1",
+                "qits-ci-service-rr-12",
+                "00000000-0000-4000-8000-0000000000b1",
+                "qits-ci-service",
+                "PENDING",
+                "READY",
+                "2026.101.100000",
+                SHA_1),
+            null,
+            null,
+            "dev");
+    Event build =
+        create(
+            "BuildStatusChanged",
+            FUTURE.plusSeconds(2),
+            "{\"branch\":\"main\",\"commitSha\":\""
+                + SHA_1
+                + "\",\"phase\":\"VERIFY\",\"previousStatus\":\"RUNNING\",\"projectId\":\""
+                + projectId
+                + "\",\"repoId\":\"00000000-0000-4000-8000-0000000000b1\","
+                + "\"repoName\":\"qits-ci-service\","
+                + "\"runId\":\"00000000-0000-4000-8000-0000000000c1\",\"status\":\"SUCCEEDED\"}",
+            null,
+            null,
+            "dev");
+    Event ticket =
+        create(
+            "EntityTransitioned",
+            FUTURE.plusSeconds(3),
+            "{\"entities\":[{\"archetype\":\"TICKET\","
+                + "\"entityId\":\"00000000-0000-4000-8000-0000000000d1\",\"number\":42,"
+                + "\"projectId\":\""
+                + projectId
+                + "\",\"slug\":\"qits-42\",\"status\":\"REFINED\",\"statusBefore\":\"REPORTED\","
+                + "\"title\":\"Show a project's events\"}],"
+                + "\"transitionedAt\":\"2026-01-01T00:00:00Z\"}",
+            null,
+            null,
+            "dev");
+    Event commit =
+        create(
+            "SCMPublishCommit",
+            FUTURE.plusSeconds(4),
+            "{\"branch\":\"main\",\"message\":\"feat(qits-42): show a project's events\","
+                + "\"parents\":[\""
+                + SHA_1
+                + "\"],\"projectId\":\""
+                + projectId
+                + "\",\"repoId\":\"00000000-0000-4000-8000-0000000000b1\","
+                + "\"repoName\":\"qits-ci-service\",\"sha\":\""
+                + SHA_2
+                + "\"}",
+            null,
+            null,
+            "dev");
+    Event other =
+        create(
+            "ReleaseRequestStateChanged",
+            FUTURE.plusSeconds(5),
+            releaseRequestStateChanged(
+                otherProjectId,
+                "00000000-0000-4000-8000-0000000000a2",
+                "qits-other-service-rr-1",
+                "00000000-0000-4000-8000-0000000000b2",
+                "qits-other-service",
+                "PENDING",
+                "READY",
+                "2026.105.100000",
+                SHA_2),
+            null,
+            null,
+            "dev");
+    Map<String, String> params = new TreeMap<>();
+    params.put("buildEventId", build.id);
+    params.put("commitEventId", commit.id);
+    params.put("otherProjectEventId", other.id);
+    params.put("otherProjectId", otherProjectId);
+    params.put("projectId", projectId);
+    params.put("releaseRequestEventId", releaseRequest.id);
+    params.put("ticketEventId", ticket.id);
+    return new Setup(params, List.of());
+  }
+
+  /**
+   * A project with nothing in the log: the one event seeded belongs to another project, so a read
+   * filtered by {@code attr=projectid} answers no event at all.
+   */
+  private Setup aProjectWithNoEvents() {
+    String projectId = UUID.randomUUID().toString();
+    create(
+        "ReleaseRequestStateChanged",
+        FUTURE.plusSeconds(1),
+        releaseRequestStateChanged(
+            UUID.randomUUID().toString(),
+            "00000000-0000-4000-8000-0000000000a2",
+            "qits-other-service-rr-1",
+            "00000000-0000-4000-8000-0000000000b2",
+            "qits-other-service",
+            "PENDING",
+            "READY",
+            "2026.105.100000",
+            SHA_2),
+        null,
+        null,
+        "dev");
+    return new Setup(Map.of("projectId", projectId), List.of());
+  }
+
   // --- payloads: canonical JSON (keys sorted, no nulls), as qits-eventstream publishes them -----
 
   private static final String SHA_1 = "0123456789abcdef0123456789abcdef01234567";
@@ -704,13 +836,15 @@ public class ProviderStates {
   }
 
   /**
-   * The service that dispatches an event of this name on the estate: a {@code SoftwareRelease} is
-   * qits-ci's, a {@code DeploymentActive} qits-deployments', and the release-request, project, SCM
-   * and ticket events qits-projects'.
+   * The service that dispatches an event of this name on the estate: a {@code SoftwareRelease} or
+   * {@code BuildStatusChanged} is qits-ci's, a {@code DeploymentActive} qits-deployments', an
+   * {@code SCMPublishCommit} qits-githost's, and the release-request, project, other SCM and ticket
+   * events qits-projects'.
    */
   private static String publisherOf(String name) {
     return switch (name) {
-      case "SoftwareRelease" -> "eu.wohlben.qits:qits-ci-service";
+      case "SoftwareRelease", "BuildStatusChanged" -> "eu.wohlben.qits:qits-ci-service";
+      case "SCMPublishCommit" -> "eu.wohlben.qits:qits-githost-service";
       case "DeploymentActive" -> "eu.wohlben.qits:qits-deployments-service";
       default -> "eu.wohlben.qits:qits-projects-service";
     };

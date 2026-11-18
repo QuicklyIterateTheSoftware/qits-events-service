@@ -306,6 +306,23 @@ class GoldenMasterRecordingTest {
                   "desc",
                   "limit",
                   "1")),
+          list(
+              ProviderStates.A_PROJECT_WITH_RECENT_EVENTS,
+              query("attr", "projectid={projectId}", "order", "desc", "limit", "50")),
+          list(
+              ProviderStates.A_PROJECT_WITH_RECENT_EVENTS_FILTERED_BY_NAME,
+              query(
+                  "name",
+                  "ReleaseRequestStateChanged",
+                  "attr",
+                  "projectid={projectId}",
+                  "order",
+                  "desc",
+                  "limit",
+                  "50")),
+          list(
+              ProviderStates.A_PROJECT_WITH_NO_EVENTS,
+              query("attr", "projectid={projectId}", "order", "desc", "limit", "50")),
           publish(ProviderStates.NO_EVENT_WITH_THE_GIVEN_ID, 201),
           publish(ProviderStates.THE_SAME_EVENT_PUBLISHED_BEFORE, 200),
           publish(ProviderStates.AN_EVENT_WITH_THE_GIVEN_ID, 400),

@@ -1,0 +1,53 @@
+{
+  "events": [
+    {
+      "id": "00000000-0000-4000-8000-000000000002",
+      "name": "SCMPublishCommit",
+      "occurredAt": "2026-01-01T00:00:00Z",
+      "payload": "{\"branch\":\"main\",\"message\":\"feat(qits-42): show a project's events\",\"parents\":[\"0123456789abcdef0123456789abcdef01234567\"],\"projectId\":\"00000000-0000-4000-8000-000000000005\",\"repoId\":\"00000000-0000-4000-8000-000000000008\",\"repoName\":\"qits-ci-service\",\"sha\":\"89abcdef0123456789abcdef0123456789abcdef\"}",
+      "description": null,
+      "parentId": null,
+      "environment": "dev",
+      "createdAt": "2026-01-01T00:00:00Z",
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-githost-service"
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000007",
+      "name": "EntityTransitioned",
+      "occurredAt": "2026-01-01T00:00:00Z",
+      "payload": "{\"entities\":[{\"archetype\":\"TICKET\",\"entityId\":\"00000000-0000-4000-8000-000000000009\",\"number\":42,\"projectId\":\"00000000-0000-4000-8000-000000000005\",\"slug\":\"qits-42\",\"status\":\"REFINED\",\"statusBefore\":\"REPORTED\",\"title\":\"Show a project's events\"}],\"transitionedAt\":\"2026-01-01T00:00:00Z\"}",
+      "description": null,
+      "parentId": null,
+      "environment": "dev",
+      "createdAt": "2026-01-01T00:00:00Z",
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-projects-service"
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000001",
+      "name": "BuildStatusChanged",
+      "occurredAt": "2026-01-01T00:00:00Z",
+      "payload": "{\"branch\":\"main\",\"commitSha\":\"0123456789abcdef0123456789abcdef01234567\",\"phase\":\"VERIFY\",\"previousStatus\":\"RUNNING\",\"projectId\":\"00000000-0000-4000-8000-000000000005\",\"repoId\":\"00000000-0000-4000-8000-000000000008\",\"repoName\":\"qits-ci-service\",\"runId\":\"00000000-0000-4000-8000-00000000000a\",\"status\":\"SUCCEEDED\"}",
+      "description": null,
+      "parentId": null,
+      "environment": "dev",
+      "createdAt": "2026-01-01T00:00:00Z",
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-ci-service"
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000006",
+      "name": "ReleaseRequestStateChanged",
+      "occurredAt": "2026-01-01T00:00:00Z",
+      "payload": "{\"backingBranch\":\"release/qits-ci-service-rr-12\",\"branches\":[\"main\"],\"changedAt\":\"2026-01-01T00:00:00Z\",\"mergedSha\":\"0123456789abcdef0123456789abcdef01234567\",\"previousState\":\"PENDING\",\"projectId\":\"00000000-0000-4000-8000-000000000005\",\"releaseRequestId\":\"00000000-0000-4000-8000-00000000000b\",\"releaseRequestQualifiedId\":\"qits-ci-service-rr-12\",\"repoId\":\"00000000-0000-4000-8000-000000000008\",\"repoName\":\"qits-ci-service\",\"state\":\"READY\",\"version\":\"2026.101.100000\"}",
+      "description": null,
+      "parentId": null,
+      "environment": "dev",
+      "createdAt": "2026-01-01T00:00:00Z",
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-projects-service"
+    }
+  ],
+  "nextCursor": null
+}

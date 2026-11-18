@@ -277,4 +277,19 @@ class ConsumerPactVerificationTest {
   Map<String, String> noEventRecordedByHand() {
     return states.params(ProviderStates.NO_EVENT_RECORDED_BY_HAND);
   }
+
+  @State(ProviderStates.A_PROJECT_WITH_RECENT_EVENTS)
+  Map<String, String> aProjectWithRecentEvents() {
+    return states.params(ProviderStates.A_PROJECT_WITH_RECENT_EVENTS);
+  }
+
+  @State(ProviderStates.A_PROJECT_WITH_RECENT_EVENTS_FILTERED_BY_NAME)
+  Map<String, String> aProjectWithRecentEventsFilteredByName() {
+    return states.params(ProviderStates.A_PROJECT_WITH_RECENT_EVENTS_FILTERED_BY_NAME);
+  }
+
+  @State(ProviderStates.A_PROJECT_WITH_NO_EVENTS)
+  Map<String, String> aProjectWithNoEvents() {
+    return states.params(ProviderStates.A_PROJECT_WITH_NO_EVENTS);
+  }
 }
