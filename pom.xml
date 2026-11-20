@@ -60,9 +60,9 @@
              retired by this ticket — qits-ci-service's pin above replaces its old one outright, and
              qits-projects-service's pin below replaces its placeholder. -->
         <qits.ci-service-pacts-qits-events-service.version>2026.1118.235338</qits.ci-service-pacts-qits-events-service.version>
-        <qits.githost-service-pacts-qits-events-service.version>2026.1119.45706</qits.githost-service-pacts-qits-events-service.version>
+        <qits.githost-service-pacts-qits-events-service.version>2026.1120.113555</qits.githost-service-pacts-qits-events-service.version>
         <qits.deployments-service-pacts-qits-events-service.version>2026.1119.842</qits.deployments-service-pacts-qits-events-service.version>
-        <qits.edge-service-pacts-qits-events-service.version>2026.1118.225200</qits.edge-service-pacts-qits-events-service.version>
+        <qits.edge-service-pacts-qits-events-service.version>2026.1120.114638</qits.edge-service-pacts-qits-events-service.version>
         <qits.maintenance-service-pacts-qits-events-service.version>2026.1119.11204</qits.maintenance-service-pacts-qits-events-service.version>
         <qits.orchestrator-service-pacts-qits-events-service.version>2026.1120.15133</qits.orchestrator-service-pacts-qits-events-service.version>
         <qits.projects-service-pacts-qits-events-service.version>2026.1120.104705</qits.projects-service-pacts-qits-events-service.version>
@@ -75,7 +75,7 @@
         <qits.bootstrap-cli-pacts-qits-events-service.version>2026.1019.194129</qits.bootstrap-cli-pacts-qits-events-service.version>
         <qits.platform-access-monorepo-pacts-qits-events-service.version>2026.1103.101116</qits.platform-access-monorepo-pacts-qits-events-service.version>
         <qits.landing-app-pacts-qits-events-service.version>2026.1118.225428</qits.landing-app-pacts-qits-events-service.version>
-        <qits.idp-service-pacts-qits-events-service.version>2026.1119.53816</qits.idp-service-pacts-qits-events-service.version>
+        <qits.idp-service-pacts-qits-events-service.version>2026.1120.111912</qits.idp-service-pacts-qits-events-service.version>
         <qits.network-access-service-pacts-qits-events-service.version>2026.1120.102652</qits.network-access-service-pacts-qits-events-service.version>
         <!-- THE PLATFORM'S OWN MAVEN REPOSITORY, and this repo's first two artifacts from it:
              qits-db-core (PatientPgDriver, which the events datasource opens every connection
