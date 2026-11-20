@@ -61,7 +61,7 @@
              qits-projects-service's pin below replaces its placeholder. -->
         <qits.ci-service-pacts-qits-events-service.version>2026.1118.235338</qits.ci-service-pacts-qits-events-service.version>
         <qits.githost-service-pacts-qits-events-service.version>2026.1120.113555</qits.githost-service-pacts-qits-events-service.version>
-        <qits.deployments-service-pacts-qits-events-service.version>2026.1119.842</qits.deployments-service-pacts-qits-events-service.version>
+        <qits.deployments-service-pacts-qits-events-service.version>2026.1120.130809</qits.deployments-service-pacts-qits-events-service.version>
         <qits.edge-service-pacts-qits-events-service.version>2026.1120.114638</qits.edge-service-pacts-qits-events-service.version>
         <qits.maintenance-service-pacts-qits-events-service.version>2026.1119.11204</qits.maintenance-service-pacts-qits-events-service.version>
         <qits.orchestrator-service-pacts-qits-events-service.version>2026.1120.15133</qits.orchestrator-service-pacts-qits-events-service.version>
