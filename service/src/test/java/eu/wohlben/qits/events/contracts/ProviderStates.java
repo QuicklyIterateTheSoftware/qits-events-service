@@ -72,6 +72,16 @@ public class ProviderStates {
   public static final String A_PROJECT_WITH_RECENT_EVENTS_FILTERED_BY_NAME =
       "a project with recent events, filtered by name";
   public static final String A_PROJECT_WITH_NO_EVENTS = "a project with no events";
+  public static final String AN_EVENT_OF_A_PROJECT_WITH_A_CAUSE_AND_EFFECTS =
+      "an event of a project with a cause and effects";
+  public static final String THE_CAUSE_OF_A_PROJECT_EVENT = "the cause of a project event";
+
+  /**
+   * The project the event detail page's states seed into: qits-projects' {@code a project exists}
+   * id, which the landing shell routes under. It is literally {@code …0001} in the payloads and,
+   * pinned in the committed index, freezes to itself ({@link Freezer#seed(Map, Map)}).
+   */
+  static final String THE_PROJECT_ID = "00000000-0000-4000-8000-000000000001";
 
   /** The name an event recorded by hand carries: no other state seeds one. */
   static final String MANUAL_NAME = "ManualNote";
@@ -157,6 +167,9 @@ public class ProviderStates {
     states.put(A_PROJECT_WITH_RECENT_EVENTS, this::aProjectWithRecentEvents);
     states.put(A_PROJECT_WITH_RECENT_EVENTS_FILTERED_BY_NAME, this::aProjectWithRecentEvents);
     states.put(A_PROJECT_WITH_NO_EVENTS, this::aProjectWithNoEvents);
+    states.put(
+        AN_EVENT_OF_A_PROJECT_WITH_A_CAUSE_AND_EFFECTS, this::anEventOfAProjectWithACauseAndEffects);
+    states.put(THE_CAUSE_OF_A_PROJECT_EVENT, this::theCauseOfAProjectEvent);
   }
 
   /** Every state name this provider answers for. */
@@ -726,6 +739,89 @@ public class ProviderStates {
     return new Setup(Map.of("projectId", projectId), List.of());
   }
 
+  /** The events {@link #seedAProjectEvent()} created: the cause and the event it caused. */
+  private record ProjectEvent(Event cause, Event event) {}
+
+  /**
+   * A project's event detail page (qits-2338), in {@link #THE_PROJECT_ID}: a release request moved
+   * (the cause, no parent), the build it started finishing (the event, with a description), and
+   * the build's two effects — the next phase's status change and the success — whose parent is the
+   * event. Every payload names the project and the repository.
+   */
+  private ProjectEvent seedAProjectEvent() {
+    Event cause =
+        create(
+            "ReleaseRequestStateChanged",
+            FUTURE.plusSeconds(1),
+            releaseRequestStateChanged(
+                THE_PROJECT_ID,
+                "00000000-0000-4000-8000-0000000000a1",
+                "qits-ci-service-rr-12",
+                "00000000-0000-4000-8000-0000000000b1",
+                "qits-ci-service",
+                "PENDING",
+                "READY",
+                "2026.101.100000",
+                SHA_1),
+            "Release request qits-ci-service-rr-12 is ready",
+            null,
+            "dev");
+    Event event =
+        create(
+            "BuildStatusChanged",
+            FUTURE.plusSeconds(2),
+            buildStatusChanged("VERIFY", "RUNNING", "SUCCEEDED"),
+            "qits-ci-service main: VERIFY succeeded",
+            cause.id,
+            "dev");
+    create(
+        "BuildStatusChanged",
+        FUTURE.plusSeconds(3),
+        buildStatusChanged("PUBLISH", "PENDING", "RUNNING"),
+        "qits-ci-service main: PUBLISH started",
+        event.id,
+        "dev");
+    create(
+        "BuildSuccessful",
+        FUTURE.plusSeconds(4),
+        "{\"branch\":\"main\",\"commitSha\":\""
+            + SHA_1
+            + "\",\"projectId\":\""
+            + THE_PROJECT_ID
+            + "\",\"repoId\":\"00000000-0000-4000-8000-0000000000b1\","
+            + "\"repoName\":\"qits-ci-service\","
+            + "\"runId\":\"00000000-0000-4000-8000-0000000000c1\",\"version\":\"2026.101.100000\"}",
+        "qits-ci-service main built 2026.101.100000",
+        event.id,
+        "dev");
+    return new ProjectEvent(cause, event);
+  }
+
+  /**
+   * The event detail page's event, read by id and its effects listed by {@code ?parentId=}: the
+   * event ({@code eventId}), its cause ({@code causeId}) and the project ({@code projectId}).
+   */
+  private Setup anEventOfAProjectWithACauseAndEffects() {
+    ProjectEvent seeded = seedAProjectEvent();
+    Map<String, String> params = new TreeMap<>();
+    params.put("causeId", seeded.cause().id);
+    params.put("eventId", seeded.event().id);
+    params.put("projectId", THE_PROJECT_ID);
+    return new Setup(params, List.of());
+  }
+
+  /**
+   * The same seed, read the way the detail page follows {@code parentId} upwards: {@code eventId}
+   * is the cause. A state of its own because a state records one answer per operation.
+   */
+  private Setup theCauseOfAProjectEvent() {
+    ProjectEvent seeded = seedAProjectEvent();
+    Map<String, String> params = new TreeMap<>();
+    params.put("eventId", seeded.cause().id);
+    params.put("projectId", THE_PROJECT_ID);
+    return new Setup(params, List.of());
+  }
+
   // --- payloads: canonical JSON (keys sorted, no nulls), as qits-eventstream publishes them -----
 
   private static final String SHA_1 = "0123456789abcdef0123456789abcdef01234567";
@@ -806,6 +902,23 @@ public class ProviderStates {
         + "\"}";
   }
 
+  /** A BuildStatusChanged payload of qits-ci-service's main in {@link #THE_PROJECT_ID}. */
+  private static String buildStatusChanged(String phase, String previousStatus, String status) {
+    return "{\"branch\":\"main\",\"commitSha\":\""
+        + SHA_1
+        + "\",\"phase\":\""
+        + phase
+        + "\",\"previousStatus\":\""
+        + previousStatus
+        + "\",\"projectId\":\""
+        + THE_PROJECT_ID
+        + "\",\"repoId\":\"00000000-0000-4000-8000-0000000000b1\","
+        + "\"repoName\":\"qits-ci-service\","
+        + "\"runId\":\"00000000-0000-4000-8000-0000000000c1\",\"status\":\""
+        + status
+        + "\"}";
+  }
+
   /** SCMRelease payloads with no project id: the project's id is a param only where one is asked. */
   private static final List<String> SCM_RELEASE =
       List.of(
@@ -836,14 +949,15 @@ public class ProviderStates {
   }
 
   /**
-   * The service that dispatches an event of this name on the estate: a {@code SoftwareRelease} or
-   * {@code BuildStatusChanged} is qits-ci's, a {@code DeploymentActive} qits-deployments', an
+   * The service that dispatches an event of this name on the estate: a {@code SoftwareRelease},
+   * {@code BuildStatusChanged} or {@code BuildSuccessful} is qits-ci's, a {@code DeploymentActive} qits-deployments', an
    * {@code SCMPublishCommit} qits-githost's, and the release-request, project, other SCM and ticket
    * events qits-projects'.
    */
   private static String publisherOf(String name) {
     return switch (name) {
-      case "SoftwareRelease", "BuildStatusChanged" -> "eu.wohlben.qits:qits-ci-service";
+      case "SoftwareRelease", "BuildStatusChanged", "BuildSuccessful" ->
+          "eu.wohlben.qits:qits-ci-service";
       case "SCMPublishCommit" -> "eu.wohlben.qits:qits-githost-service";
       case "DeploymentActive" -> "eu.wohlben.qits:qits-deployments-service";
       default -> "eu.wohlben.qits:qits-projects-service";

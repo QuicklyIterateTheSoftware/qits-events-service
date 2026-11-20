@@ -1,0 +1,29 @@
+{
+  "events": [
+    {
+      "id": "00000000-0000-4000-8000-000000000004",
+      "name": "BuildSuccessful",
+      "occurredAt": "2026-01-01T00:00:00Z",
+      "payload": "{\"branch\":\"main\",\"commitSha\":\"0123456789abcdef0123456789abcdef01234567\",\"projectId\":\"00000000-0000-4000-8000-000000000001\",\"repoId\":\"00000000-0000-4000-8000-000000000005\",\"repoName\":\"qits-ci-service\",\"runId\":\"00000000-0000-4000-8000-000000000006\",\"version\":\"2026.101.100000\"}",
+      "description": "qits-ci-service main built 2026.101.100000",
+      "parentId": "00000000-0000-4000-8000-000000000003",
+      "environment": "dev",
+      "createdAt": "2026-01-01T00:00:00Z",
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-ci-service"
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000007",
+      "name": "BuildStatusChanged",
+      "occurredAt": "2026-01-01T00:00:00Z",
+      "payload": "{\"branch\":\"main\",\"commitSha\":\"0123456789abcdef0123456789abcdef01234567\",\"phase\":\"PUBLISH\",\"previousStatus\":\"PENDING\",\"projectId\":\"00000000-0000-4000-8000-000000000001\",\"repoId\":\"00000000-0000-4000-8000-000000000005\",\"repoName\":\"qits-ci-service\",\"runId\":\"00000000-0000-4000-8000-000000000006\",\"status\":\"RUNNING\"}",
+      "description": "qits-ci-service main: PUBLISH started",
+      "parentId": "00000000-0000-4000-8000-000000000003",
+      "environment": "dev",
+      "createdAt": "2026-01-01T00:00:00Z",
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-ci-service"
+    }
+  ],
+  "nextCursor": null
+}

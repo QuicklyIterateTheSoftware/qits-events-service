@@ -292,4 +292,14 @@ class ConsumerPactVerificationTest {
   Map<String, String> aProjectWithNoEvents() {
     return states.params(ProviderStates.A_PROJECT_WITH_NO_EVENTS);
   }
+
+  @State(ProviderStates.AN_EVENT_OF_A_PROJECT_WITH_A_CAUSE_AND_EFFECTS)
+  Map<String, String> anEventOfAProjectWithACauseAndEffects() {
+    return states.params(ProviderStates.AN_EVENT_OF_A_PROJECT_WITH_A_CAUSE_AND_EFFECTS);
+  }
+
+  @State(ProviderStates.THE_CAUSE_OF_A_PROJECT_EVENT)
+  Map<String, String> theCauseOfAProjectEvent() {
+    return states.params(ProviderStates.THE_CAUSE_OF_A_PROJECT_EVENT);
+  }
 }

@@ -1,0 +1,14 @@
+{
+  "event": {
+    "id": "00000000-0000-4000-8000-000000000002",
+    "name": "ReleaseRequestStateChanged",
+    "occurredAt": "2026-01-01T00:00:00Z",
+    "payload": "{\"backingBranch\":\"release/qits-ci-service-rr-12\",\"branches\":[\"main\"],\"changedAt\":\"2026-01-01T00:00:00Z\",\"mergedSha\":\"0123456789abcdef0123456789abcdef01234567\",\"previousState\":\"PENDING\",\"projectId\":\"00000000-0000-4000-8000-000000000001\",\"releaseRequestId\":\"00000000-0000-4000-8000-000000000003\",\"releaseRequestQualifiedId\":\"qits-ci-service-rr-12\",\"repoId\":\"00000000-0000-4000-8000-000000000004\",\"repoName\":\"qits-ci-service\",\"state\":\"READY\",\"version\":\"2026.101.100000\"}",
+    "description": "Release request qits-ci-service-rr-12 is ready",
+    "parentId": null,
+    "environment": "dev",
+    "createdAt": "2026-01-01T00:00:00Z",
+    "updatedAt": "2026-01-01T00:00:00Z",
+    "publisher": "eu.wohlben.qits:qits-projects-service"
+  }
+}

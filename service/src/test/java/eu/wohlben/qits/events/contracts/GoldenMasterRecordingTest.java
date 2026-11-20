@@ -323,6 +323,23 @@ class GoldenMasterRecordingTest {
           list(
               ProviderStates.A_PROJECT_WITH_NO_EVENTS,
               query("attr", "projectid={projectId}", "order", "desc", "limit", "50")),
+          single(
+              ProviderStates.AN_EVENT_OF_A_PROJECT_WITH_A_CAUSE_AND_EFFECTS,
+              "getEvent",
+              "GET",
+              "/events/api/events/{eventId}",
+              200,
+              null),
+          list(
+              ProviderStates.AN_EVENT_OF_A_PROJECT_WITH_A_CAUSE_AND_EFFECTS,
+              query("parentId", "{eventId}")),
+          single(
+              ProviderStates.THE_CAUSE_OF_A_PROJECT_EVENT,
+              "getEvent",
+              "GET",
+              "/events/api/events/{eventId}",
+              200,
+              null),
           publish(ProviderStates.NO_EVENT_WITH_THE_GIVEN_ID, 201),
           publish(ProviderStates.THE_SAME_EVENT_PUBLISHED_BEFORE, 200),
           publish(ProviderStates.AN_EVENT_WITH_THE_GIVEN_ID, 400),
