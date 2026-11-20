@@ -340,6 +340,10 @@ class GoldenMasterRecordingTest {
               "/events/api/events/{eventId}",
               200,
               null),
+          list(ProviderStates.THE_CAUSE_OF_A_PROJECT_EVENT, query("parentId", "{eventId}")),
+          list(
+              ProviderStates.AN_EVENT_OF_A_PROJECT_WITH_NO_EFFECTS,
+              query("parentId", "{eventId}")),
           publish(ProviderStates.NO_EVENT_WITH_THE_GIVEN_ID, 201),
           publish(ProviderStates.THE_SAME_EVENT_PUBLISHED_BEFORE, 200),
           publish(ProviderStates.AN_EVENT_WITH_THE_GIVEN_ID, 400),

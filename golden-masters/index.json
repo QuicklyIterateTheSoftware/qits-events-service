@@ -299,6 +299,33 @@
       ]
     },
     {
+      "name": "an event of a project with no effects",
+      "slug": "an-event-of-a-project-with-no-effects",
+      "params": {
+        "eventId": "00000000-0000-4000-8000-000000000002",
+        "projectId": "00000000-0000-4000-8000-000000000001"
+      },
+      "dependsOn": [],
+      "operations": [
+        {
+          "operationId": "listEvents",
+          "method": "GET",
+          "path": "/events/api/events",
+          "query": {
+            "parentId": "{eventId}"
+          },
+          "status": 200,
+          "file": "an-event-of-a-project-with-no-effects/listEvents.json",
+          "frozen": {
+            "ids": [],
+            "instants": [],
+            "strings": [],
+            "listFilteredTo": "$.events"
+          }
+        }
+      ]
+    },
+    {
       "name": "an event with the given id",
       "slug": "an-event-with-the-given-id",
       "params": {
@@ -952,6 +979,31 @@
               "$.event.payload"
             ],
             "listFilteredTo": null
+          }
+        },
+        {
+          "operationId": "listEvents",
+          "method": "GET",
+          "path": "/events/api/events",
+          "query": {
+            "parentId": "{eventId}"
+          },
+          "status": 200,
+          "file": "the-cause-of-a-project-event/listEvents.json",
+          "frozen": {
+            "ids": [
+              "$.events[*].id",
+              "$.events[*].parentId"
+            ],
+            "instants": [
+              "$.events[*].occurredAt",
+              "$.events[*].createdAt",
+              "$.events[*].updatedAt"
+            ],
+            "strings": [
+              "$.events[*].payload"
+            ],
+            "listFilteredTo": "$.events"
           }
         }
       ]

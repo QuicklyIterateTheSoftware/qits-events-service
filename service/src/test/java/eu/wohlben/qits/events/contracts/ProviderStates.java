@@ -75,6 +75,8 @@ public class ProviderStates {
   public static final String AN_EVENT_OF_A_PROJECT_WITH_A_CAUSE_AND_EFFECTS =
       "an event of a project with a cause and effects";
   public static final String THE_CAUSE_OF_A_PROJECT_EVENT = "the cause of a project event";
+  public static final String AN_EVENT_OF_A_PROJECT_WITH_NO_EFFECTS =
+      "an event of a project with no effects";
 
   /**
    * The project the event detail page's states seed into: qits-projects' {@code a project exists}
@@ -170,6 +172,7 @@ public class ProviderStates {
     states.put(
         AN_EVENT_OF_A_PROJECT_WITH_A_CAUSE_AND_EFFECTS, this::anEventOfAProjectWithACauseAndEffects);
     states.put(THE_CAUSE_OF_A_PROJECT_EVENT, this::theCauseOfAProjectEvent);
+    states.put(AN_EVENT_OF_A_PROJECT_WITH_NO_EFFECTS, this::anEventOfAProjectWithNoEffects);
   }
 
   /** Every state name this provider answers for. */
@@ -811,13 +814,34 @@ public class ProviderStates {
   }
 
   /**
-   * The same seed, read the way the detail page follows {@code parentId} upwards: {@code eventId}
-   * is the cause. A state of its own because a state records one answer per operation.
+   * The same seed, read the way the detail page's chain walk reaches the root: {@code eventId} is
+   * the cause, read by id (the walk up ends at it, no parent) and its children listed by {@code
+   * ?parentId=} (the walk down starts there, answering the event). A state of its own because a
+   * state records one answer per operation.
    */
   private Setup theCauseOfAProjectEvent() {
     ProjectEvent seeded = seedAProjectEvent();
     Map<String, String> params = new TreeMap<>();
     params.put("eventId", seeded.cause().id);
+    params.put("projectId", THE_PROJECT_ID);
+    return new Setup(params, List.of());
+  }
+
+  /**
+   * A project event nothing followed: one build status change in {@link #THE_PROJECT_ID}, no parent
+   * and no children, so {@code ?parentId=} of it answers an empty list.
+   */
+  private Setup anEventOfAProjectWithNoEffects() {
+    Event event =
+        create(
+            "BuildStatusChanged",
+            FUTURE.plusSeconds(1),
+            buildStatusChanged("VERIFY", "RUNNING", "FAILED"),
+            "qits-ci-service main: VERIFY failed",
+            null,
+            "dev");
+    Map<String, String> params = new TreeMap<>();
+    params.put("eventId", event.id);
     params.put("projectId", THE_PROJECT_ID);
     return new Setup(params, List.of());
   }

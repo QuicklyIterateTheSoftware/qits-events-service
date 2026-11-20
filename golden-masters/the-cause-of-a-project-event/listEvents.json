@@ -1,0 +1,17 @@
+{
+  "events": [
+    {
+      "id": "00000000-0000-4000-8000-000000000003",
+      "name": "BuildStatusChanged",
+      "occurredAt": "2026-01-01T00:00:00Z",
+      "payload": "{\"branch\":\"main\",\"commitSha\":\"0123456789abcdef0123456789abcdef01234567\",\"phase\":\"VERIFY\",\"previousStatus\":\"RUNNING\",\"projectId\":\"00000000-0000-4000-8000-000000000001\",\"repoId\":\"00000000-0000-4000-8000-000000000004\",\"repoName\":\"qits-ci-service\",\"runId\":\"00000000-0000-4000-8000-000000000005\",\"status\":\"SUCCEEDED\"}",
+      "description": "qits-ci-service main: VERIFY succeeded",
+      "parentId": "00000000-0000-4000-8000-000000000002",
+      "environment": "dev",
+      "createdAt": "2026-01-01T00:00:00Z",
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "publisher": "eu.wohlben.qits:qits-ci-service"
+    }
+  ],
+  "nextCursor": null
+}
