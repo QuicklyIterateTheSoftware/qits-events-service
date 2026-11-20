@@ -59,14 +59,14 @@
              own committed `pacts/<name>_qits-events-service.json`, not through the library) are
              retired by this ticket — qits-ci-service's pin above replaces its old one outright, and
              qits-projects-service's pin below replaces its placeholder. -->
-        <qits.ci-service-pacts-qits-events-service.version>2026.1111.11639</qits.ci-service-pacts-qits-events-service.version>
-        <qits.githost-service-pacts-qits-events-service.version>2026.1111.82105</qits.githost-service-pacts-qits-events-service.version>
-        <qits.deployments-service-pacts-qits-events-service.version>2026.1110.235053</qits.deployments-service-pacts-qits-events-service.version>
-        <qits.edge-service-pacts-qits-events-service.version>2026.1116.85733</qits.edge-service-pacts-qits-events-service.version>
-        <qits.maintenance-service-pacts-qits-events-service.version>2026.1117.11556</qits.maintenance-service-pacts-qits-events-service.version>
-        <qits.orchestrator-service-pacts-qits-events-service.version>2026.1112.180008</qits.orchestrator-service-pacts-qits-events-service.version>
-        <qits.projects-service-pacts-qits-events-service.version>2026.1116.231754</qits.projects-service-pacts-qits-events-service.version>
-        <qits.workspaces-service-pacts-qits-events-service.version>2026.1111.70514</qits.workspaces-service-pacts-qits-events-service.version>
+        <qits.ci-service-pacts-qits-events-service.version>2026.1118.235338</qits.ci-service-pacts-qits-events-service.version>
+        <qits.githost-service-pacts-qits-events-service.version>2026.1119.45706</qits.githost-service-pacts-qits-events-service.version>
+        <qits.deployments-service-pacts-qits-events-service.version>2026.1119.842</qits.deployments-service-pacts-qits-events-service.version>
+        <qits.edge-service-pacts-qits-events-service.version>2026.1118.225200</qits.edge-service-pacts-qits-events-service.version>
+        <qits.maintenance-service-pacts-qits-events-service.version>2026.1119.11204</qits.maintenance-service-pacts-qits-events-service.version>
+        <qits.orchestrator-service-pacts-qits-events-service.version>2026.1120.15133</qits.orchestrator-service-pacts-qits-events-service.version>
+        <qits.projects-service-pacts-qits-events-service.version>2026.1118.233508</qits.projects-service-pacts-qits-events-service.version>
+        <qits.workspaces-service-pacts-qits-events-service.version>2026.1119.81107</qits.workspaces-service-pacts-qits-events-service.version>
         <!-- The two CLIs (ticket qits-1149) call this provider themselves, not through the library,
              so each jar carries the CLI's own `pacts/<cli>_qits-events-service.json` (both still
              committed on their mains, checked 2026-10-19): qits-bootstrap-cli's head poll and the
@@ -74,9 +74,9 @@
              (ticket qits-1477; qits-1470 moved it off SCMRelease). -->
         <qits.bootstrap-cli-pacts-qits-events-service.version>2026.1019.194129</qits.bootstrap-cli-pacts-qits-events-service.version>
         <qits.platform-access-monorepo-pacts-qits-events-service.version>2026.1103.101116</qits.platform-access-monorepo-pacts-qits-events-service.version>
-        <qits.landing-app-pacts-qits-events-service.version>2026.1003.95806</qits.landing-app-pacts-qits-events-service.version>
-        <qits.idp-service-pacts-qits-events-service.version>2026.1111.82055</qits.idp-service-pacts-qits-events-service.version>
-        <qits.network-access-service-pacts-qits-events-service.version>2026.1111.13358</qits.network-access-service-pacts-qits-events-service.version>
+        <qits.landing-app-pacts-qits-events-service.version>2026.1118.225428</qits.landing-app-pacts-qits-events-service.version>
+        <qits.idp-service-pacts-qits-events-service.version>2026.1119.53816</qits.idp-service-pacts-qits-events-service.version>
+        <qits.network-access-service-pacts-qits-events-service.version>2026.1119.10220</qits.network-access-service-pacts-qits-events-service.version>
         <!-- THE PLATFORM'S OWN MAVEN REPOSITORY, and this repo's first two artifacts from it:
              qits-db-core (PatientPgDriver, which the events datasource opens every connection
              through, and DbRetry.inNewTx, which the two write paths run in) and qits-arch-rules
