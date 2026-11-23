@@ -74,7 +74,7 @@
              (ticket qits-1477; qits-1470 moved it off SCMRelease). -->
         <qits.bootstrap-cli-pacts-qits-events-service.version>2026.1019.194129</qits.bootstrap-cli-pacts-qits-events-service.version>
         <qits.platform-access-monorepo-pacts-qits-events-service.version>2026.1103.101116</qits.platform-access-monorepo-pacts-qits-events-service.version>
-        <qits.landing-app-pacts-qits-events-service.version>2026.1120.160918</qits.landing-app-pacts-qits-events-service.version>
+        <qits.landing-app-pacts-qits-events-service.version>2026.1123.90130</qits.landing-app-pacts-qits-events-service.version>
         <qits.idp-service-pacts-qits-events-service.version>2026.1120.111912</qits.idp-service-pacts-qits-events-service.version>
         <qits.network-access-service-pacts-qits-events-service.version>2026.1120.102652</qits.network-access-service-pacts-qits-events-service.version>
         <!-- THE PLATFORM'S OWN MAVEN REPOSITORY, and this repo's first two artifacts from it:
