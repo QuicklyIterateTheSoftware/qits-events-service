@@ -77,7 +77,7 @@
         <qits.landing-app-pacts-qits-events-service.version>2026.1123.90130</qits.landing-app-pacts-qits-events-service.version>
         <qits.idp-service-pacts-qits-events-service.version>2026.1120.111912</qits.idp-service-pacts-qits-events-service.version>
         <qits.network-access-service-pacts-qits-events-service.version>2026.1120.102652</qits.network-access-service-pacts-qits-events-service.version>
-        <qits.agents-service-pacts-qits-events-service.version>2026.1124.52642</qits.agents-service-pacts-qits-events-service.version>
+        <qits.agents-service-pacts-qits-events-service.version>2026.1124.213431</qits.agents-service-pacts-qits-events-service.version>
         <!-- THE PLATFORM'S OWN MAVEN REPOSITORY, and this repo's first two artifacts from it:
              qits-db-core (PatientPgDriver, which the events datasource opens every connection
              through, and DbRetry.inNewTx, which the two write paths run in) and qits-arch-rules
