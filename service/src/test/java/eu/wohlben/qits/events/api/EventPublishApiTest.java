@@ -510,4 +510,114 @@ class EventPublishApiTest {
         .body("event.parentId", equalTo(neverSeen));
     given().when().get("/events/api/events/" + neverSeen).then().statusCode(404);
   }
+
+  /** The envelope with the call chain (qits-2694) — what a publisher inside a chain sends. */
+  private static String chained(String name, String origin, String onBehalfOf) {
+    return "{\"name\":\""
+        + name
+        + "\",\"occurredAt\":\"2026-07-31T12:46:03Z\",\"payload\":null"
+        + ",\"description\":null,\"parentId\":null,\"environment\":\"dev\",\"publisher\":\""
+        + CI
+        + "\",\"originTraceId\":"
+        + (origin == null ? "null" : "\"" + origin + "\"")
+        + ",\"onBehalfOf\":"
+        + (onBehalfOf == null ? "null" : "\"" + onBehalfOf + "\"")
+        + "}";
+  }
+
+  private static final String ORIGIN = "4bf92f3577b34da6a3ce929d0e0e4736";
+
+  private static final String PERSON = "0d5a3b9e-2c1f-4f7a-9a51-7c2b8f3e6d10";
+
+  @Test
+  void aPublishMayStateTheCallChainItWasPublishedIn() {
+    String id = UUID.randomUUID().toString();
+    String body = chained("BuildSuccessful", ORIGIN, PERSON);
+
+    put(id, body)
+        .then()
+        .statusCode(201)
+        .body("event.originTraceId", equalTo(ORIGIN))
+        .body("event.onBehalfOf", equalTo(PERSON));
+    // ... the same bytes again are the same event, chain and all ...
+    put(id, body).then().statusCode(200).body("event.originTraceId", equalTo(ORIGIN));
+    // ... and a read hands both back.
+    given()
+        .when()
+        .get("/events/api/events/" + id)
+        .then()
+        .statusCode(200)
+        .body("event.originTraceId", equalTo(ORIGIN))
+        .body("event.onBehalfOf", equalTo(PERSON));
+  }
+
+  @Test
+  void aPublishWithoutTheChainStillAnswersTwoOhOneAndEmitsBothKeysAsNull() {
+    // A publisher built before qits-2694 sends neither key; absent is legal and means null, which
+    // is why this service ships before the library that stamps them.
+    String id = UUID.randomUUID().toString();
+    put(id, envelope("BuildSuccessful", "2026-07-31T12:46:03Z", PAYLOAD))
+        .then()
+        .statusCode(201)
+        .body("event", hasKey("originTraceId"))
+        .body("event", hasKey("onBehalfOf"))
+        .body("event.originTraceId", nullValue())
+        .body("event.onBehalfOf", nullValue());
+  }
+
+  @Test
+  void aMalformedChainIsFourHundredNamingTheField() {
+    String id = UUID.randomUUID().toString();
+    for (String origin :
+        java.util.List.of(
+            "4BF92F3577B34DA6A3CE929D0E0E4736", "4bf92f3577b34da6", "zz" + ORIGIN.substring(2))) {
+      put(id, chained("BuildSuccessful", origin, PERSON))
+          .then()
+          .statusCode(400)
+          .body(containsString("originTraceId"));
+    }
+    for (String onBehalfOf : java.util.List.of("p".repeat(256), "tok-agent\\nforged")) {
+      put(id, chained("BuildSuccessful", ORIGIN, onBehalfOf))
+          .then()
+          .statusCode(400)
+          .body(containsString("onBehalfOf"));
+    }
+    given().when().get("/events/api/events/" + id).then().statusCode(404);
+  }
+
+  @Test
+  void reChainingOneIdIsFourHundred() {
+    // Both fields are INSIDE the replay comparison, like parentId: one id published from two chains
+    // is two claims about history.
+    String id = UUID.randomUUID().toString();
+    put(id, chained("BuildSuccessful", ORIGIN, PERSON)).then().statusCode(201);
+
+    put(id, chained("BuildSuccessful", "0af7651916cd43dd8448eb211c80319c", PERSON))
+        .then()
+        .statusCode(400);
+    put(id, chained("BuildSuccessful", ORIGIN, "tok-agent-other")).then().statusCode(400);
+    put(id, chained("BuildSuccessful", null, null)).then().statusCode(400);
+  }
+
+  @Test
+  void theManualCreateIgnoresTheChain() {
+    // POST is the admin/desk path; it takes no chain, so a person cannot state who a chain acts for.
+    String body =
+        "{\"name\":\"ByHand\",\"publisher\":\""
+            + CI
+            + "\",\"originTraceId\":\""
+            + ORIGIN
+            + "\",\"onBehalfOf\":\""
+            + PERSON
+            + "\"}";
+    given()
+        .contentType(ContentType.JSON)
+        .body(body)
+        .when()
+        .post("/events/api/events")
+        .then()
+        .statusCode(200)
+        .body("event.originTraceId", nullValue())
+        .body("event.onBehalfOf", nullValue());
+  }
 }

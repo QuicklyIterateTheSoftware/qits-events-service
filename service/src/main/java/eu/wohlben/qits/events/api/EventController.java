@@ -245,6 +245,14 @@ public class EventController {
    * left since 2026-10-31. Events stored before then keep {@code publisher: null} on every read —
    * the requirement guards writes, it rewrites nothing. It is at most 255 characters, and inside the
    * replay comparison, because one id dispatched by two services is two claims about history.
+   *
+   * <p>{@code originTraceId} and {@code onBehalfOf} are the call chain the event was published in
+   * (qits-2694): the W3C trace id of the chain's first call (32 lowercase hex) and the bearer
+   * subject the chain acts for (at most 255 characters, no control characters). Both follow the
+   * parent's clauses: absent is legal and means null, a malformed value is a 400 naming the field,
+   * and both are inside the replay comparison. Only this route takes them — it is {@code
+   * qits:system} only, so only a service can state who a chain acts for; the manual {@code POST}
+   * has no such fields and stores null.
    */
   public record PublishEventRequest(
       @NotBlank String name,
@@ -253,7 +261,9 @@ public class EventController {
       String description,
       String parentId,
       String environment,
-      @NotBlank String publisher) {
+      @NotBlank String publisher,
+      String originTraceId,
+      String onBehalfOf) {
     public record Response(EventDto event) {}
   }
 
@@ -263,12 +273,14 @@ public class EventController {
    * <ul>
    *   <li><b>201</b> — the id was unknown; the row was created and pushed to matching subscribers
    *   <li><b>200</b> — the id was known and {@code name}/{@code occurredAt}/{@code payload}/{@code
-   *       parentId}/{@code environment}/{@code publisher} match exactly: the same event arriving twice. Nothing
+   *       parentId}/{@code environment}/{@code publisher}/{@code originTraceId}/{@code onBehalfOf}
+   *       match exactly: the same event arriving twice. Nothing
    *       written, nothing pushed
    *   <li><b>400</b> — the id was known and something differs (a reused UUID, which no retry fixes),
    *       or the id is not a UUID at all, or {@code parentId} is not a UUID, or {@code parentId} is
    *       the event's own id, or {@code publisher} is missing, null, blank or longer than 255
-   *       characters
+   *       characters, or {@code originTraceId} is not 32 lowercase hex, or {@code onBehalfOf} is
+   *       longer than 255 characters or carries a control character
    * </ul>
    *
    * <p>A {@code parentId} naming an event this log does not have is <b>not</b> one of them: it is
@@ -293,7 +305,9 @@ public class EventController {
             request.description(),
             request.parentId(),
             request.environment(),
-            request.publisher());
+            request.publisher(),
+            request.originTraceId(),
+            request.onBehalfOf());
     var body = new PublishEventRequest.Response(eventMapper.toDto(published.event()));
     return RestResponse.status(
         published.outcome() == EventService.PublishOutcome.CREATED

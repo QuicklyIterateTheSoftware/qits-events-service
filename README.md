@@ -13,7 +13,7 @@ of what is here; nothing below describes a plan.
 
 | | |
 |---|---|
-| `Event` | a name, an `occurredAt`, an optional `payload`, an optional description, an optional `parentId`, an optional `environment` and a `publisher` (required on write, null only on rows stored before 2026-10-31) — plus the row's own `createdAt`/`updatedAt` |
+| `Event` | a name, an `occurredAt`, an optional `payload`, an optional description, an optional `parentId`, an optional `environment`, a `publisher` (required on write, null only on rows stored before 2026-10-31) and the optional call chain `originTraceId`/`onBehalfOf` — plus the row's own `createdAt`/`updatedAt` |
 
 The three timestamps are not redundant. `occurredAt` is the **caller's** — when the thing happened,
 supplied on write and freely in the past, because a log is mostly written after the fact — while
@@ -46,6 +46,15 @@ the replay comparison (one id dispatched by two services is two claims about his
 value with no existence check: beyond presence only its length is validated (at most 255 characters,
 the column's width), because a service can be retired after its events truthfully happened. There is
 no filter on it yet.
+
+`originTraceId` and `onBehalfOf` are the **call chain** the event was published in (qits-2694): the
+W3C trace id (32 lowercase hex) of the chain's first call, and the bearer subject the chain acts for
+(a person's user UUID, an agent's `tok-…` subject; at most 255 characters, no control characters).
+A consumer's handlers run inside that chain, so a call or an event made while handling one inherits
+the cause's origin and user. Both are optional — absent means null, a malformed value is a `400`
+naming the field — both sit inside the replay comparison like `parentId`, and **only the bus
+publish takes them**: it is `qits:system` only, so only a service can state who a chain acts for.
+The manual `POST` has no such fields and stores null.
 
 **A `parentId` this log cannot resolve is data, not an error, and there is no foreign key.** Nothing
 orders a parent's arrival before its child's — publishes are independent HTTP calls, and a parent
@@ -148,7 +157,9 @@ The envelope is one shape in both directions:
   "description": null,
   "parentId": null,
   "environment": "dev",
-  "publisher": "eu.wohlben.qits:qits-ci-service" }
+  "publisher": "eu.wohlben.qits:qits-ci-service",
+  "originTraceId": null,
+  "onBehalfOf": null }
 ```
 
 `payload` is the publishing event class's own fields as **canonical JSON in a string**. This service
@@ -166,7 +177,7 @@ publisher against a service without the column has its parents silently dropped,
 as roots cannot be backfilled.
 
 The publish has three answers and no fourth — `201` for an id this log has not seen, `200` for the
-same `name`/`occurredAt`/`payload`/`parentId`/`environment`/`publisher` arriving again (nothing written,
+same `name`/`occurredAt`/`payload`/`parentId`/`environment`/`publisher`/`originTraceId`/`onBehalfOf` arriving again (nothing written,
 nothing pushed),
 `400` for an id that exists with anything different, which is a reused UUID and not something a
 retry fixes. `description` is deliberately outside that comparison and `parentId` is deliberately
@@ -181,7 +192,7 @@ paths cannot diverge about what an event is.
 
 A subscriber connects to `/events/stream` and sends one frame — `{"subscribe": ["BuildSuccessful"]}`,
 which *replaces* that connection's set; `["*"]` means everything — and is then pushed
-`{"id", "name", "occurredAt", "payload", "description", "parentId", "environment", "publisher"}` for each newly created matching
+`{"id", "name", "occurredAt", "payload", "description", "parentId", "environment", "publisher", "originTraceId", "onBehalfOf"}` for each newly created matching
 event. `name` doubles as the **signature** a subscriber matches on. The field *order* is not part of
 the contract — both sides bind by name — but appending is: a subscriber built against the first five
 fields reads the frame it always read. Live only, at-most-once: no replay, no offset, no catch-up.

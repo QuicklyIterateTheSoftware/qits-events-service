@@ -9,6 +9,8 @@
     "environment": "dev",
     "createdAt": "2026-01-01T00:00:00Z",
     "updatedAt": "2026-01-01T00:00:00Z",
-    "publisher": "eu.wohlben.qits:qits-ci-service"
+    "publisher": "eu.wohlben.qits:qits-ci-service",
+    "originTraceId": null,
+    "onBehalfOf": null
   }
 }

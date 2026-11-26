@@ -13,6 +13,8 @@ erDiagram
     string environment "length 64"
     string name "not null"
     instant occurred_at "not null"
+    string on_behalf_of "length 255"
+    string origin_trace_id "length 32"
     string parent_id
     string payload
     string publisher "length 255"

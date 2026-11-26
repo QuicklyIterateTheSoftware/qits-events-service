@@ -96,4 +96,34 @@ final class Validations {
       throw new BadRequestException(field + " must be at most 255 characters");
     }
   }
+
+  /**
+   * Throws {@link BadRequestException} unless {@code value} is a W3C trace id — exactly 32 lowercase
+   * hex characters. Null and blank are fine: the field is optional.
+   */
+  static void requireTraceIdIfPresent(String value, String field) {
+    if (value == null || value.isBlank()) {
+      return;
+    }
+    if (!value.matches("[0-9a-f]{32}")) {
+      throw new BadRequestException(field + " must be 32 lowercase hex characters");
+    }
+  }
+
+  /**
+   * Throws {@link BadRequestException} unless {@code value} could name a bearer subject: at most 255
+   * characters and no control characters. Null and blank are fine: the field is optional. Whether
+   * such a subject exists is never checked.
+   */
+  static void requireSubjectIfPresent(String value, String field) {
+    if (value == null || value.isBlank()) {
+      return;
+    }
+    if (value.length() > 255) {
+      throw new BadRequestException(field + " must be at most 255 characters");
+    }
+    if (value.chars().anyMatch(Character::isISOControl)) {
+      throw new BadRequestException(field + " must not contain control characters");
+    }
+  }
 }

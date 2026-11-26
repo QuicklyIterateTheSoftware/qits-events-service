@@ -49,6 +49,10 @@ components:
           $ref: "#/components/schemas/Instant"
         publisher:
           type: string
+        originTraceId:
+          type: string
+        onBehalfOf:
+          type: string
     Instant:
       type: string
       format: date-time
@@ -77,6 +81,10 @@ components:
         publisher:
           type: string
           pattern: \S
+        originTraceId:
+          type: string
+        onBehalfOf:
+          type: string
     Response:
       type: object
       properties:
@@ -366,4 +374,4 @@ paths:
         - qits:agent
 info:
   title: qits-events API
-  version: 2026.1018.173525
+  version: 2026.1124.223835

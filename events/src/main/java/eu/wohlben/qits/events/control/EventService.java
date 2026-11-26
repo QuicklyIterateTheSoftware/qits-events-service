@@ -138,7 +138,7 @@ public class EventService {
     String source = publisherOf(publisher);
     return DbRetry.inNewTx(
         "record an event",
-        () -> store(id, name, when, payload, description, cause, tier, source));
+        () -> store(id, name, when, payload, description, cause, tier, source, null, null));
   }
 
   /**
@@ -151,11 +151,12 @@ public class EventService {
    *   <li>the id is unknown → the row is created and announced ({@link PublishOutcome#CREATED},
    *       201);
    *   <li>the id is known and {@code name}, {@code occurredAt}, {@code payload}, {@code parentId},
-   *       {@code environment} and {@code publisher} are all exactly equal → this is the same event
+   *       {@code environment}, {@code publisher}, {@code originTraceId} and {@code onBehalfOf} are
+   *       all exactly equal → this is the same event
    *       arriving twice, because the publisher's first attempt got no answer. Nothing is written and
    *       <b>nothing is announced</b> ({@link PublishOutcome#REPLAYED}, 200): a subscriber must not
    *       see an event twice because a network dropped an acknowledgement;
-   *   <li>the id is known and any of the six differs → the caller reused a UUID, which is not
+   *   <li>the id is known and any of the eight differs → the caller reused a UUID, which is not
    *       something a retry can fix, so it is a 400 rather than a conflict to sit and poll on.
    * </ul>
    *
@@ -195,6 +196,34 @@ public class EventService {
       String parentId,
       String environment,
       String publisher) {
+    return publish(
+        id, name, occurredAt, payload, description, parentId, environment, publisher, null, null);
+  }
+
+  /**
+   * {@link #publish(String, String, Instant, String, String, String, String, String)} with the
+   * <b>call chain</b> the event was published in (qits-2694): {@code originTraceId}, the W3C trace
+   * id of the chain's first call, and {@code onBehalfOf}, the bearer subject the chain acts for.
+   *
+   * <p>Both are optional and absent means null — a publisher built before the fields keeps
+   * working. Both are validated for shape ({@link #originTraceIdOf}, {@link #onBehalfOfOf}) and both
+   * sit on the identity side of the replay comparison, beside {@code parentId}: one id published
+   * from two chains is two claims about history, while a well-behaved outbox stores the envelope
+   * whole and cannot disagree with itself. Only this path takes them — the bus publish is {@code
+   * qits:system} only, so only a service can state either value; the manual {@link #create} stores
+   * null for both.
+   */
+  public Published publish(
+      String id,
+      String name,
+      Instant occurredAt,
+      String payload,
+      String description,
+      String parentId,
+      String environment,
+      String publisher,
+      String originTraceId,
+      String onBehalfOf) {
     Validations.requireUuid(id, "id");
     Validations.requireText(name, "name");
     // Unlike create, publish will not default it: an event whose time this server invented could
@@ -205,9 +234,11 @@ public class EventService {
     String cause = causeOf(id, parentId);
     String tier = environmentOf(environment);
     String source = publisherOf(publisher);
+    String origin = originTraceIdOf(originTraceId);
+    String actor = onBehalfOfOf(onBehalfOf);
     return DbRetry.inNewTx(
         "publish an event",
-        () -> decide(id, name, when, payload, description, cause, tier, source));
+        () -> decide(id, name, when, payload, description, cause, tier, source, origin, actor));
   }
 
   /** One attempt at {@link #publish}: the whole of it, and nothing that is not database work. */
@@ -219,11 +250,23 @@ public class EventService {
       String description,
       String cause,
       String environment,
-      String publisher) {
+      String publisher,
+      String originTraceId,
+      String onBehalfOf) {
     Event existing = eventRepository.findById(id);
     if (existing == null) {
       return new Published(
-          store(id, name, when, payload, description, cause, environment, publisher),
+          store(
+              id,
+              name,
+              when,
+              payload,
+              description,
+              cause,
+              environment,
+              publisher,
+              originTraceId,
+              onBehalfOf),
           PublishOutcome.CREATED);
     }
 
@@ -232,7 +275,9 @@ public class EventService {
         || !Objects.equals(payload, existing.payload)
         || !Objects.equals(cause, existing.parentId)
         || !Objects.equals(environment, existing.environment)
-        || !Objects.equals(publisher, existing.publisher)) {
+        || !Objects.equals(publisher, existing.publisher)
+        || !Objects.equals(originTraceId, existing.originTraceId)
+        || !Objects.equals(onBehalfOf, existing.onBehalfOf)) {
       throw new BadRequestException(
           "Event " + id + " already exists with different content — a UUID may not be reused");
     }
@@ -267,7 +312,9 @@ public class EventService {
       String description,
       String cause,
       String environment,
-      String publisher) {
+      String publisher,
+      String originTraceId,
+      String onBehalfOf) {
     Event event = new Event();
     event.id = id;
     event.name = name;
@@ -277,6 +324,8 @@ public class EventService {
     event.parentId = cause;
     event.environment = environment;
     event.publisher = publisher;
+    event.originTraceId = originTraceId;
+    event.onBehalfOf = onBehalfOf;
     eventRepository.persist(event);
     eventRepository.flush();
     announce(event);
@@ -293,7 +342,9 @@ public class EventService {
             event.description,
             event.parentId,
             event.environment,
-            event.publisher));
+            event.publisher,
+            event.originTraceId,
+            event.onBehalfOf));
   }
 
   /**
@@ -369,6 +420,26 @@ public class EventService {
   private static String publisherOf(String publisher) {
     Validations.requirePublisher(publisher, "publisher");
     return publisher;
+  }
+
+  /**
+   * The origin trace id to store, or null — the W3C trace id (32 lowercase hex) of the first call of
+   * the chain the event was published in. Shape only: blank normalises to null so a replay of "no
+   * chain" compares equal, and anything else that is not 32 lowercase hex is a 400 naming the field.
+   */
+  private static String originTraceIdOf(String originTraceId) {
+    Validations.requireTraceIdIfPresent(originTraceId, "originTraceId");
+    return originTraceId == null || originTraceId.isBlank() ? null : originTraceId;
+  }
+
+  /**
+   * The subject the chain acts for, or null — a person's user UUID or an agent's {@code tok-…}
+   * subject, stated by the publishing service. Shape only, never a lookup: at most 255 characters
+   * and no control characters, blank normalising to null.
+   */
+  private static String onBehalfOfOf(String onBehalfOf) {
+    Validations.requireSubjectIfPresent(onBehalfOf, "onBehalfOf");
+    return onBehalfOf == null || onBehalfOf.isBlank() ? null : onBehalfOf;
   }
 
   /**

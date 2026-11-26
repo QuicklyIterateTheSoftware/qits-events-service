@@ -101,6 +101,24 @@ public class Event extends PanacheEntityBase {
   @Column(length = 255)
   public String publisher;
 
+  /**
+   * The W3C trace id (32 lowercase hex) of the <b>first</b> call of the chain this event was
+   * published in, or null — for an event recorded by hand, or published before qits-2694. Envelope
+   * data like {@link #parentId}, and inside the idempotent {@code PUT}'s comparison for the same
+   * reason: one id published from two chains is two claims about history. A consumer's handlers run
+   * inside this chain, so a call or an event made while handling it inherits the cause's origin.
+   */
+  @Column(name = "origin_trace_id", length = 32)
+  public String originTraceId;
+
+  /**
+   * The bearer subject the chain acts for — a person's user UUID, an agent's {@code tok-…}
+   * subject — or null when the chain acts for nobody but the service itself, or the event predates
+   * qits-2694. Only a service ({@code qits:system}, the bus publish's one role) can state it.
+   */
+  @Column(name = "on_behalf_of", length = 255)
+  public String onBehalfOf;
+
   @CreationTimestamp
   @Column(name = "created_at", nullable = false, updatable = false)
   public Instant createdAt;

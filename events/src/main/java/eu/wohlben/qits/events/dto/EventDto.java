@@ -22,6 +22,10 @@ import java.time.Instant;
  * eu.wohlben.qits:qits-ci-service}), or null for an event recorded before publishers stamped it.
  * It is appended last, after the row's own timestamps, so a client built against the earlier shape
  * reads what it always read; the key is always emitted, null when absent.
+ *
+ * <p>{@code originTraceId} (the W3C trace id of the chain's first call) and {@code onBehalfOf} (the
+ * bearer subject the chain acts for) are appended after it by the same rule (qits-2694): null for an
+ * event recorded by hand or published outside any chain, always emitted.
  */
 public record EventDto(
     String id,
@@ -33,4 +37,6 @@ public record EventDto(
     String environment,
     Instant createdAt,
     Instant updatedAt,
-    String publisher) {}
+    String publisher,
+    String originTraceId,
+    String onBehalfOf) {}

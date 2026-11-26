@@ -10,7 +10,8 @@ import java.time.Instant;
  * <p>The components are the wire contract, so this record's JSON <b>is</b> the frame:
  *
  * <pre>{@code {"id": "<uuid>", "name": "…", "occurredAt": "…", "payload": "…", "description": null,
- * "parentId": null, "environment": null, "publisher": null}}</pre>
+ * "parentId": null, "environment": null, "publisher": null, "originTraceId": null,
+ * "onBehalfOf": null}}</pre>
  *
  * <p><b>Their order is not.</b> It was, while there were five of them; the clause is retired now
  * that there are more, because both sides bind by name and the publishing library disables
@@ -31,7 +32,9 @@ import java.time.Instant;
  * argument: which tier something happened in is a fact about the occurrence, not this database's
  * bookkeeping. {@code publisher} — the service that dispatched the event ({@code
  * eu.wohlben.qits:qits-ci-service}), or null when the event predates the field — likewise: who said
- * it is a fact about the occurrence. Both keys are always emitted, null when absent.
+ * it is a fact about the occurrence. {@code originTraceId} and {@code onBehalfOf} — the call chain
+ * the event was published in (qits-2694) — are appended after it by the same rule, so a consumer can
+ * run its handlers inside the cause's chain. Every key is always emitted, null when absent.
  *
  * <p><b>Fired only on create.</b> An idempotent {@code PUT} that replays an id already stored
  * answers 200 and fires nothing; a subscriber that received the event once must never receive it
@@ -52,4 +55,6 @@ public record EventCreated(
     String description,
     String parentId,
     String environment,
-    String publisher) {}
+    String publisher,
+    String originTraceId,
+    String onBehalfOf) {}

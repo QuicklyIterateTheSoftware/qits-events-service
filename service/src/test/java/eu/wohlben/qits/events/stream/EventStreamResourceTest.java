@@ -211,7 +211,9 @@ class EventStreamResourceTest {
               "description",
               "parentId",
               "environment",
-              "publisher"),
+              "publisher",
+              "originTraceId",
+              "onBehalfOf"),
           fields);
       assertEquals(id, envelope.get("id").asText());
       assertEquals("2026-07-31T12:46:03Z", envelope.get("occurredAt").asText());

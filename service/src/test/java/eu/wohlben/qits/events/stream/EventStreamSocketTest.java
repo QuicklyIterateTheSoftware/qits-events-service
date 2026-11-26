@@ -174,7 +174,7 @@ class EventStreamSocketTest {
       String id = record(name, "{\"branch\":\"main\"}");
       JsonNode frame = nextFrame(subscriber);
 
-      // The eight fields of the wire contract, and NOT createdAt/updatedAt: those are this
+      // The ten fields of the wire contract, and NOT createdAt/updatedAt: those are this
       // database's bookkeeping, not facts about the thing that happened. Their ORDER is no longer
       // part of the contract — both sides bind by name — but the set is, and so is the fact that
       // each new field was APPENDED: a subscriber built against the first five reads the frame it
@@ -190,7 +190,9 @@ class EventStreamSocketTest {
               "description",
               "parentId",
               "environment",
-              "publisher"),
+              "publisher",
+              "originTraceId",
+              "onBehalfOf"),
           fields);
 
       assertEquals(id, frame.get("id").asText());
@@ -266,7 +268,42 @@ class EventStreamSocketTest {
       assertEquals("eu.wohlben.qits:qits-ci-service", frame.get("publisher").asText());
       List<String> fields = new ArrayList<>();
       frame.fieldNames().forEachRemaining(fields::add);
-      assertEquals("publisher", fields.get(fields.size() - 1));
+      // Appended after it since qits-2694: the call chain, so publisher is no longer last.
+      assertEquals(
+          List.of("publisher", "originTraceId", "onBehalfOf"),
+          fields.subList(fields.size() - 3, fields.size()));
+    }
+  }
+
+  @Test
+  void aFrameCarriesTheCallChainTheEventWasPublishedIn() throws Exception {
+    // qits-2694: a consumer runs its handlers inside the cause's chain, so the frame it reads must
+    // carry the origin trace id and the subject the chain acts for.
+    String name = aSignature("Chained");
+    String id = UUID.randomUUID().toString();
+    String origin = "4bf92f3577b34da6a3ce929d0e0e4736";
+    try (FakeSubscriber subscriber = FakeSubscriber.dial(endpoint)) {
+      subscriber.subscribe(name);
+      awaitSubscribed(name);
+
+      given()
+          .contentType(ContentType.JSON)
+          .body(
+              "{\"name\":\""
+                  + name
+                  + "\",\"occurredAt\":\"2026-07-31T12:46:03Z\",\"publisher\":\""
+                  + PUBLISHER
+                  + "\",\"originTraceId\":\""
+                  + origin
+                  + "\",\"onBehalfOf\":\"tok-agent-x\"}")
+          .when()
+          .put("/events/api/events/" + id)
+          .then()
+          .statusCode(201);
+      JsonNode frame = nextFrame(subscriber);
+      assertEquals(id, frame.get("id").asText());
+      assertEquals(origin, frame.get("originTraceId").asText());
+      assertEquals("tok-agent-x", frame.get("onBehalfOf").asText());
     }
   }
 

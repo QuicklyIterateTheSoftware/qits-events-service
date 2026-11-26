@@ -10,7 +10,9 @@
       "environment": null,
       "createdAt": "2026-01-01T00:00:00Z",
       "updatedAt": "2026-01-01T00:00:00Z",
-      "publisher": "eu.wohlben.qits:qits-deployments-service"
+      "publisher": "eu.wohlben.qits:qits-deployments-service",
+      "originTraceId": null,
+      "onBehalfOf": null
     },
     {
       "id": "00000000-0000-4000-8000-000000000002",
@@ -22,7 +24,9 @@
       "environment": null,
       "createdAt": "2026-01-01T00:00:00Z",
       "updatedAt": "2026-01-01T00:00:00Z",
-      "publisher": "eu.wohlben.qits:qits-projects-service"
+      "publisher": "eu.wohlben.qits:qits-projects-service",
+      "originTraceId": null,
+      "onBehalfOf": null
     },
     {
       "id": "00000000-0000-4000-8000-000000000003",
@@ -34,7 +38,9 @@
       "environment": null,
       "createdAt": "2026-01-01T00:00:00Z",
       "updatedAt": "2026-01-01T00:00:00Z",
-      "publisher": "eu.wohlben.qits:qits-projects-service"
+      "publisher": "eu.wohlben.qits:qits-projects-service",
+      "originTraceId": null,
+      "onBehalfOf": null
     }
   ]
 }
